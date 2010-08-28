@@ -1,16 +1,7 @@
 #!/usr/bin/make -f
 
 %:
-	dh --buildsystem=autoconf $@
-
-override_dh_auto_configure:
-	autoreconf -fi
-	dh_auto_configure
-
-override_dh_auto_clean:
-	dh_clean
-	rm -f aclocal.m4 configure install-sh Makefile.in
-	rm -f INSTALL texinfo.tex missing
+	dh $@
 
 override_dh_auto_install:
 	dh_auto_install
