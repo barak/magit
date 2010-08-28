@@ -1,3 +1,9 @@
+magit (0.8.2-1~try1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Sat, 28 Aug 2010 23:17:26 +0300
+
 magit (0.7-1.1) unstable; urgency=low
 
   [ Stefano Zacchiroli ]

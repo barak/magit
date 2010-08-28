@@ -1,0 +1,2 @@
+version=3
+http://github.com/philjackson/magit/downloads /philjackson/magit/tarball/(\d.+)

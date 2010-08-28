@@ -4,9 +4,9 @@ Priority: optional
 Maintainer: Marius Vollmer <marius.vollmer@gmail.com>
 Build-Depends: debhelper (>= 7.0.50~), emacs | emacsen, texinfo, autoconf, automake
 Standards-Version: 3.8.4
-Homepage: http://zagadka.vm.bytemark.co.uk/magit/
-Vcs-Browser: http://gitorious.org/projects/magit/repos/mainline
-Vcs-Git: git://gitorious.org/magit/mainline.git
+Homepage: http://philjackson.github.com/magit/index.html
+Vcs-Browser: http://github.com/philjackson/magit
+Vcs-Git: http://github.com/philjackson/magit.git
 
 Package: magit
 Architecture: all
