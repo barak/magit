@@ -1,10 +1,18 @@
-#!/bin/sh -eu
+#!/bin/sh
+# /usr/lib/emacsen-common/packages/remove/foo
+# [ This particular script hasn't been tested either, so be careful. ]
+set -e
+PACKAGE=magit
 
-FLAVOR="$1"
+FLAVOR=$1
+elc_dir=/usr/share/${FLAVOR}/site-lisp/${PACKAGE}
 
-if [ "$FLAVOR" != emacs ]
+echo remove/${PACKAGE}: Handling removal of emacsen flavor ${FLAVOR}
+
+if [ ${FLAVOR} != emacs ]
 then
-    echo "remove/magit: Purging byte-compiled files for ${FLAVOR}"
-    rm -f "/usr/share/$FLAVOR/site-lisp/magit.elc"
+  echo emacsen-common: purging byte-compiled files for ${FLAVOR}
+  rm -f ${elc_dir}/*.elc ${elc_dir}/*.el
+  rmdir ${elc_dir} || true
 fi
-exit 0
+exit 0;

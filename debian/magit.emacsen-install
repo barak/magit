@@ -1,26 +1,32 @@
-#!/bin/sh -eu
+#!/bin/sh
+# /usr/lib/emacsen-common/packages/install/foo
+# [ This particular script hasn't been tested, so be careful. ]
+set -e
+PACKAGE=magit
 
-# cripped from the cdargs package.
-
-FLAVOR="$1"
+FLAVOR=$1
+echo install/${PACKAGE}: Handling install of emacsen flavor ${FLAVOR}
 
 byte_compile_options="-batch -f batch-byte-compile"
-el_file="magit.el" 
-el_dir="/usr/share/emacs/site-lisp"
-elc_dir="/usr/share/$FLAVOR/site-lisp"
+el_files="magit.el"
+el_dir=/usr/share/emacs/site-lisp/${PACKAGE}/
+elc_dir=/usr/share/${FLAVOR}/site-lisp/${PACKAGE}/
 
-if [ "$FLAVOR" != emacs ]
+if [ ${FLAVOR} != emacs ]
 then
-    echo "install/magit: Byte-compiling for $FLAVOR"
+  echo install/${PACKAGE}: byte-compiling for ${FLAVOR}
 
-    # Copy the temp .el files
-    trap "rm -f \"$elc_dir/$el_file\"" 0
-    cp "$el_dir/$el_file" "$elc_dir/$el_file"
+  [ -d ${elc_dir} ] || mkdir ${elc_dir}
 
-    # Byte compile them
-    "$FLAVOR" $byte_compile_options "$elc_dir/$el_file" > /dev/null 2>&1
-
-    rm -f "$elc_dir/$el_file"
-    trap "" 0
+  # Symlink the .el files (emacsen policy 6E)
+  for i in ${el_files}
+  do
+    ln -s ../../../emacs/site-lisp/${PACKAGE}/${i} ${elc_dir}/${i}
+  done
+  
+  # Byte compile them
+  (cd ${elc_dir} \
+   && ${FLAVOR} ${byte_compile_options} ${el_files} 2> /dev/null)
 fi
-exit 0
+exit 0;
+
