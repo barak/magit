@@ -21,7 +21,7 @@ then
   # Symlink the .el files (emacsen policy 6E)
   for i in ${el_files}
   do
-    ln -s ../../../emacs/site-lisp/${PACKAGE}/${i} ${elc_dir}/${i}
+    ln -fs ../../../emacs/site-lisp/${PACKAGE}/${i} ${elc_dir}/${i}
   done
   
   # Byte compile them
