@@ -8,7 +8,7 @@ FLAVOR=$1
 echo install/${PACKAGE}: Handling install of emacsen flavor ${FLAVOR}
 
 byte_compile_options="-batch -f batch-byte-compile"
-el_files="magit.el"
+el_files="magit-topgit.el magit.el magit-key-mode.el magit-svn.el"
 el_dir=/usr/share/emacs/site-lisp/${PACKAGE}/
 elc_dir=/usr/share/${FLAVOR}/site-lisp/${PACKAGE}/
 
