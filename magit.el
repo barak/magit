@@ -493,6 +493,7 @@ Many Magit faces inherit from this one by default."
     (define-key map (kbd "x") 'magit-reset-head)
     (define-key map (kbd "e") 'magit-log-show-more-entries)
     (define-key map (kbd "l") 'magit-key-mode-popup-logging)
+    (define-key map (kbd "t") 'magit-key-mode-popup-tagging)
     map))
 
 (defvar magit-reflog-mode-map
@@ -537,11 +538,13 @@ Many Magit faces inherit from this one by default."
     (define-key map (kbd "RET") 'magit-branches-window-checkout)
     (define-key map (kbd "b") 'magit-branches-window-checkout)
     (define-key map (kbd "k") 'magit-remove-branch)
+    (define-key map (kbd "K") 'magit-remove-branch-in-remote-repo)
     (define-key map (kbd "$") 'magit-display-process)
     (define-key map (kbd "q") 'magit-quit-branches-window)
     (define-key map (kbd "g") 'magit-show-branches)
     (define-key map (kbd "v") 'magit-show-branches)
-    (define-key map (kbd "t") 'magit-change-what-branch-tracks)
+    (define-key map (kbd "T") 'magit-change-what-branch-tracks)
+    (define-key map (kbd "t") 'magit-key-mode-popup-tagging)
     (define-key map (kbd "n") 'next-line)
     (define-key map (kbd "p") 'previous-line)
     map))
@@ -878,8 +881,10 @@ argument or a list of strings used as regexps."
     (dolist (line (magit-git-lines "show-ref"))
       (if (string-match "[^ ]+ +\\(.*\\)" line)
           (let ((ref (match-string 1 line)))
-            (cond ((functionp uninteresting) (funcall uninteresting ref))
-                  ((loop for i in uninteresting thereis (string-match i ref)))
+            (cond ((and (functionp uninteresting)
+                        (funcall uninteresting ref)))
+                  ((and (not (functionp uninteresting))
+                        (loop for i in uninteresting thereis (string-match i ref))))
                   ((string-match "refs/heads/\\(.*\\)" ref)
                    (let ((branch (match-string 1 ref)))
                      (push (cons branch branch) refs)))
@@ -2114,13 +2119,14 @@ in the corresponding directories."
     (magit-wash-sequence #'magit-wash-untracked-file)))
 
 (defun magit-insert-untracked-files ()
-  (apply 'magit-git-section
-         `(untracked
+  (unless (string= (magit-get "status" "showUntrackedFiles") "no")
+    (apply 'magit-git-section
+           `(untracked
            "Untracked files:"
            magit-wash-untracked-files
-           "ls-files" "-t" "--others" "--exclude-standard"
+           "ls-files" "--others" "-t" "--exclude-standard"
            ,@(when magit-omit-untracked-dir-contents
-               '("--directory")))))
+               '("--directory"))))))
 
 ;;; Diffs and Hunks
 
@@ -2806,7 +2812,7 @@ to consider it or not when called with that buffer current."
         (message msg)))))
 
 
-(defun magit-save-buffers-predicate-all () 
+(defun magit-save-buffers-predicate-all ()
   "Prompt to save all buffers with unsaved changes"
   t)
 
@@ -2857,28 +2863,32 @@ to consider it or not when called with that buffer current."
 
 ;;; Staging and Unstaging
 
-(defun magit-stage-item ()
-  "Add the item at point to the staging area."
-  (interactive)
-  (magit-section-action (item info "stage")
-    ((untracked file)
-     (magit-run-git "add" info))
-    ((untracked)
-     (apply #'magit-run-git "add" "--"
-	    (magit-git-lines "ls-files" "--other" "--exclude-standard")))
-    ((unstaged diff hunk)
-     (if (magit-hunk-item-is-conflict-p item)
-	 (error (concat "Can't stage individual resolution hunks.  "
-			"Please stage the whole file.")))
-     (magit-apply-hunk-item item "--cached"))
-    ((unstaged diff)
-     (magit-run-git "add" "-u" (magit-diff-item-file item)))
-    ((staged *)
-     (error "Already staged"))
-    ((hunk)
-     (error "Can't stage this hunk"))
-    ((diff)
-     (error "Can't stage this diff"))))
+(defun magit-stage-item (&optional ask)
+  "Add the item at point to the staging area.
+If ASK is set, ask for the file name rather than picking the one
+at point."
+  (interactive "P")
+  (if ask
+      (magit-run-git "add" (read-file-name "File to stage: "))
+    (magit-section-action (item info "stage")
+      ((untracked file)
+       (magit-run-git "add" info))
+      ((untracked)
+       (apply #'magit-run-git "add" "--"
+              (magit-git-lines "ls-files" "--other" "--exclude-standard")))
+      ((unstaged diff hunk)
+       (if (magit-hunk-item-is-conflict-p item)
+           (error (concat "Can't stage individual resolution hunks.  "
+                          "Please stage the whole file.")))
+       (magit-apply-hunk-item item "--cached"))
+      ((unstaged diff)
+       (magit-run-git "add" "-u" (magit-diff-item-file item)))
+      ((staged *)
+       (error "Already staged"))
+      ((hunk)
+       (error "Can't stage this hunk"))
+      ((diff)
+       (error "Can't stage this diff")))))
 
 (defun magit-unstage-item ()
   "Remove the item at point from the staging area."
@@ -2990,7 +3000,7 @@ If the branch is the current one, offers to switch to `master' first.
 \('git branch -d BRANCH')."
   (interactive (list (magit-read-rev "Branch to delete" (magit-default-rev))))
   (when (and branch (string= branch (magit-get-current-branch)))
-    (if (y-or-n-p "Cannot delete current branch. Switch to master first?")
+    (if (y-or-n-p "Cannot delete current branch. Switch to master first? ")
 	(magit-checkout "master")
       (setq branch nil)))
   (when branch
@@ -3747,12 +3757,14 @@ With prefix argument, changes in staging area are kept.
 
 (defun magit-commit-at-point (&optional nil-ok-p)
   (let* ((section (magit-current-section))
-	 (commit (and (eq (magit-section-type section) 'commit)
-		      (magit-section-info section))))
+         (commit (or (and (not section)                          ; Places without a magit-section
+                          (get-text-property (point) 'revision)) ; but with a text property 'revision
+                     (and (eq (magit-section-type section) 'commit)
+                          (magit-section-info section)))))
     (if nil-ok-p
-	commit
+        commit
       (or commit
-	  (error "No commit at point")))))
+          (error "No commit at point")))))
 
 (defun magit-apply-commit (commit &optional docommit noerase revert)
   (let* ((parent-id (magit-choose-parent-id commit "cherry-pick"))
@@ -4336,7 +4348,50 @@ With prefix force the removal even it it hasn't been merged."
 		    (magit-remove-remote
                      (magit--branch-name-at-point)))))
     (apply 'magit-run-git (remq nil args))
+    (if (and (magit--is-branch-at-point-remote)
+             (yes-or-no-p "Remove branch in remote repository as well? "))
+        (magit-remove-branch-in-remote-repo (magit--branch-name-at-point)))
     (magit-show-branches)))
+
+(defun magit--remotes ()
+  "Return a list of names for known remotes."
+  (magit-git-lines "remote"))
+
+(defun magit--branches-for-remote-repo (remote)
+  "Return a list of remote branch names for REMOTE.
+These are the branch names with the remote name stripped."
+  (remq nil
+        (mapcar (lambda (line)
+                  (save-match-data
+                    (if (and (not (string-match-p " -> " line))
+                             (string-match (concat "^ +" remote "/\\([^ $]+\\)")
+                                           line))
+                        (match-string 1 line))))
+                (magit-git-lines "branch" "-r"))))
+
+(defun magit-remove-branch-in-remote-repo (&optional branch-name-at-local)
+  "Remove a branch in a remote repository by pushing nothing into it.
+If BRANCH-NAME-AT-LOCAL is not given then ask the user for the
+name of the remote and branch name. The remote must be known to git."
+  (interactive)
+  (let ((all-remotes (magit--remotes))
+        remote branch)
+    (unless all-remotes
+      (error "No remote has been  configured"))
+    (if branch-name-at-local
+        (save-match-data
+          (if (string-match "^remotes/\\([^/]+\\)/\\(.+\\)" branch-name-at-local)
+              (setq remote (match-string 1 branch-name-at-local)
+                    branch (match-string 2 branch-name-at-local))
+            (error "Cannot parse remote and branch name from `%s'" branch-name-at-local)))
+      (setq remote (magit-completing-read "Name of remote repository: " all-remotes nil t)
+            branch (magit-completing-read "Name of branch in remote repository: "
+                                          (magit--branches-for-remote-repo remote))))
+    (unless (magit-get "remote" remote "url")
+      (error "Unknown remote"))
+    (magit-run-git "push"
+                   remote
+                   (concat ":refs/heads/" branch))))
 
 (defvar magit-branches-buffer-name "*magit-branches*")
 
@@ -4401,11 +4456,11 @@ With prefix force the removal even it it hasn't been merged."
             (cdr (assoc 'branch b))
             (when (assoc 'other-ref b)
               (concat " (" (cdr (assoc 'other-ref b)) ")"))
-            (when (and (assoc 'tracking b)
-                       (cdr (assoc 'tracking b)))
+            (when (cdr (assoc 'tracking b))
               (concat " [" (cdr (assoc 'tracking b)) "]")))
            'remote (cdr (assoc 'remote b))
-           'branch-name (cdr (assoc 'branch b))))
+           'branch-name (cdr (assoc 'branch b))
+           'revision (cdr (assoc 'sha1 b))))
         branches
         "\n"))
       (magit-show-branches-mode)
@@ -4432,12 +4487,18 @@ With prefix force the removal even it it hasn't been merged."
                                                               ref)))))
          new-remote new-branch)
     (unless (string= (or new-tracked "") "")
-      (unless (and new-tracked
-                   (string-match "^refs/remotes/\\([^/]+\\)/\\(.+\\)" ; 1: remote name; 2: branch name
-                                 new-tracked))
-        (error "Cannot parse the remote and branch name"))
-      (setq new-remote (match-string 1 new-tracked)
-            new-branch (concat "refs/heads/" (match-string 2 new-tracked))))
+      (if (string-match "^refs/remotes/\\([^/]+\\)/\\(.+\\)" ; 1: remote name; 2: branch name
+                        new-tracked)
+          (setq new-remote (match-string 1 new-tracked)
+                new-branch (concat "refs/heads/" (match-string 2 new-tracked)))
+        ;; Match refs that are unknown in the local repository. Can be
+        ;; useful if you want to create a new branch in a remote
+        ;; repository.
+        (if (string-match "^\\([^ ]+\\) +(\\(.+\\))$" ; 1: branch name; 2: remote name
+                          new-tracked)
+            (setq new-remote (match-string 2 new-tracked)
+                  new-branch (concat "refs/heads/" (match-string 1 new-tracked)))
+            (error "Cannot parse the remote and branch name"))))
     (magit-set new-remote "branch" local-branch "remote")
     (magit-set new-branch "branch" local-branch "merge")
     (magit-show-branches)
