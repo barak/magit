@@ -3,7 +3,7 @@ Section: devel
 Priority: optional
 Maintainer: Marius Vollmer <marius.vollmer@gmail.com>
 Uploaders: Timo Juhani Lindfors <timo.lindfors@iki.fi>
-Build-Depends: debhelper (>= 7.0.50~), emacs | emacsen, texinfo, autoconf, automake1.10
+Build-Depends: debhelper (>= 7.0.50~), emacs | emacsen, texinfo
 Standards-Version: 3.8.4
 Homepage: http://philjackson.github.com/magit/index.html
 Vcs-Browser: http://github.com/philjackson/magit
