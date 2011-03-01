@@ -6,8 +6,8 @@ Uploaders: Timo Juhani Lindfors <timo.lindfors@iki.fi>
 Build-Depends: debhelper (>= 7.0.50~), emacs | emacsen, texinfo
 Standards-Version: 3.9.1
 Homepage: http://philjackson.github.com/magit/index.html
-Vcs-Browser: http://github.com/philjackson/magit
-Vcs-Git: http://github.com/philjackson/magit.git
+Vcs-Browser: http://git.debian.org/?p=collab-maint/magit.git
+Vcs-Git: git://git.debian.org/collab-maint/magit.git
 
 Package: magit
 Architecture: all
