@@ -1,6 +1,6 @@
 magit (0.8.2+20110220-1~try2) unstable; urgency=low
 
-  * New upstream release (closes: #586039, #586047, #591646).
+  * New upstream release (closes: #586039, #586047, #591646, #591646).
   * Provide debian/watch file (closes: #586051).
   * Switch to dpkg-source 3.0 (quilt) format.
   * Simplify debian/rules and upstream all debian/patches.
