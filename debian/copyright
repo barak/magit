@@ -81,8 +81,10 @@ License: GPL-3+
 Files: fdl.texi
 Copyright: 2000,2001,2002 Free Software Foundation, Inc.
 License: noderivs
- Everyone is permitted to copy and distribute verbatim copies
- of this license document, but changing it is not allowed.
+
+Files: COPYING
+Copyright: 2007 Free Software Foundation, Inc. <http://fsf.org/>
+License: noderivs
 
 License: GPL-3+
  Magit is free software; you can redistribute it and/or modify it
@@ -100,3 +102,7 @@ License: GPL-3+
  .
  On Debian systems, the complete text of the GNU General Public License
  can be found in `/usr/share/common-licenses/GPL-3'.
+
+License: noderivs
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
