@@ -1,5 +1,6 @@
-magit (0.8.2+20110220-1~try2) unstable; urgency=low
+magit (0.8.2+20110220-1) unstable; urgency=low
 
+  [ Timo Juhani Lindfors ]
   * New upstream release (closes: #586039, #586047, #591646, #591646, #597149).
   * Provide debian/watch file (closes: #586051).
   * Switch to dpkg-source 3.0 (quilt) format.
@@ -7,7 +8,12 @@ magit (0.8.2+20110220-1~try2) unstable; urgency=low
   * Bump Standards-Version to 3.9.1 (no changes needed)
   * Update copyright information in DEP-5 format.
 
- -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Sun, 29 Aug 2010 00:35:03 +0300
+  [ Teemu Hukkanen ]
+  * Move package to collab-maint.
+  * Add install-info to Build-Depends.
+  * Add myself to Uploaders.
+
+ -- Teemu Hukkanen <tjhukkan@iki.fi>  Mon, 21 Mar 2011 21:02:51 +0200
 
 magit (0.7-1.1) unstable; urgency=low
 
