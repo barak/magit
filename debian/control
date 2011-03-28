@@ -3,7 +3,7 @@ Section: devel
 Priority: optional
 Maintainer: Timo Juhani Lindfors <timo.lindfors@iki.fi>
 Uploaders: Marius Vollmer <marius.vollmer@gmail.com>, Teemu Hukkanen <tjhukkan@iki.fi>
-Build-Depends: debhelper (>= 7.0.50~), emacs | emacsen, texinfo, install-info
+Build-Depends: debhelper (>= 7.0.50~), emacs23, texinfo, install-info
 Standards-Version: 3.9.1
 Homepage: http://philjackson.github.com/magit/index.html
 Vcs-Browser: http://git.debian.org/?p=collab-maint/magit.git
@@ -11,7 +11,7 @@ Vcs-Git: git://git.debian.org/collab-maint/magit.git
 
 Package: magit
 Architecture: all
-Depends: ${misc:Depends}, emacs | emacsen, git-core
+Depends: ${misc:Depends}, emacs23 | emacs-snapshot, git-core
 Description: A Emacs interface for Git
  With Magit, you can inspect and modify your Git repositories with
  Emacs.  You can review and commit the changes you have made to the
