@@ -23,8 +23,15 @@ case "${FLAVOR}" in
         done
 
         # Byte compile them
-        (cd ${elc_dir} \
-	    && ${FLAVOR} ${byte_compile_options} ${el_files} 2> /dev/null)
+        cd ${elc_dir}
+        LOG=`mktemp -t elc.XXXXXXXXXXXX`
+        if ! ${FLAVOR} ${byte_compile_options} ${el_files} > ${LOG} 2>&1; then
+            echo Byte-compilation failed:
+            cat ${LOG}
+            rm ${LOG}
+            exit 1
+        fi
+        rm ${LOG}
         ;;
     *)
         echo install/${PACKAGE}: Ignoring unsupported flavor ${FLAVOR}
