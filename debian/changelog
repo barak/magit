@@ -1,4 +1,4 @@
-magit (1.0.0-1~try2) unstable; urgency=low
+magit (1.0.0-1~try3) unstable; urgency=low
 
   * New upstream release.
   * Drop support for emacsen other than emacs23
