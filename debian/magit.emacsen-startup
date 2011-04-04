@@ -1,0 +1,4 @@
+;;; Autoloads for magit
+
+(if (eq debian-emacs-flavor 'emacs23)
+    (autoload 'magit-status "magit" nil t))
