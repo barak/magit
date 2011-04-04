@@ -11,7 +11,7 @@ Vcs-Git: git://git.debian.org/collab-maint/magit.git
 
 Package: magit
 Architecture: all
-Depends: ${misc:Depends}, emacs23, git-core
+Depends: ${misc:Depends}, emacs23, git-core, dpkg (>= 1.15.4) | install-info
 Description: An Emacs interface for Git
  With Magit, you can inspect and modify your Git repositories with
  Emacs.  You can review and commit the changes you have made to the
