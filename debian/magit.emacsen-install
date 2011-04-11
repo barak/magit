@@ -13,7 +13,7 @@ elc_dir=/usr/share/${FLAVOR}/site-lisp/${PACKAGE}/
 case "${FLAVOR}" in
     emacs)
         ;;
-    emacs23)
+    emacs23|emacs-snapshot)
         echo install/${PACKAGE}: Handling install of emacsen flavor ${FLAVOR}
         [ -d ${elc_dir} ] || mkdir ${elc_dir}
 
