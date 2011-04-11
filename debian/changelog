@@ -1,10 +1,10 @@
-magit (1.0.0-1~try5) unstable; urgency=low
+magit (1.0.0-1~try6) unstable; urgency=low
 
   * New upstream release.
-  * Drop support for emacsen other than emacs23
+  * Drop support for emacsen other than emacs23 or emacs-snapshot
     (closes: #619480).
 
- -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Mon, 28 Mar 2011 14:38:31 -0400
+ -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Mon, 11 Apr 2011 12:05:29 +0300
 
 magit (0.8.2+20110220-1) unstable; urgency=low
 
