@@ -1,3 +1,9 @@
+magit (1.0.0-2~unrelease0) unstable; urgency=low
+
+  * Fix bug ..
+
+ -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Tue, 30 Aug 2011 23:37:02 +0000
+
 magit (1.0.0-1) unstable; urgency=low
 
   [ Timo Juhani Lindfors ]
