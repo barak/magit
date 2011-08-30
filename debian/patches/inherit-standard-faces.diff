@@ -1,0 +1,106 @@
+commit 3d0ea1d60fbc0a8135e2146418c0c64c9d05705a
+Author: Steve Purcell <steve@sanityinc.com>
+Date:   Mon Apr 4 11:05:58 2011 +0100
+
+    Inherit standard faces where possible to make magit less hostile to color-theming
+    
+    Just as org inherits various faces from outline-mode, there are plenty
+    of built-in faces which can serve as a logical base for magit's
+    faces. This patch adds :inherit to several faces, and there may be an
+    opportunity to add more. Failing to inherit faces where it is
+    reasonable to do so means that magit is likely to look odd for users
+    who have installed custom color-themes, which typically only redefine
+    the more basic faces.
+
+Author: Steve Purcell <steve@sanityinc.com>
+Applied-Upstream: https://github.com/magit/magit/commit/3d0ea1d60fbc0a8135e2146418c0c64c9d05705a
+Bug-Debian: http://bugs.debian.org/637193
+
+--- a/magit.el
++++ b/magit.el
+@@ -31,7 +31,7 @@
+ ;; Copyright (C) 2010 Roger Crew.
+ ;; Copyright (C) 2009, 2010, 2011 Rémi Vanicat.
+ ;; Copyright (C) 2010 Sean Bryant.
+-;; Copyright (C) 2009 Steve Purcell.
++;; Copyright (C) 2009, 2011 Steve Purcell.
+ ;; Copyright (C) 2010 Timo Juhani Lindfors.
+ ;; Copyright (C) 2010 Yann Hodique.
+ ;; Copyright (C) 2010 oscar.
+@@ -217,37 +217,34 @@
+   :group 'magit)
+ 
+ (defface magit-header
+-  '((t))
++  '((t :inherit header-line))
+   "Face for generic header lines.
+ 
+ Many Magit faces inherit from this one by default."
+   :group 'magit-faces)
+ 
+ (defface magit-section-title
+-  '((t :weight bold :inherit magit-header))
++  '((t :inherit magit-header))
+   "Face for section titles."
+   :group 'magit-faces)
+ 
+ (defface magit-branch
+-  '((t :weight bold :inherit magit-header))
++  '((t :inherit magit-header))
+   "Face for the current branch."
+   :group 'magit-faces)
+ 
+ (defface magit-diff-file-header
+-  '((t :inherit magit-header))
++  '((t :inherit diff-file-header))
+   "Face for diff file header lines."
+   :group 'magit-faces)
+ 
+ (defface magit-diff-hunk-header
+-  '((t :slant italic :inherit magit-header))
++  '((t :inherit diff-hunk-header))
+   "Face for diff hunk header lines."
+   :group 'magit-faces)
+ 
+ (defface magit-diff-add
+-  '((((class color) (background light))
+-     :foreground "blue1")
+-    (((class color) (background dark))
+-     :foreground "white"))
++  '((t :inherit diff-added))
+   "Face for lines in a diff that have been added."
+   :group 'magit-faces)
+ 
+@@ -257,10 +254,7 @@
+   :group 'magit-faces)
+ 
+ (defface magit-diff-del
+-  '((((class color) (background light))
+-     :foreground "red")
+-    (((class color) (background dark))
+-     :foreground "OrangeRed"))
++  '((t :inherit diff-removed))
+   "Face for lines in a diff that have been deleted."
+   :group 'magit-faces)
+ 
+@@ -286,18 +280,12 @@
+   :group 'magit-faces)
+ 
+ (defface magit-item-highlight
+-  '((((class color) (background light))
+-     :background "gray95")
+-    (((class color) (background dark))
+-     :background "dim gray"))
++  '((t :inherit highlight))
+   "Face for highlighting the current item."
+   :group 'magit-faces)
+ 
+ (defface magit-item-mark
+-  '((((class color) (background light))
+-     :foreground "red")
+-    (((class color) (background dark))
+-     :foreground "orange"))
++  '((t :inherit secondary-selection))
+   "Face for highlighting marked item."
+   :group 'magit-faces)
+ 
