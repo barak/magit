@@ -1,6 +1,10 @@
-magit (1.0.0-2~unrelease0) unstable; urgency=low
+magit (1.0.0-2) unstable; urgency=low
 
-  * Fix bug ..
+  * Bump Standard-Version to 3.9.2 (no changes needed).
+  * Drop article from package description to make lintian happy.
+  * Add patch inherit-standard-faces.diff
+    - Backport upstream commit 3d0ea1d60fbc0a8135e2146418c0c64c9d05705a
+      to use standard faces where possible (closes: #637193).
 
  -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Tue, 30 Aug 2011 23:37:02 +0000
 
