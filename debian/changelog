@@ -1,3 +1,14 @@
+magit (1.1.0-1~try1) UNRELEASED; urgency=low
+
+  * New upstream release.
+  * Use upstream tarball instead of regenerating one from git tag,
+    mostly because make dist nowadays embeds version numbers to the
+    *.el files (LP: #853567).
+  * Drop patch inherit-standard-faces.diff that is now upstream.
+  * Update watch file path.
+
+ -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Sat, 31 Dec 2011 02:31:11 +0200
+
 magit (1.0.0-2) unstable; urgency=low
 
   * Bump Standards-Version to 3.9.2 (no changes needed).
