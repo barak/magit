@@ -51,9 +51,18 @@ Copyright: 2010 Aaron Culich.
            2010 Ævar Arnfjörð Bjarmason.
            2010 Óscar Fuentes.
            2008 Linh Dang
+           2011 Eli Barzilay
+           2011 Hannu Koivisto
+           2011 Lluís Vilanova
+           2011 Nicolas Dudebout
+           2011 Peter J Weisberg
+           2011 Pieter Praet
+           2011 Roger Crew
+           2011 Ævar Arnfjörð Bjarmason
+           2011 Štěpán Němec
 License: GPL-3+
 
-Files: magit.texi
+Files: magit.texi magit.info
 Copyright: 2008 Alex Ott.
            2009 Alexey Voinov.
            2010 Chris Bernard.
@@ -66,6 +75,14 @@ Copyright: 2008 Alex Ott.
            2009, 2010 Phil Jackson.
            2009, 2010, 2011 Rémi Vanicat.
            2010 Yann Hodique.
+           2011 Eli Barzilay
+           2011 Lluís Vilanova
+           2011 Moritz Bunkus
+           2011 Peter J Weisberg
+           2011 Peter J. Weisberg
+           2011 Pieter Praet
+           2011 Yann Hodique
+           2011 Štěpán Němec
 License: GFDL-NIV-1.2+
  Permission is granted to copy, distribute and/or modify this
  document under the terms of the GNU Free Documentation License,
