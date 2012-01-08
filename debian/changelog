@@ -1,4 +1,4 @@
-magit (1.1.0-1~try1) UNRELEASED; urgency=low
+magit (1.1.0-1) unstable; urgency=low
 
   * New upstream release.
   * Use upstream tarball instead of regenerating one from git tag,
