@@ -97,6 +97,7 @@ Files: debian/*
 Copyright: 2008, 2009 Marius Vollmer <marius.vollmer@gmail.com>
            2010, 2011, 2012 Timo Juhani Lindfors <timo.lindfors@iki.fi>
            2011 Teemu Hukkanen <tjhukkan@iki.fi>
+           2012 Rémi Vanicat <vanicat@debian.org>
 License: GPL-3+
 
 License: GPL-3+
