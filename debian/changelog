@@ -1,3 +1,9 @@
+magit (1.1.0-2~try1) UNRELEASED; urgency=low
+
+  * Install contrib .el files
+
+ -- Rémi Vanicat <vanicat@debian.org>  Mon, 09 Jan 2012 17:29:56 +0100
+
 magit (1.1.0-1) unstable; urgency=low
 
   * New upstream release.
