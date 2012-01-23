@@ -1,4 +1,4 @@
-VERSION=1.1.0
+VERSION=1.1.1
 EMACS=emacs
 PREFIX=/usr/local
 SYSCONFDIR=/etc
@@ -78,4 +78,4 @@ install_contrib: contrib
 install_all: install install_contrib
 
 clean:
-	rm -fr magit-pkg.el magit.spec magit.info $(ELCS) $(ELCS_CONTRIB) *.tar.gz magit-$(VERSION)
+	rm -fr magit-pkg.el magit.spec $(ELCS) $(ELCS_CONTRIB) *.tar.gz magit-$(VERSION)
