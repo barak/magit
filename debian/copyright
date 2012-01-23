@@ -19,7 +19,7 @@ Copyright: 2010 Aaron Culich.
            2009, 2010 Hannu Koivisto.
            2009 Ian Eure.
            2009 Jesse Alama.
-           2009, 2010 John Wiegley.
+           2009, 2010, 2012 John Wiegley.
            2011 Julien Danjou.
            2010, 2011 Leo.
            2010 Marc Herbert.
@@ -31,7 +31,7 @@ Copyright: 2010 Aaron Culich.
            2010 Oscar Fuentes.
            2010 Paul Stadig.
            2009 Pavel Holejsovsky.
-           2011 Peter J. Weisberg.
+           2011, 2012 Peter J. Weisberg.
            2009, 2010, 2011 Phil Jackson.
            2010 Philip Weaver.
            2010, 2011 Ramkumar Ramachandra.
@@ -44,9 +44,9 @@ Copyright: 2010 Aaron Culich.
            2011 Rüdiger Sonderfeld.
            2010 Sean Bryant.
            2009 Steve Purcell.
-           2010, 2011 Timo Juhani Lindfors.
+           2010, 2011, 2012 Timo Juhani Lindfors.
            2010 Tom Feist.
-           2010, 2011 Yann Hodique.
+           2010, 2011, 2012 Yann Hodique.
            2010 oscar.
            2010 Ævar Arnfjörð Bjarmason.
            2010 Óscar Fuentes.
@@ -54,12 +54,13 @@ Copyright: 2010 Aaron Culich.
            2011 Eli Barzilay
            2011 Hannu Koivisto
            2011 Lluís Vilanova
-           2011 Nicolas Dudebout
-           2011 Peter J Weisberg
+           2011, 2012 Nicolas Dudebout
+           2011, 2012 Peter J Weisberg
            2011 Pieter Praet
            2011 Roger Crew
            2011 Ævar Arnfjörð Bjarmason
            2011 Štěpán Němec
+           2012 Ryan C. Thompson
 License: GPL-3+
 
 Files: magit.texi magit.info
