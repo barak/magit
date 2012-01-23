@@ -1,8 +1,12 @@
-magit (1.1.0-2~try2) UNRELEASED; urgency=low
+magit (1.1.1-1~try1) UNRELEASED; urgency=low
 
+  [ Timo Juhani Lindfors]
+  * New upstream release.
+
+  [ Rémi Vanicat ]
   * Install contrib .el files
 
- -- Rémi Vanicat <vanicat@debian.org>  Mon, 09 Jan 2012 17:29:56 +0100
+ -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Mon, 23 Jan 2012 09:31:11 +0200
 
 magit (1.1.0-1) unstable; urgency=low
 
