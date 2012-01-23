@@ -5,7 +5,7 @@ Using magit magit simple keys
 -----------------------------
 
 Older version of magit used a simpler mapping for key, that didn't
-give access to all magit capabilities. You can reenable those simpler
+give access to all magit capabilities. You can re-enable those simpler
 binding by adding
 
 (eval-after-load 'magit
