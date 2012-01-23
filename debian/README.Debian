@@ -8,7 +8,10 @@ Older version of magit used a simpler mapping for key, that didn't
 give access to all magit capabilities. You can reenable those simpler
 binding by adding
 
-    (require 'magit-simple-keys)
+(eval-after-load 'magit
+  '(progn
+     (ignore-errors
+      (require 'magit-simple-keys))))
 
 to your .emacs.
 
@@ -18,7 +21,10 @@ Using magit classic theme
 Magit comes with a color theme that try to make magit look like older
 version of magit. You can load it by adding
 
-    (load-theme 'magit-classic)
+(eval-after-load 'magit
+  '(progn
+     (ignore-errors
+      (load-theme 'magit-classic))))
 
 to your .emacs
 
