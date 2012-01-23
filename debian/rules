@@ -10,3 +10,5 @@ override_dh_auto_install:
 	mv $(CURDIR)/debian/magit/usr/share/emacs/site-lisp/*.el $(CURDIR)/debian/magit/usr/share/emacs/site-lisp/magit
 	rm -f debian/magit/usr/share/emacs/site-lisp/*.elc
 	rm -f debian/magit/usr/share/info/dir
+	rm -f debian/magit/usr/bin/magit
+
