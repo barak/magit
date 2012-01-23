@@ -10,8 +10,3 @@ override_dh_auto_install:
 	mv $(CURDIR)/debian/magit/usr/share/emacs/site-lisp/*.el $(CURDIR)/debian/magit/usr/share/emacs/site-lisp/magit
 	rm -f debian/magit/usr/share/emacs/site-lisp/*.elc
 	rm -f debian/magit/usr/share/info/dir
-
-override_dh_auto_clean:
-	# Upstream make clean is broken
-	# Patch sent 2012-01-04 to http://groups.google.com/group/magit/browse_thread/thread/5f1d6cedacda396a
-	rm -fr magit-pkg.el magit.spec magit.elc magit-svn.elc magit-topgit.elc magit-stgit.elc magit-key-mode.elc magit-bisect.elc contrib/magit-simple-keys.elc contrib/magit-classic-theme.elc *.tar.gz magit-1.1.0
