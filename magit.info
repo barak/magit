@@ -289,10 +289,6 @@ in the region are staged or unstaged.  (This works line by line: if the
 beginning of a line is in the region it is included in the changes,
 otherwise it is not.)
 
-   To change the size of the hunks, you can type `+' or `-' to increase
-and decrease, respectively.  Typing `0' will reset the hunk size to the
-default.
-
    Typing `C-u s' will ask you for a name of a file to be staged, for
 example to stage files that are hidden.
 
@@ -1292,36 +1288,36 @@ Node: Sections3720
 Node: Status6270
 Node: Untracked files9009
 Node: Staging and Committing9960
-Node: History13858
-Node: Reflogs17038
-Node: Commit Buffer17442
-Node: Diffing18768
-Node: Tagging19755
-Node: Resetting20204
-Node: Stashing21728
-Node: Branching22786
-Node: The Branch Manager24164
-Node: Wazzup24880
-Node: Merging25671
-Node: Rebasing26721
-Node: Rewriting27536
-Node: Pushing and Pulling30549
-Node: Submodules32476
-Node: Bisecting32896
-Node: Using Magit Extensions34111
-Node: Activating extensions34408
-Node: Interfacing with Subversion35792
-Node: Interfacing with Topgit36390
-Node: Interfacing with StGit37418
-Node: Developing Extensions38416
-Node: Using Git Directly42194
-Node: Customization42565
-Node: Frequently Asked Questions47109
-Node: FAQ - Changes47340
-Node: FAQ 1 - Troubleshooting47748
-Node: FAQ 1-147996
-Node: FAQ 2 - Display issues48300
-Node: FAQ 2-148529
+Node: History13704
+Node: Reflogs16884
+Node: Commit Buffer17288
+Node: Diffing18614
+Node: Tagging19601
+Node: Resetting20050
+Node: Stashing21574
+Node: Branching22632
+Node: The Branch Manager24010
+Node: Wazzup24726
+Node: Merging25517
+Node: Rebasing26567
+Node: Rewriting27382
+Node: Pushing and Pulling30395
+Node: Submodules32322
+Node: Bisecting32742
+Node: Using Magit Extensions33957
+Node: Activating extensions34254
+Node: Interfacing with Subversion35638
+Node: Interfacing with Topgit36236
+Node: Interfacing with StGit37264
+Node: Developing Extensions38262
+Node: Using Git Directly42040
+Node: Customization42411
+Node: Frequently Asked Questions46955
+Node: FAQ - Changes47186
+Node: FAQ 1 - Troubleshooting47594
+Node: FAQ 1-147842
+Node: FAQ 2 - Display issues48146
+Node: FAQ 2-148375
 
 End Tag Table
 
