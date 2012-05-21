@@ -1,3 +1,13 @@
+magit (1.1.1-2~try1) UNRELEASED; urgency=low
+
+  * Backport upstream commit c8cfaf37b7c142edc6714d86691b8720f2606328
+    for autogenerating autoloads (closes: #671922).
+  * Bump Standards-Version to 3.9.3 (no changes needed).
+  * Update upstream homepage URL.
+  * Remove DM-Upload-Allowed.
+
+ -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Mon, 21 May 2012 14:35:24 +0000
+
 magit (1.1.1-1) unstable; urgency=low
 
   [ Timo Juhani Lindfors]
