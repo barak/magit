@@ -1,6 +1,6 @@
 ;;; Autoloads for magit
 
 (if (member debian-emacs-flavor '(emacs23 emacs-snapshot))
-    (if (file-exists-p "/usr/share/emacs/site-lisp/magit/magit.el")
-        (autoload 'magit-status "magit" nil t)
+    (if (file-exists-p "/usr/share/emacs/site-lisp/magit/magit-install.el")
+        (load "/usr/share/emacs/site-lisp/magit/magit-install")
       (message "Package magit removed but not purged. Skipping setup.")))

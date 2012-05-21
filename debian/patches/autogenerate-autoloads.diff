@@ -1,0 +1,27 @@
+Description: autogenerate autoloads (magit-install.el)
+ based on https://github.com/magit/magit/commit/c8cfaf37b7c142edc6714d86691b8720f2606328
+Author: Timo Juhani Lindfors <timo.lindfors@iki.fi>
+Forwarded: not-needed
+Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=671922
+
+--- a/Makefile
++++ b/Makefile
+@@ -20,7 +20,7 @@
+ 
+ all: core docs contrib
+ 
+-core: $(ELCS) magit.spec magit-pkg.el
++core: $(ELCS) magit.spec magit-pkg.el magit-install.el
+ 
+ docs: magit.info
+ 
+@@ -32,6 +32,9 @@
+ magit-pkg.el: magit-pkg.el.in
+ 	sed -e s/@VERSION@/$(VERSION)/ < $< > $@
+ 
++magit-install.el: $(ELS)
++	$(BATCH) --eval "(let ((generated-autoload-file \"$(CURDIR)/magit-install.el\") (make-backup-files nil)) (update-directory-autoloads \".\"))"
++
+ magit.elc: magit.el
+ magit-key-mode.elc:
+ magit-svn.elc:
