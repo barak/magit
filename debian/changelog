@@ -1,4 +1,4 @@
-magit (1.1.1-2~try1) UNRELEASED; urgency=low
+magit (1.1.1-2) unstable; urgency=low
 
   * Backport upstream commit c8cfaf37b7c142edc6714d86691b8720f2606328
     for autogenerating autoloads (closes: #671922).
