@@ -1,3 +1,12 @@
+magit (1.2.0-1~experimental1) experimental; urgency=low
+
+  * New upstream release (Closes: #695479).
+  * Drop patch autogenerate-autoloads.diff.
+  * Bump standards-version to 3.9.4, no changes needed.
+  * Upload to experimental since wheezy is frozen.
+
+ -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Sun, 24 Feb 2013 17:49:45 +0000
+
 magit (1.1.1-3) unstable; urgency=low
 
   * Add emacs24 to the list of supported emacs versions (closes: #679781)
