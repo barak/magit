@@ -3,6 +3,8 @@
 %:
 	dh $@
 
+override_dh_auto_test:
+	# Upstream testsuite is not part of released tarballs, it is only in git
 override_dh_auto_install:
 	$(MAKE) install_contrib DESTDIR=$(CURDIR)/debian/magit PREFIX=/usr
 	dh_auto_install -- PREFIX=/usr
