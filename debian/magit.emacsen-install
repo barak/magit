@@ -6,7 +6,7 @@ PACKAGE=magit
 FLAVOR=$1
 
 byte_compile_options="-batch -f batch-byte-compile"
-el_files="magit-topgit.el magit.el magit-key-mode.el magit-svn.el magit-bisect.el magit-stgit.el magit-classic-theme.el magit-simple-keys.el"
+el_files="magit-topgit.el magit.el magit-key-mode.el magit-svn.el magit-bisect.el magit-stgit.el magit-classic-theme.el magit-simple-keys.el rebase-mode.el magit-wip.el magit-blame.el"
 el_dir=/usr/share/emacs/site-lisp/${PACKAGE}/
 elc_dir=/usr/share/${FLAVOR}/site-lisp/${PACKAGE}/
 
