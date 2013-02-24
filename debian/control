@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Timo Juhani Lindfors <timo.lindfors@iki.fi>
 Uploaders: Marius Vollmer <marius.vollmer@gmail.com>, Teemu Hukkanen <tjhukkan@iki.fi>
 Build-Depends: debhelper (>= 7.0.50~), emacs23, texinfo, install-info
-Standards-Version: 3.9.3
+Standards-Version: 3.9.4
 Homepage: http://magit.github.com/magit/index.html
 Vcs-Browser: http://git.debian.org/?p=collab-maint/magit.git
 Vcs-Git: git://git.debian.org/collab-maint/magit.git
