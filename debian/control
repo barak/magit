@@ -1,5 +1,5 @@
 Source: magit
-Section: devel
+Section: vcs
 Priority: optional
 Maintainer: Timo Juhani Lindfors <timo.lindfors@iki.fi>
 Uploaders: Marius Vollmer <marius.vollmer@gmail.com>, Teemu Hukkanen <tjhukkan@iki.fi>
