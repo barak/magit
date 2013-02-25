@@ -1,5 +1,5 @@
 Format: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=166
-Source: https://github.com/philjackson/magit
+Source: https://github.com/magit/magit
 
 Files: *
 Copyright: 2010 Aaron Culich.
