@@ -1,3 +1,9 @@
+magit (1.2.0-1) unstable; urgency=low
+
+  * Upload to unstable.
+
+ -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Mon, 13 May 2013 19:36:29 +0000
+
 magit (1.2.0-1~experimental1) experimental; urgency=low
 
   * New upstream release (Closes: #695479).
