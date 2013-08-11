@@ -1,3 +1,11 @@
+magit (1.2.0-2) unstable; urgency=low
+
+  * Backport patch to fix incompatibility with emacs-snapshot 24.3.50
+    (Closes: #718861)
+    - bug-718861.patch
+
+ -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Tue, 06 Aug 2013 12:27:17 +0300
+
 magit (1.2.0-1) unstable; urgency=low
 
   * Upload to unstable.
