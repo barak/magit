@@ -35,7 +35,7 @@ Emacs has probably failed to detect that your background is
 black. This is an issue especially with KDE konsole (see upstream bug
 121). You can workaround this by adding
 
-(setq frame-background-mode 'dark)
+(custom-set-variables '(frame-background-mode 'dark))
  
 to ~/.emacs or by using M-x customize-variable RET
 frame-background-mode RET.
