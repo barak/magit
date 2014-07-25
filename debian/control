@@ -6,8 +6,8 @@ Uploaders: Marius Vollmer <marius.vollmer@gmail.com>, Teemu Hukkanen <tjhukkan@i
 Build-Depends: debhelper (>= 7.0.50~), emacs23, texinfo, install-info
 Standards-Version: 3.9.5
 Homepage: http://magit.github.com/magit/index.html
-Vcs-Browser: http://git.debian.org/?p=collab-maint/magit.git
-Vcs-Git: git://git.debian.org/collab-maint/magit.git
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/magit.git
+Vcs-Git: git://anonscm.debian.org/collab-maint/magit.git
 
 Package: magit
 Architecture: all
