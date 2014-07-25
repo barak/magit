@@ -1,2 +1,2 @@
 version=3
-http://github.com/magit/magit/downloads /downloads/magit/magit/magit-(\d.+).tar.gz
+https://github.com/magit/magit/releases /magit/magit/releases/download/\d.+/magit-(\d.+).tar.gz
