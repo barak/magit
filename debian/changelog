@@ -1,3 +1,21 @@
+magit (1.2.1-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/watch: Use releases from Github and use HTTPS.
+  * Add emacsen.compat file (emacsen policy 2.0.8).
+  * Don't depend on dpkg, install-info (policy 3.9.5).
+  * Depend on emacsen-common, not emacs (emacsen policy 2.0.8)
+    (closes: #754019).
+  * Bump standards-version to 3.9.5.
+  * Use custom-set-faces instead of setq in example (closes: #720883).
+  * Use canonical Vcs addresses to make lintian happy.
+  * Drop bug-718861.patch since new upstream version contains it.
+  * Depend on git instead of transitional git-core package.
+  * Build-Depend on emacs instead of emacs23 since emacs23 is going
+    to be removed.
+
+ -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Fri, 25 Jul 2014 17:25:43 +0000
+
 magit (1.2.0-2) unstable; urgency=low
 
   * Backport patch to fix incompatibility with emacs-snapshot 24.3.50
