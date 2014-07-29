@@ -1,10 +1,10 @@
 magit for Debian
 ================
 
-Using magit magit simple keys
------------------------------
+Using magit simple keys
+-----------------------
 
-Older version of magit used a simpler mapping for key, that didn't
+Older versions of magit used a simpler mapping for keys that didn't
 give access to all magit capabilities. You can re-enable those simpler
 binding by adding
 
@@ -18,8 +18,8 @@ to your .emacs.
 Using magit classic theme
 -------------------------
 
-Magit comes with a color theme that try to make magit look like older
-version of magit. You can load it by adding
+Magit comes with a color theme that tries to make magit look like an
+older version of magit. You can load it by adding
 
 (eval-after-load 'magit
   '(progn
@@ -33,7 +33,7 @@ Colors used by magit are invisible?
 
 Emacs has probably failed to detect that your background is
 black. This is an issue especially with KDE konsole (see upstream bug
-121). You can workaround this by adding
+121). You can work around this by adding
 
 (custom-set-variables '(frame-background-mode 'dark))
  
