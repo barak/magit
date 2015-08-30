@@ -315,39 +315,71 @@ absolute path is returned."
 (defun magit-toplevel (&optional file strict)
   "Return absolute path to the toplevel of the current repository.
 
-The option `find-file-visit-truename' is respected.  The only
-exception is a symlink to a sub-directory of a repository; if
-such a link is involved, then we have no choice but to follow
-it in order to end up inside a repository."
+This is similar to `git rev-parse --show-toplevel' but try to
+avoid needlessly following links, and unless optional STRICT is
+non-nil also return the toplevel when called from within the
+control directory or from within a bare repository the control
+directory itself.
+
+If optional FILE is non-nil then return the toplevel of the
+repository containing that file or directory.  Otherwise return
+the toplevel of the directory containing `default-directory'.
+If FILE respectively `default-directory' does not exist, then
+walk up the directory tree until an existing directory is found.
+
+When possible the value of option `find-file-visit-truename' is
+respected, but there are two cases that force this function to
+follow all links even when the value of that variable is nil:
+
+- When any of the directories in the path leading to and
+  including `default-directory' links to a sub-directory of a
+  repository (but not the repository itself), then that link
+  has to be follow that link.  That is usually what the user
+  would want to happen in that case anyway.
+
+- When the `default-directory' is located inside the control
+  directory but that control directory is not located inside
+  the working tree, then the value variable `core.worktree'
+  has to be used."
   (magit--with-safe-default-directory file
     (-if-let (topdir (magit-rev-parse-safe "--show-toplevel"))
         (let (cdup)
           (setq topdir (file-name-as-directory topdir))
-          (if (or find-file-visit-truename
-                  ;; ^ User wants to follow all links.
-                  ;; v There are no relevant links.
-                  (and (setq cdup (magit-rev-parse-safe "--show-cdup"))
-                       (equal (expand-file-name cdup) topdir)))
-              topdir
-            (if (equal cdup "")
-                ;; `default-directory' links to toplevel, don't follow.
-                default-directory
-              ;; A directory above `default-directory' is a link...
-              (while (not (file-symlink-p
-                           (directory-file-name default-directory)))
-                (when (string-equal default-directory "/")
-                  (error "Unexpected error while determining toplevel"))
-                (setq default-directory
-                      (file-name-directory
-                       (directory-file-name default-directory))))
-              (if (equal (magit-rev-parse-safe "--show-cdup") "")
-                  default-directory ; ...don't follow link to toplevel.
-                topdir))))          ; ...follow link to subdirectory.
-      (unless strict
-        (-when-let (gitdir (magit-git-dir))
-          (if (magit-bare-repo-p)
-              gitdir
-            (file-name-directory (directory-file-name gitdir))))))))
+          (cond (find-file-visit-truename
+                 ;; User wants to follow all links.
+                 topdir)
+                ((and (setq cdup (magit-rev-parse-safe "--show-cdup"))
+                      (equal (expand-file-name cdup) ; FIXME tramp
+                             topdir))
+                 ;; There are no relevant links.
+                 topdir)
+                ((file-name-absolute-p cdup)
+                 ;; Inside the control directory.
+                 (unless strict
+                   (let ((gitdir (magit-rev-parse-safe "--git-dir")))
+                     (if (string-prefix-p gitdir default-directory)
+                         ;; Step outside the gitdir into the toplevel.
+                         (file-name-directory gitdir)
+                       ;; Use whatever Git gave us.
+                       topdir))))
+                ((equal cdup "")
+                 ;; `default-directory' links to toplevel, don't follow.
+                 default-directory)
+                (t
+                 ;; A directory above `default-directory' is a link...
+                 (while (not (file-symlink-p
+                              (directory-file-name default-directory)))
+                   (when (string-equal default-directory "/")
+                     (error "Unexpected error while determining toplevel"))
+                   (setq default-directory
+                         (file-name-directory
+                          (directory-file-name default-directory))))
+                 (if (equal (magit-rev-parse-safe "--show-cdup") "")
+                     default-directory ; ...don't follow link to toplevel.
+                   topdir))))          ; ...follow link to subdirectory.
+      (and (not strict)
+           (magit-bare-repo-p)
+           (magit-git-dir)))))
 
 (defmacro magit-with-toplevel (&rest body)
   (declare (indent defun) (debug (body)))
