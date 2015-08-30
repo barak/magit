@@ -271,6 +271,7 @@ the buffer to the inserted text, move to its beginning, and then
 call function WASHER with no argument."
   (declare (indent 1))
   (let ((beg (point)))
+    (setq args (-flatten args))
     (magit-git-insert args)
     (if (= (point) beg)
         (magit-cancel-section)
@@ -407,7 +408,7 @@ tracked file."
                              (current-buffer))
       (setq file (or magit-buffer-file-name buffer-file-name))))
   (when (and file (or (not tracked)
-                      (magit-file-tracked-p file)))
+                      (magit-file-tracked-p (file-relative-name file))))
     (--when-let (magit-toplevel file)
       (file-relative-name file it))))
 
