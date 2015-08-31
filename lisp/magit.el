@@ -2123,6 +2123,41 @@ With prefix argument simply read a directory name using
 
 ;;;; Various
 
+(defvar magit-revision-stack nil)
+
+(defvar magit-pop-revision-stack-format
+  '("[N] %h"
+    "[N] %H\n    %aN <%aE>\n    %s\n"))
+
+(defun magit-pop-revision-stack ()
+  (interactive)
+  (--if-let (pop magit-revision-stack)
+      (let ((rev (car it))
+            (default-directory (cadr it))
+            (pnt-format (car  magit-pop-revision-stack-format))
+            (eob-format (cadr magit-pop-revision-stack-format)))
+        (when (string-match-p "\\`\\[N\\]" pnt-format)
+          (let ((n (save-excursion
+                     (if (re-search-backward ".\\[\\([0-9]+\\)\\]" nil t)
+                         (number-to-string
+                          (1+ (string-to-number (match-string 1))))
+                       "1"))))
+            (setq pnt-format (concat "["n"]" (substring pnt-format 3)))
+            (setq eob-format (replace-regexp-in-string
+                              "\\[\\(N\\)\\]" n eob-format t t 1))))
+        (magit-rev-insert-format pnt-format rev)
+        (backward-delete-char 1)
+        (when eob-format
+          (save-excursion
+            (goto-char (point-max))
+            (when comment-start
+              (while (re-search-backward (concat "^" comment-start) nil t)))
+            (magit-rev-insert-format eob-format rev)
+            (backward-delete-char 1)
+            (when (and comment-start (looking-at (concat "^" comment-start)))
+              (insert "\n")))))
+    (message "Revision stack is empty")))
+
 (defun magit-copy-section-value ()
   "Save the value of the current section to the kill ring.
 For commits save the full hash.  For branches do so only when
@@ -2134,16 +2169,19 @@ When the region is active, then behave like `kill-ring-save'."
     (-when-let* ((section (magit-current-section))
                  (value (magit-section-value section)))
       (magit-section-case
-        (branch (when current-prefix-arg
-                  (setq value (magit-rev-parse value))))
-        (commit (setq value (magit-rev-parse value)))
-        (module-commit (let ((default-directory
-                               (file-name-as-directory
-                                (expand-file-name
-                                 (magit-section-parent-value section)
-                                 (magit-toplevel)))))
-                         (setq value (magit-rev-parse value)))))
-      (kill-new (message "%s" value)))))
+        ((branch commit module-commit)
+         (let ((default-directory default-directory) branch)
+           (magit-section-case
+             (branch (when current-prefix-arg (setq branch value)))
+             (module-commit
+              (setq default-directory
+                    (file-name-as-directory
+                     (expand-file-name (magit-section-parent-value section)
+                                       (magit-toplevel))))))
+           (setq value (magit-rev-parse value))
+           (push (list value default-directory) magit-revision-stack)
+           (kill-new (message "%s" (or branch value)))))
+        (t (kill-new (message "%s" value)))))))
 
 (defun magit-copy-buffer-value ()
   "Save the thing displayed in the current buffer to the kill ring.
