@@ -324,7 +324,10 @@ are no unpulled commits) show."
     :options  ((?f "Limit to files"          "-- "       magit-read-files)
                (?a "Limit to author"         "--author=" read-from-minibuffer)
                (?m "Search messages"         "--grep="   read-from-minibuffer)
-               (?p "Search patches"          "-G"        read-from-minibuffer))
+               (?p "Search patches"          "-G"        read-from-minibuffer)
+               (?L "Trace line evolution"    "-L"        magit-read-file-trace)
+               ;; TODO ? (?S "Pickaxe search"          "-S"        read-from-minibuffer)
+               )
     :actions  ((?l "Log current"             magit-log-current)
                (?L "Log local branches"      magit-log-branches)
                (?r "Reflog current"          magit-reflog-current)
@@ -336,6 +339,14 @@ are no unpulled commits) show."
                (?H "Reflog HEAD"             magit-reflog-head))
     :default-action magit-log-current
     :max-action-columns 3))
+
+(defun magit-read-file-trace (&rest ignored)
+  (let ((file  (magit-read-file-from-rev "HEAD" "File"))
+        (trace (magit-read-string "Trace")))
+    (if (string-match
+         "^\\(/.+/\\|:[^:]+\\|[0-9]+,[-+]?[0-9]+\\)\\(:\\)?$" trace)
+        (concat trace (or (match-string 2 trace) ":") file)
+      (user-error "Trace is invalid, see man git-log"))))
 
 (defvar magit-log-refresh-popup
   '(:variable magit-log-arguments
@@ -543,6 +554,7 @@ completion candidates."
   "Show log for the file visited in the current buffer.
 With a prefix argument or when `--follow' is part of
 `magit-log-arguments', then follow renames."
+  ;; TODO when the region is active add `-L'.
   (interactive "P")
   (-if-let (file (or (buffer-file-name (buffer-base-buffer))
                      magit-buffer-file-name))
@@ -652,7 +664,7 @@ Type \\[magit-reset] to reset HEAD to the commit at point.
   (hack-dir-local-variables-non-file-buffer))
 
 (defvar magit-log-remove-graph-re
-  (concat "^" (regexp-opt '("-G" "--grep" "--follow")))
+  (concat "^" (regexp-opt '("-G" "--grep" "--follow" "-L")))
   "Regexp matching arguments which are not compatible with `--graph'.")
 
 (defvar magit-log-use-verbose-re
@@ -856,7 +868,14 @@ Do not add this to a hook variable."
       (when (memq style '(oneline reflog stash))
         (goto-char (line-beginning-position))
         (magit-format-log-margin author date))
-      (forward-line)))
+      (forward-line)
+      (when (and (eq style 'oneline) (looking-at "^\ndiff"))
+        (magit-insert-heading)
+        (delete-char 1)
+        (when (re-search-forward magit-diff-headline-re nil t)
+          (goto-char (line-beginning-position))
+          (magit-wash-sequence (apply-partially 'magit-diff-wash-diff
+                                                nil)))))) ; TODO what arguments?
   (when (eq style 'oneline)
     (let ((align (make-string (1+ abbrev) ? )))
       (while (and (not (eobp)) (not (looking-at magit-log-oneline-re)))

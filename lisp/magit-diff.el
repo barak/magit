@@ -1378,9 +1378,16 @@ section or a child thereof."
                    (magit-delete-match))
           (cond
            ((looking-at "^--- \\([^/].*?\\)\t?$") ; i.e. not /dev/null
-            (setq orig (match-string 1)))
+            (setq orig (match-string 1))
+            ;; KLUDGE `git-log' ignores many diff arguments even
+            ;; though they are listed in the `git-log' manpage
+            ;; itself.  Unfortunately this includes `--no-pager'.
+            (when (derived-mode-p 'magit-log-mode)
+              (setq orig (substring orig 2))))
            ((looking-at "^\\+\\+\\+ \\([^/].*?\\)\t?$")
-            (setq file (match-string 1)))
+            (setq file (match-string 1))
+            (when (derived-mode-p 'magit-log-mode)
+              (setq file (substring file 2))))
            ((looking-at "^\\(copy\\|rename\\) from \\(.+\\)$")
             (setq orig (match-string 2)))
            ((looking-at "^\\(copy\\|rename\\) to \\(.+\\)$")
@@ -1459,7 +1466,7 @@ section or a child thereof."
       (magit-insert-section it (hunk value)
         (insert (propertize (concat heading "\n") 'face 'magit-diff-hunk-heading))
         (magit-insert-heading)
-        (while (not (or (eobp) (looking-at magit-diff-headline-re)))
+        (while (not (or (eobp) (looking-at "^[^-+\s]")))
           (forward-line))
         (setf (magit-section-end it) (point))
         (setf (magit-section-washer it) #'magit-diff-paint-hunk)))
@@ -1707,6 +1714,8 @@ is determined using other means.  In `magit-revision-mode'
 buffers the type is always `committed'.
 
 Do not confuse this with `magit-diff-scope' (which see)."
+  ;; TODO should diffs inside logs be treated as `committed' or is
+  ;; `undefined' okay for those?
   (--when-let (or section (magit-current-section))
     (cond ((derived-mode-p 'magit-revision-mode 'magit-stash-mode) 'committed)
           ((derived-mode-p 'magit-diff-mode)
@@ -1792,6 +1801,7 @@ If SECTION is not a diff-related section, then do nothing and
 return nil.  If SELECTION is non-nil then it is a list of sections
 selected by the region, including SECTION.  All of these sections
 are highlighted."
+  ;; TODO also deal with `commit's that have `file's as children
   (-when-let (scope (magit-diff-scope section t))
     (cond ((eq scope 'region)
            (magit-diff-paint-hunk section selection t))
