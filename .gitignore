@@ -1,0 +1,5 @@
+*.elc
+/Documentation/*.info
+/Documentation/dir
+/lisp/magit-autoloads.el
+/lisp/magit-version.el
