@@ -593,16 +593,12 @@ Uses the buffer-local `magit-refresh-function'."
       (message "Refreshing buffer `%s'..." (buffer-name)))
     (let* ((buffer (current-buffer))
            (windows
-            (--mapcat (with-selected-window it
-                        (with-current-buffer buffer
-                          (-when-let (section (magit-current-section))
-                            (list
-                             (list it section
-                                   (count-lines (magit-section-start section)
-                                                (point))
-                                   (- (point) (line-beginning-position)))))))
-                      (or (get-buffer-window-list buffer nil t)
-                          (list (selected-window))))))
+            (--map (with-selected-window it
+                     (with-current-buffer buffer
+                       (nconc (list it (magit-current-section))
+                              (magit-refresh-get-relative-position))))
+                   (or (get-buffer-window-list buffer nil t)
+                       (list (selected-window))))))
       (deactivate-mark)
       (setq magit-section-highlight-overlays nil
             magit-section-highlighted-section nil
@@ -624,6 +620,26 @@ Uses the buffer-local `magit-refresh-function'."
       (message "Refreshing buffer `%s'...done (%.3fs)" (buffer-name)
                (float-time (time-subtract (current-time)
                                           magit-refresh-start-time))))))
+
+(defun magit-refresh-get-relative-position ()
+  (let* ((section (magit-current-section))
+         (start (magit-section-start section)))
+    (list (count-lines start (point))
+          (- (point) (line-beginning-position))
+          (and (eq (magit-section-type section) 'hunk)
+               (region-active-p)
+               (progn (goto-char (line-beginning-position))
+                      (when  (looking-at "^[-+]") (forward-line))
+                      (while (looking-at "^[ @]") (forward-line))
+                      (let ((beg (point)))
+                        (cond ((looking-at "^[-+]")
+                               (forward-line)
+                               (while (looking-at "^[-+]") (forward-line))
+                               (while (looking-at "^ ")    (forward-line))
+                               (forward-line -1)
+                               (regexp-quote (buffer-substring-no-properties
+                                              beg (line-end-position))))
+                              (t t))))))))
 
 (defvar inhibit-magit-revert nil)
 (defvar magit-revert-buffers-backlog nil)
