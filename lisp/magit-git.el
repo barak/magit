@@ -203,8 +203,8 @@ string \"false\", otherwise return nil."
 
 (defun magit-git-insert (&rest args)
   "Execute Git with ARGS, inserting its output at point.
-If Git exits with a non-zero exit status, then report show a
-message and add a section in the respective process buffer."
+If Git exits with a non-zero exit status, then show a message and
+add a section in the respective process buffer."
   (setq args (magit-process-git-arguments args))
   (if magit-git-debug
       (let (log)
@@ -361,16 +361,21 @@ a bare repositories."
 (put 'magit-buffer-refname   'permanent-local t)
 (put 'magit-buffer-file-name 'permanent-local t)
 
-(defun magit-file-relative-name (&optional file)
+(defun magit-file-relative-name (&optional file tracked)
   "Return the path of FILE relative to the repository root.
+
 If optional FILE is nil or omitted return the relative path of
 the file being visited in the current buffer, if any, else nil.
-If the file is not inside a Git repository then return nil."
+If the file is not inside a Git repository then return nil.
+
+If TRACKED is non-nil, return the path only if it matches a
+tracked file."
   (unless file
     (with-current-buffer (or (buffer-base-buffer)
                              (current-buffer))
       (setq file (or magit-buffer-file-name buffer-file-name))))
-  (when file
+  (when (and file (or (not tracked)
+                      (magit-file-tracked-p file)))
     (--when-let (magit-toplevel file)
       (file-relative-name file it))))
 
@@ -676,7 +681,7 @@ If no such tag can be found or if the distance is 0 (in which
 case it is the current tag, not the next) return nil instead.
 If optional WITH-DISTANCE is non-nil then return (TAG COMMITS)
 where COMMITS is the number of commits in TAG but not in REV."
-  (--when-let (magit-git-string "describe" "--contains" rev)
+  (--when-let (magit-git-string "describe" "--contains" (or rev "HEAD"))
     (save-match-data
       (when (string-match "^[^^~]+" it)
         (setq it (match-string 0 it))
@@ -830,7 +835,7 @@ Return a list of two integers: (A>B B>A)."
   (save-match-data
     (let ((regexp "\\(, \\|tag: \\| -> \\|[()]\\)") head names)
       (if (and (derived-mode-p 'magit-log-mode)
-               (member "--simplify-by-decoration" (nth 2 magit-refresh-args)))
+               (member "--simplify-by-decoration" (cadr magit-refresh-args)))
           (let ((branches (magit-list-local-branch-names))
                 (re (format "^%s/.+" (regexp-opt (magit-list-remotes)))))
             (setq names

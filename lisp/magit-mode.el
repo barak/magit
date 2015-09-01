@@ -315,7 +315,7 @@ which visits the thing at point."
     ["Discard" magit-discard t]
     ["Reset head" magit-reset-head t]
     ["Stash" magit-stash t]
-    ["Snapshot" magit-stash-snapshot t]
+    ["Snapshot" magit-snapshot t]
     "---"
     ["Branch..." magit-checkout t]
     ["Merge" magit-merge t]
@@ -327,7 +327,7 @@ which visits the thing at point."
     ["Remote update" magit-fetch-all t]
     ("Submodule"
      ["Submodule update" magit-submodule-update t]
-     ["Submodule update and init" magit-submodule-update-init t]
+     ["Submodule update and init" magit-submodule-setup t]
      ["Submodule init" magit-submodule-init t]
      ["Submodule sync" magit-submodule-sync t])
     "---"
@@ -388,6 +388,8 @@ The value is usually set using `magit-mode-setup'.")
 `magit-refresh-function' is called with these arguments.
 The value is usually set using `magit-mode-setup'.")
 (put 'magit-refresh-args 'permanent-local t)
+
+(defvar magit-mode-setup-hook nil)
 
 ;; Kludge.  We use this instead of adding a new, optional argument to
 ;; `magit-setup-mode' in order to avoid breaking third-party packages.
@@ -543,6 +545,8 @@ With a prefix argument, the user can pick an arbitrary name."
 ;;; Refresh Machinery
 
 (defvar inhibit-magit-refresh nil)
+
+(defvar magit-pre-refresh-hook nil)
 
 (defun magit-refresh ()
   "Refresh some buffers belonging to the current repository.
