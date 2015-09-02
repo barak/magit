@@ -61,10 +61,12 @@ With a prefix argument and if necessary, attempt a 3-way merge."
     (pcase (list (magit-diff-type) (magit-diff-scope))
       (`(,(or `unstaged `staged) ,_)
        (user-error "Change is already in the working tree"))
-      (`(untracked file) (magit-am-popup))
-      (`(,_      region) (magit-apply-region it args))
-      (`(,_        hunk) (magit-apply-hunk it args))
-      (`(,_        file) (magit-apply-diff it args)))))
+      (`(untracked file)       (magit-am-popup))
+      (`(,_      region)       (magit-apply-region it args))
+      (`(,_        hunk)       (magit-apply-hunk it args))
+      (`(rebase-sequence file) (magit-run-git "apply" "--reject"
+                                              (magit-section-value it) args))
+      (`(,_        file)       (magit-apply-diff it args)))))
 
 (defun magit-apply-diff (section &rest args)
   (magit-section-when [file diffstat]
