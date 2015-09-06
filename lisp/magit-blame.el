@@ -56,9 +56,11 @@ The headings can also be toggled locally using command
 (defcustom magit-blame-disable-modes '(fci-mode yascroll-bar-mode)
   "List of modes not compatible with Magit-Blame mode.
 This modes are turned off when Magit-Blame mode is turned on,
-and then turned on again when turning on the latter."
+and then turned on again when turning off the latter."
   :group 'magit-blame
-  :type '(repeat function))
+  :type '(repeat (symbol :tag "Mode")))
+
+(make-variable-buffer-local 'magit-blame-disabled-modes)
 
 (defcustom magit-blame-mode-lighter " Blame"
   "The mode-line lighter of the Magit-Blame mode."
@@ -134,7 +136,6 @@ and then turned on again when turning on the latter."
 
 (defvar-local magit-blame-buffer-read-only nil)
 (defvar-local magit-blame-cache nil)
-(defvar-local magit-blame-disabled-modes nil)
 (defvar-local magit-blame-process nil)
 (defvar-local magit-blame-recursive-p nil)
 (defvar-local magit-blame-separator nil)
@@ -182,10 +183,8 @@ See #1731."
   :man-page "git-blame"
   :switches '((?w "Ignore whitespace" "-w")
               (?r "Do not treat root commits as boundaries" "--root"))
-  :options  '((?C "Detect lines moved or copied within a file" "-C"
-                  magit-popup-read-number)
-              (?M "Detect lines moved or copied between files" "-M"
-                  magit-popup-read-number))
+  :options  '((?C "Detect lines moved or copied within a file" "-C" read-string)
+              (?M "Detect lines moved or copied between files" "-M" read-string))
   :actions  '((?b "Blame" magit-blame))
   :default-arguments '("-w")
   :default-action 'magit-blame)
