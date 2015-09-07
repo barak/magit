@@ -3,9 +3,9 @@ include default.mk
 
 .PHONY: lisp \
 	install install-lisp install-docs install-info \
-	test test-interactive \
+	test test-interactive magit \
 	clean clean-lisp clean-docs clean-archives \
-	genstats \
+	genstats melpa-pre-release melpa-post-release \
 	dist magit-$(VERSION).tar.gz elpa $(ELPA_ARCHIVES)
 
 all: lisp docs
@@ -35,6 +35,7 @@ help:
 	$(info )
 	$(info make test             - run tests)
 	$(info make test-interactive - run tests interactively)
+	$(info make magit            - run emacs -Q plus Magit)
 	$(info )
 	$(info Release Managment)
 	$(info =================)
@@ -44,7 +45,9 @@ help:
 	$(info make authors          - regenerate AUTHORS.md)
 	$(info make dist             - create tarballs)
 	$(info make elpa             - create elpa tarballs)
-	$(info make marmalade        - upload elpa tarballs to marmalade)
+	$(info make VERSION=... melpa-pre-release)
+	$(info make VERSION=... melpa-post-release)
+	$(info -                     - fixup version strings)
 	@printf "\n"
 
 lisp:
@@ -80,6 +83,14 @@ test-interactive:
 	@$(EMACSBIN) -Q $(LOAD_PATH) --eval "(progn\
 	(load-file \"t/magit-tests.el\")\
 	(ert t))"
+
+magit: clean-lisp
+	@$(EMACSBIN) -Q $(LOAD_PATH) --eval "(progn\
+	(require 'magit)\
+	(global-set-key \"\\C-xg\" 'magit-status)\
+	(tool-bar-mode 0)\
+	(menu-bar-mode 0)\
+	(scroll-bar-mode 0))"
 
 clean: clean-lisp clean-docs clean-archives
 	@printf "Cleaning...\n"
@@ -211,3 +222,31 @@ magit-$(VERSION).tar: lisp info
 	@$(CP) $(ELPA_DOCS_FILES) magit-$(VERSION)
 	@$(TAR) c --mtime=./magit-$(VERSION) -f magit-$(VERSION).tar magit-$(VERSION)
 	@$(RMDIR) magit-$(VERSION)
+
+define set_package_requires
+(require 'dash)
+(dolist (lib (list "with-editor" "git-commit" "magit-popup" "magit"))
+  (with-current-buffer (find-file-noselect (format "lisp/%s.el" lib))
+    (goto-char (point-min))
+    (re-search-forward "^;; Package-Requires: ")
+    (let ((s (read (buffer-substring (point) (line-end-position)))))
+      (--when-let (assq 'async       s) (setcdr it (list async-version)))
+      (--when-let (assq 'with-editor s) (setcdr it (list "$(VERSION)")))
+      (--when-let (assq 'git-commit  s) (setcdr it (list "$(VERSION)")))
+      (--when-let (assq 'magit-popup s) (setcdr it (list "$(VERSION)")))
+      (delete-region (point) (line-end-position))
+      (insert (format "%S" s))
+      (save-buffer))))
+endef
+# '
+export set_package_requires
+
+melpa-pre-release:
+	@$(BATCH) --eval "(progn\
+        (setq async-version \"$(ASYNC_VERSION)\")\
+        $$set_package_requires)"
+
+melpa-post-release:
+	@$(BATCH) --eval "(progn\
+        (setq async-version \"20150812\")\
+        $$set_package_requires)"

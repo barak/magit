@@ -766,8 +766,7 @@ showing just the new changes or all the changes that will
 be commited."
   (interactive (magit-diff-arguments))
   (let* ((toplevel (magit-toplevel))
-         (diff-buf (magit-mode-get-buffer magit-diff-buffer-name-format
-                                          'magit-diff-mode toplevel)))
+         (diff-buf (magit-mode-get-buffer nil 'magit-diff-mode toplevel)))
     (if (magit-commit-message-buffer)
         (if (and (or ;; most likely an explicit amend
                      (not (magit-anything-staged-p))
@@ -823,9 +822,7 @@ for a commit."
                              default-directory)))
     (unless (magit-rev-verify commit)
       (user-error "%s is not a commit" commit))
-    (-when-let (buffer (magit-mode-get-buffer
-                        magit-revision-buffer-name-format
-                        'magit-revision-mode))
+    (-when-let (buffer (magit-mode-get-buffer nil 'magit-revision-mode))
       (with-current-buffer buffer
         (let ((prev (car magit-refresh-args)))
           (unless (equal commit prev)
@@ -1104,8 +1101,7 @@ commit or stash at point, then prompt for a commit."
      (magit-blame-mode
       (setq rev (magit-blame-chunk-get :hash)
             cmd 'magit-show-commit
-            buf (magit-mode-get-buffer
-                 magit-revision-buffer-name-format 'magit-revision-mode)))
+            buf (magit-mode-get-buffer nil 'magit-revision-mode)))
      ((derived-mode-p 'git-rebase-mode)
       (save-excursion
         (goto-char (line-beginning-position))
@@ -1113,21 +1109,18 @@ commit or stash at point, then prompt for a commit."
                        (match-string 2))
             (setq rev it
                   cmd 'magit-show-commit
-                  buf (magit-mode-get-buffer
-                       magit-revision-buffer-name-format 'magit-revision-mode))
+                  buf (magit-mode-get-buffer nil 'magit-revision-mode))
           (user-error "No commit on this line"))))
      (t
       (magit-section-case
         ((commit branch)
          (setq rev (magit-section-value it)
                cmd 'magit-show-commit
-               buf (magit-mode-get-buffer
-                    magit-revision-buffer-name-format 'magit-revision-mode)))
+               buf (magit-mode-get-buffer nil 'magit-revision-mode)))
         (stash
          (setq rev (magit-section-value it)
                cmd 'magit-stash-show
-               buf (magit-mode-get-buffer
-                    magit-diff-buffer-name-format 'magit-diff-mode))))))
+               buf (magit-mode-get-buffer nil 'magit-diff-mode))))))
     (if rev
         (if (and buf
                  (setq win (get-buffer-window buf))
@@ -1204,7 +1197,8 @@ Staging and applying changes is documented in info node
          'face 'magit-header-line))
   (magit-insert-section (diffbuf)
     (magit-git-wash #'magit-diff-wash-diffs
-      "diff" range "-p" (and magit-diff-show-diffstat "--stat")
+      "diff" range "-p"
+      (and magit-diff-show-diffstat (list "--numstat" "--stat"))
       "--no-prefix" const args "--" files)))
 
 (defvar magit-file-section-map
@@ -1283,7 +1277,7 @@ section or a child thereof."
     (user-error "No diffstat in this buffer")))
 
 (defun magit-diff-wash-diffstat ()
-  (let (heading children (beg (point)))
+  (let (heading (beg (point)))
     (when (re-search-forward "^ ?\\([0-9]+ +files? change[^\n]*\n\\)" nil t)
       (setq heading (match-string 1))
       (magit-delete-match)
@@ -1291,25 +1285,30 @@ section or a child thereof."
       (magit-insert-section it (diffstat)
         (insert heading)
         (magit-insert-heading)
-        (magit-wash-sequence
-         (lambda ()
-           (when (looking-at magit-diff-statline-re)
-             (magit-bind-match-strings (file sep cnt add del) nil
-               (magit-delete-line)
-               (when (string-match " +$" file)
-                 (setq sep (concat (match-string 0 file) sep))
-                 (setq file (substring file 0 (match-beginning 0))))
-               (setq file (magit-decode-git-path file))
-               (magit-insert-section (file file)
-                 (insert " " (propertize file 'face 'magit-filename) sep cnt
-                         " ")
-                 (when add
-                   (insert (propertize add 'face 'magit-diffstat-added)))
-                 (when del
-                   (insert (propertize del 'face 'magit-diffstat-removed)))
-                 (insert "\n"))))))
-        (setq children (magit-section-children it))))
-    children))
+        (let (files)
+          (while (looking-at "^[-0-9]+\t[-0-9]+\t\\(.+\\)$")
+            (push (magit-decode-git-path (match-string 1)) files)
+            (magit-delete-line))
+          (setq files (nreverse files))
+          (while (looking-at magit-diff-statline-re)
+            (magit-bind-match-strings (file sep cnt add del) nil
+              (magit-delete-line)
+              (when (string-match " +$" file)
+                (setq sep (concat (match-string 0 file) sep))
+                (setq file (substring file 0 (match-beginning 0))))
+              (let ((le (length file)) ld)
+                (setq file (magit-decode-git-path file))
+                (setq ld (length file))
+                (when (> le ld)
+                  (setq sep (concat (make-string (- le ld) ?\s) sep))))
+              (magit-insert-section (file (pop files))
+                (insert " " (propertize file 'face 'magit-filename) sep cnt
+                        " ")
+                (when add
+                  (insert (propertize add 'face 'magit-diffstat-added)))
+                (when del
+                  (insert (propertize del 'face 'magit-diffstat-removed)))
+                (insert "\n")))))))))
 
 (defun magit-diff-wash-diff (args)
   (cond
@@ -1349,14 +1348,14 @@ section or a child thereof."
       (setq orig (magit-decode-git-path orig))
       (setq file (magit-decode-git-path file))
       (magit-diff-insert-file-section file orig status modes nil)))
-   ((looking-at "^diff --\\(git\\|cc\\|combined\\) \\(?:\\(.+?\\) \\2\\)?")
+   ((looking-at
+     "^diff --\\(?:\\(git\\) \\(?:\\(.+?\\) \\2\\)?\\|\\(cc\\|combined\\) \\(.+\\)\\)")
     (let ((status (cond ((equal (match-string 1) "git")        "modified")
                         ((derived-mode-p 'magit-revision-mode) "resolved")
                         (t                                     "unmerged")))
-          (orig (match-string 2))
-          (file (match-string 2))
+          (file (or (match-string 2) (match-string 4)))
           (beg (point))
-          header modes)
+          orig header modes)
       (save-excursion
         (forward-line 1)
         (setq header (buffer-substring
@@ -1495,7 +1494,7 @@ Staging and applying changes is documented in info node
   (magit-insert-section (commitbuf)
     (magit-git-wash #'magit-diff-wash-revision
       "show" "-p" "--cc" "--decorate=full" "--format=fuller" "--no-prefix"
-      (and magit-revision-show-diffstat "--stat")
+      (and magit-revision-show-diffstat (list "--numstat" "--stat"))
       (and magit-revision-show-notes "--notes")
       args commit "--" files)))
 
@@ -1627,7 +1626,7 @@ Staging and applying changes is documented in info node
       (insert ?\n))))
 
 (defun magit-revision-set-visibility (section)
-  "Preserve section visibility when displaying another commit in."
+  "Preserve section visibility when displaying another commit."
   (and (derived-mode-p 'magit-revision-mode)
        (eq (magit-section-type section) 'file)
        (member (magit-section-value section) magit-diff-hidden-files)

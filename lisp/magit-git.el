@@ -271,6 +271,7 @@ the buffer to the inserted text, move to its beginning, and then
 call function WASHER with no argument."
   (declare (indent 1))
   (let ((beg (point)))
+    (setq args (-flatten args))
     (magit-git-insert args)
     (if (= (point) beg)
         (magit-cancel-section)
@@ -290,10 +291,9 @@ call function WASHER with no argument."
   (declare (indent 1) (debug (form body)))
   `(catch 'unsafe-default-dir
      (let ((default-directory
-             (let ((file ,file))
-               (file-name-as-directory (if file
-                                           (expand-file-name file)
-                                         default-directory)))))
+             (file-name-as-directory (--if-let ,file
+                                         (expand-file-name it)
+                                       default-directory))))
        (while (not (file-accessible-directory-p default-directory))
          (when (string-equal default-directory "/")
            (throw 'unsafe-default-dir nil))
@@ -303,9 +303,11 @@ call function WASHER with no argument."
        ,@body)))
 
 (defun magit-git-dir (&optional path)
-  "Return absolute path to the GIT_DIR for the current repository.
-If optional PATH is non-nil it has to be a path relative to the
-GIT_DIR and its absolute path is returned."
+  "Return absolute path to the control directory of the current repository.
+
+All symlinks are followed.  If optional PATH is non-nil, then
+it has to be a path relative to the control directory and its
+absolute path is returned."
   (magit--with-safe-default-directory nil
     (--when-let (magit-rev-parse-safe "--git-dir")
       (setq it (file-name-as-directory (magit-expand-git-file-name it)))
@@ -375,7 +377,7 @@ tracked file."
                              (current-buffer))
       (setq file (or magit-buffer-file-name buffer-file-name))))
   (when (and file (or (not tracked)
-                      (magit-file-tracked-p file)))
+                      (magit-file-tracked-p (file-relative-name file))))
     (--when-let (magit-toplevel file)
       (file-relative-name file it))))
 
