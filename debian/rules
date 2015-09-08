@@ -22,35 +22,5 @@ override_dh_auto_test:
 # - The testing routines require git to be installed, so you need a
 #   build dependency on git
 
-# - The testing routines report an error if user.name and user.email
-#   are not set, so one needs to patch:
-#
-## From: "Barak A. Pearlmutter" <barak+git@pearlmutter.net>
-## Date: Tue, 1 Sep 2015 16:43:13 +0100
-## Subject: test user
-## 
-## Set user.name and user.email in repo created during "make test".
-## This is necessary on the autobuilders, where these are in general not set.
-## ---
-##  t/magit-tests.el | 6 +++++-
-##  1 file changed, 5 insertions(+), 1 deletion(-)
-## 
-## diff --git a/t/magit-tests.el b/t/magit-tests.el
-## index aa50a29..b616a20 100644
-## --- a/t/magit-tests.el
-## +++ b/t/magit-tests.el
-## @@ -26,7 +26,11 @@
-##  
-##  (defmacro magit-with-test-repository (&rest body)
-##    (declare (indent 0) (debug t))
-## -  `(magit-with-test-directory (magit-git "init" ".") ,@body))
-## +  `(magit-with-test-directory
-## +    (magit-git "init" ".")
-## +    (magit-git "config" "--local" "user.name" "Chester T. Tester")
-## +    (magit-git "config" "--local" "user.email" "ctt@example.com")
-## +    ,@body))
-##  
-##  ;;; Git
-
 # - There is one more mysterious error with a non-ASCII filename that
 #   occurs only in a minimal chroot environment
