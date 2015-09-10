@@ -1,3 +1,11 @@
+magit (2.2.2-2) unstable; urgency=low
+
+  * fix incompatibility with emacs 23
+  * Bug fix: "should Conflict emacs23", thanks to Bob Proulx (Closes:
+    #798482).
+
+ -- Rémi Vanicat <vanicat@debian.org>  Thu, 10 Sep 2015 10:18:43 +0200
+
 magit (2.2.2-1) unstable; urgency=low
 
   * New upstream release (Closes: #782538).
