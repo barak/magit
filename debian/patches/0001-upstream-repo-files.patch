@@ -33,12 +33,13 @@ Forwarded: not-needed
  Documentation/RelNotes/2.1.0.txt |  446 ++++
  Documentation/RelNotes/2.2.0.txt |  235 ++
  Documentation/RelNotes/2.2.1.txt |   45 +
+ Documentation/RelNotes/2.2.2.txt |   45 +
  Documentation/RelNotes/2.3.0.txt |   25 +
  Documentation/magit-popup.org    |  580 +++++
  Documentation/magit.org          | 5059 ++++++++++++++++++++++++++++++++++++++
  Documentation/with-editor.org    |  259 ++
- t/magit-tests.el                 |  128 +
- 25 files changed, 7679 insertions(+)
+ t/magit-tests.el                 |  131 +
+ 26 files changed, 7727 insertions(+)
  create mode 100644 CONTRIBUTING.md
  create mode 100644 Documentation/RelNotes/0.5.1.txt
  create mode 100644 Documentation/RelNotes/0.6.1.txt
@@ -59,6 +60,7 @@ Forwarded: not-needed
  create mode 100644 Documentation/RelNotes/2.1.0.txt
  create mode 100644 Documentation/RelNotes/2.2.0.txt
  create mode 100644 Documentation/RelNotes/2.2.1.txt
+ create mode 100644 Documentation/RelNotes/2.2.2.txt
  create mode 100644 Documentation/RelNotes/2.3.0.txt
  create mode 100644 Documentation/magit-popup.org
  create mode 100644 Documentation/magit.org
@@ -1764,7 +1766,7 @@ index 0000000..6d2b4be
 +     1  Vineet Naik
 diff --git a/Documentation/RelNotes/2.2.1.txt b/Documentation/RelNotes/2.2.1.txt
 new file mode 100644
-index 0000000..d9df2d7
+index 0000000..11771bf
 --- /dev/null
 +++ b/Documentation/RelNotes/2.2.1.txt
 @@ -0,0 +1,45 @@
@@ -1811,8 +1813,59 @@ index 0000000..d9df2d7
 +Authors
 +-------
 +
-+    15  Jonas Bernoulli
++    16  Jonas Bernoulli
 +    11  Kyle Meyer
+diff --git a/Documentation/RelNotes/2.2.2.txt b/Documentation/RelNotes/2.2.2.txt
+new file mode 100644
+index 0000000..1d5ec52
+--- /dev/null
++++ b/Documentation/RelNotes/2.2.2.txt
+@@ -0,0 +1,45 @@
++Magit v2.2.2 Release Notes
++==========================
++
++Released 3 September 2015 by Jonas Bernoulli.
++
++This is a bugfix release.
++
++* `magit-diff-wash-diff' choked on unmerged binary files.  #2211
++
++* `magit-blame-popup' did not allow empty input when reading a value
++  for "-C" or "-M".  #2208
++
++* The `emacsclient' executables belonging to non-current alternative
++  installations of Emacs on Debian were not considered when setting
++  the default value of `with-editor-emacsclient-executable'.  #2217
++
++* `server-edit', which switches to a buffer preferably one with
++  another client, was used when finishing or aborting a `with-editor'
++  session.  When `emacsclient' was used to connect to a server and
++  then a commit or rebase was invoked, then there would be another
++  client and switching to its buffer after finishing the commit or
++  rebase would be undesirable.  Now we use `server-done' instead.
++  #2197
++
++* When `--stat' abbreviates the name of a file, then that name was
++  stored in the section object instead of the full name.  #2199
++
++* `magit-file-relative-name' with non-nil TRACKED failed in Tramp
++  repositories.  #2206
++
++* After failing to clone, `magit-clone' also tried to show the status
++  of the non-existent clone.  #2203
++
++* `magit-wip-log' did not display a log if the working tree or index
++  ref did not exist.
++
++This release also contains various documentation fixes and code
++clean-ups.
++
++Authors
++-------
++
++    29  Jonas Bernoulli
++     5  Kyle Meyer
++     1  Barak A. Pearlmutter
 diff --git a/Documentation/RelNotes/2.3.0.txt b/Documentation/RelNotes/2.3.0.txt
 new file mode 100644
 index 0000000..20813db
@@ -7762,10 +7815,10 @@ index 0000000..e77d2d7
 +#  LocalWords:  hg init rebase startup
 diff --git a/t/magit-tests.el b/t/magit-tests.el
 new file mode 100644
-index 0000000..aa50a29
+index 0000000..5156914
 --- /dev/null
 +++ b/t/magit-tests.el
-@@ -0,0 +1,128 @@
+@@ -0,0 +1,131 @@
 +;;; magit-tests.el --- tests for Magit
 +
 +;; Copyright (C) 2011-2015  The Magit Project Contributors
@@ -7783,7 +7836,10 @@ index 0000000..aa50a29
 +(defmacro magit-with-test-directory (&rest body)
 +  (declare (indent 0) (debug t))
 +  (let ((dir (make-symbol "dir")))
-+    `(let ((,dir (file-name-as-directory (make-temp-file "magit-" t))))
++    `(let ((,dir (file-name-as-directory (make-temp-file "magit-" t)))
++           (process-environment process-environment))
++       (setenv "GIT_AUTHOR_NAME" "A U Thor")
++       (setenv "GIT_AUTHOR_EMAIL" "a.u.thor@example.com")
 +       (condition-case err
 +           (cl-letf (((symbol-function #'message) (lambda (&rest _))))
 +             (let ((default-directory ,dir))

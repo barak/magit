@@ -52,10 +52,10 @@ index da3b1f5..aae00d5 100644
  	@echo >> with-editor.texi
  
 diff --git a/Makefile b/Makefile
-index 4244ad7..5770ea2 100644
+index 17730e7..1543a13 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -77,7 +77,7 @@ test:
+@@ -80,7 +80,7 @@ test:
  	(ert-run-tests-batch-and-exit))"
  
  test-interactive:
