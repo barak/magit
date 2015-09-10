@@ -1,0 +1,79 @@
+From: =?utf-8?q?R=C3=A9mi_Vanicat?= <vanicat@debian.org>
+Date: Sun, 23 Aug 2015 15:37:15 +0200
+Subject: Do not require async.
+
+It is not needed for debian package.
+---
+ Makefile            | 3 ---
+ lisp/magit-popup.el | 2 +-
+ lisp/magit.el       | 2 +-
+ lisp/with-editor.el | 2 +-
+ 4 files changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index a0f6258..0728416 100644
+--- a/Makefile
++++ b/Makefile
+@@ -163,7 +163,6 @@ define with_editor_pkg
+ (define-package "with-editor" "$(VERSION)"
+   "Use the Emacsclient as $$EDITOR"
+   '((emacs "$(EMACS_VERSION)")
+-    (async "$(ASYNC_VERSION)")
+     (dash "$(DASH_VERSION)")))
+ endef
+ # '
+@@ -188,7 +187,6 @@ define magit_popup_pkg
+ (define-package "magit-popup" "$(VERSION)"
+   "Define prefix-infix-suffix command combos"
+   '((emacs "$(EMACS_VERSION)")
+-    (async "$(ASYNC_VERSION)")
+     (dash "$(DASH_VERSION)")))
+ endef
+ # '
+@@ -211,7 +209,6 @@ define magit_pkg
+ (define-package "magit" "$(VERSION)"
+   "A Git porcelain inside Emacs"
+   '((emacs "$(EMACS_VERSION)")
+-    (async "$(ASYNC_VERSION)")
+     (dash "$(DASH_VERSION)")
+     (with-editor "$(VERSION)")
+     (git-commit "$(VERSION)")
+diff --git a/lisp/magit-popup.el b/lisp/magit-popup.el
+index 90b18d1..1844bbb 100644
+--- a/lisp/magit-popup.el
++++ b/lisp/magit-popup.el
+@@ -12,7 +12,7 @@
+ ;; Author: Jonas Bernoulli <jonas@bernoul.li>
+ ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+ 
+-;; Package-Requires: ((emacs "24.4") (async "1.4") (dash "2.11.0"))
++;; Package-Requires: ((emacs "24.4") (dash "2.11.0"))
+ ;; Keywords: bindings
+ ;; Homepage: https://github.com/magit/magit
+ 
+diff --git a/lisp/magit.el b/lisp/magit.el
+index 703ef2c..761ac88 100644
+--- a/lisp/magit.el
++++ b/lisp/magit.el
+@@ -14,7 +14,7 @@
+ ;;	Rémi Vanicat      <vanicat@debian.org>
+ ;;	Yann Hodique      <yann.hodique@gmail.com>
+ 
+-;; Package-Requires: ((emacs "24.4") (async "1.4") (dash "2.11.0") (with-editor "2.2.2") (git-commit "2.2.2") (magit-popup "2.2.2"))
++;; Package-Requires: ((emacs "24.4") (dash "2.11.0") (with-editor "2.2.2") (git-commit "2.2.2") (magit-popup "2.2.2"))
+ ;; Keywords: git tools vc
+ ;; Homepage: https://github.com/magit/magit
+ 
+diff --git a/lisp/with-editor.el b/lisp/with-editor.el
+index 8ba9fbb..d9664e2 100644
+--- a/lisp/with-editor.el
++++ b/lisp/with-editor.el
+@@ -8,7 +8,7 @@
+ ;; Author: Jonas Bernoulli <jonas@bernoul.li>
+ ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+ 
+-;; Package-Requires: ((emacs "24.4") (async "1.4") (dash "2.11.0"))
++;; Package-Requires: ((emacs "24.4") (dash "2.11.0"))
+ ;; Keywords: tools
+ ;; Homepage: https://github.com/magit/magit
+ 

@@ -1,0 +1,98 @@
+From: =?utf-8?q?R=C3=A9mi_Vanicat?= <vanicat@debian.org>
+Date: Sun, 23 Aug 2015 16:53:07 +0200
+Subject: Remove dependency on dash elpa package
+
+Currently, in Debian dash-el is not plugged into the elpa package
+system.
+---
+ Makefile            | 7 ++-----
+ lisp/git-commit.el  | 2 +-
+ lisp/magit-popup.el | 2 +-
+ lisp/magit.el       | 2 +-
+ lisp/with-editor.el | 2 +-
+ 5 files changed, 6 insertions(+), 9 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 0728416..63e91c0 100644
+--- a/Makefile
++++ b/Makefile
+@@ -162,8 +162,7 @@ elpa: $(ELPA_ARCHIVES)
+ define with_editor_pkg
+ (define-package "with-editor" "$(VERSION)"
+   "Use the Emacsclient as $$EDITOR"
+-  '((emacs "$(EMACS_VERSION)")
+-    (dash "$(DASH_VERSION)")))
++  '((emacs "$(EMACS_VERSION)")))
+ endef
+ # '
+ export with_editor_pkg
+@@ -186,8 +185,7 @@ git-commit-$(VERSION).el:
+ define magit_popup_pkg
+ (define-package "magit-popup" "$(VERSION)"
+   "Define prefix-infix-suffix command combos"
+-  '((emacs "$(EMACS_VERSION)")
+-    (dash "$(DASH_VERSION)")))
++  '((emacs "$(EMACS_VERSION)")))
+ endef
+ # '
+ export magit_popup_pkg
+@@ -209,7 +207,6 @@ define magit_pkg
+ (define-package "magit" "$(VERSION)"
+   "A Git porcelain inside Emacs"
+   '((emacs "$(EMACS_VERSION)")
+-    (dash "$(DASH_VERSION)")
+     (with-editor "$(VERSION)")
+     (git-commit "$(VERSION)")
+     (magit-popup "$(VERSION)")))
+diff --git a/lisp/git-commit.el b/lisp/git-commit.el
+index ea273d7..ba54a30 100644
+--- a/lisp/git-commit.el
++++ b/lisp/git-commit.el
+@@ -11,7 +11,7 @@
+ ;;	Marius Vollmer <marius.vollmer@gmail.com>
+ ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+ 
+-;; Package-Requires: ((emacs "24.4") (dash "2.11.0") (with-editor "2.2.2"))
++;; Package-Requires: ((emacs "24.4") (with-editor "2.2.2"))
+ ;; Keywords: git tools vc
+ ;; Homepage: https://github.com/magit/magit
+ 
+diff --git a/lisp/magit-popup.el b/lisp/magit-popup.el
+index 1844bbb..66646f1 100644
+--- a/lisp/magit-popup.el
++++ b/lisp/magit-popup.el
+@@ -12,7 +12,7 @@
+ ;; Author: Jonas Bernoulli <jonas@bernoul.li>
+ ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+ 
+-;; Package-Requires: ((emacs "24.4") (dash "2.11.0"))
++;; Package-Requires: ((emacs "24.4"))
+ ;; Keywords: bindings
+ ;; Homepage: https://github.com/magit/magit
+ 
+diff --git a/lisp/magit.el b/lisp/magit.el
+index 761ac88..25e646f 100644
+--- a/lisp/magit.el
++++ b/lisp/magit.el
+@@ -14,7 +14,7 @@
+ ;;	Rémi Vanicat      <vanicat@debian.org>
+ ;;	Yann Hodique      <yann.hodique@gmail.com>
+ 
+-;; Package-Requires: ((emacs "24.4") (dash "2.11.0") (with-editor "2.2.2") (git-commit "2.2.2") (magit-popup "2.2.2"))
++;; Package-Requires: ((emacs "24.4") (with-editor "2.2.2") (git-commit "2.2.2") (magit-popup "2.2.2"))
+ ;; Keywords: git tools vc
+ ;; Homepage: https://github.com/magit/magit
+ 
+diff --git a/lisp/with-editor.el b/lisp/with-editor.el
+index d9664e2..1bb029f 100644
+--- a/lisp/with-editor.el
++++ b/lisp/with-editor.el
+@@ -8,7 +8,7 @@
+ ;; Author: Jonas Bernoulli <jonas@bernoul.li>
+ ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+ 
+-;; Package-Requires: ((emacs "24.4") (dash "2.11.0"))
++;; Package-Requires: ((emacs "24.4"))
+ ;; Keywords: tools
+ ;; Homepage: https://github.com/magit/magit
+ 
