@@ -1,23 +1,48 @@
 Source: magit
 Section: vcs
 Priority: optional
-Maintainer: Timo Juhani Lindfors <timo.lindfors@iki.fi>
-Uploaders: Marius Vollmer <marius.vollmer@gmail.com>, Teemu Hukkanen <tjhukkan@iki.fi>, Rémi Vanicat <vanicat@debian.org>
+Maintainer: Debian Emacs addons team <pkg-emacsen-addons@lists.debian.org>
+Uploaders: Timo Juhani Lindfors <timo.lindfors@iki.fi>, Marius Vollmer <marius.vollmer@gmail.com>, Teemu Hukkanen <tjhukkan@iki.fi>, Rémi Vanicat <vanicat@debian.org>
 Build-Depends: debhelper (>= 9),
-	emacs, dash-el,
+	emacs-nox | emacs, dh-elpa, dash-el,
 	texinfo, install-info
 Standards-Version: 3.9.6
 Homepage: http://magit.github.com/magit/index.html
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/magit.git
 Vcs-Git: git://anonscm.debian.org/collab-maint/magit.git
 
-Package: magit
+Package: elpa-magit
 Architecture: all
-Depends: ${misc:Depends}, emacsen-common (>= 2.0.8), git,
-	dash-el
+Provide: magit
+Replace: magit
+Depends: ${misc:Depends}, git, dash-el, elpa-with-editor, elpa-magit-popup, elpa-git-commit
 Description: Emacs interface for Git
  With Magit, you can inspect and modify your Git repositories with
  Emacs.  You can review and commit the changes you have made to the
  tracked files, for example, and you can browse the history of past
  changes.  There is support for cherry picking, reverting, merging,
  rebasing, and other common Git operations.
+
+Package: elpa-with-editor
+Architecture: all
+Depends: ${misc:Depends}, dash-el
+Description: Call program using Emacs as $EDITOR
+ With this package, you can call program from Emacs such that they
+ will use Emacs as an editor.
+
+Package: elpa-git-commit
+Architecture: all
+Depends: ${misc:Depends}, dash-el, elpa-with-editor
+Description: A major mode for edditing git commit message
+ TODO
+
+Package: elpa-magit-popup
+Architecture: all
+Depends: ${misc:Depends}, dash-el
+Description: Use popup like Magit
+ TODO
+
+Package: magit
+Architecture: all
+Depends: elpa-magit
+Description: transitional dummy package

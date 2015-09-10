@@ -1,3 +1,13 @@
+magit (2.2.2-3) unstable; urgency=medium
+
+  [ Barak A. Pearlmutter ]
+  * refresh missing upstream repo file patch from 2.2.2
+
+  [ Rémi Vanicat ]
+  * Using dh-elpa
+
+ -- Rémi Vanicat <vanicat@debian.org>  Thu, 10 Sep 2015 16:24:50 +0200
+
 magit (2.2.2-2) unstable; urgency=low
 
   * fix incompatibility with emacs 23

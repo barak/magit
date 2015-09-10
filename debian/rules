@@ -1,12 +1,27 @@
 #!/usr/bin/make -f
+VERSION=2.2.2
 
 %:
 	dh $@ --parallel
 
+override_dh_auto_build:
+	make elpa VERSION=$(VERSION)
+	@echo git-commit-$(VERSION).el > debian/elpa-git-commit.elpa
+	@echo magit-$(VERSION).tar > debian/elpa-magit.elpa
+	@echo magit-popup-$(VERSION).tar > debian/elpa-magit-popup.elpa
+	@echo with-editor-$(VERSION).tar > debian/elpa-with-editor.elpa
+
+override_dh_install:
+	dh_install
+	dh_elpa -Nmagit --no-byte-compile
+
 override_dh_auto_install:
-	dh_auto_install -- PREFIX=/usr
-	$(MAKE) install-info DESTDIR=$(CURDIR)/debian/magit PREFIX=/usr
-	find debian/magit -type f -name '*.elc' -print -delete
+	@echo do not run make install
+
+override_dh_clean:
+	dh_clean
+	rm -f debian/elpa-git-commit.elpa debian/elpa-magit.elpa debian/elpa-magit-popup.elpa debian/elpa-with-editor.elpa
+
 
 override_dh_auto_test:
 	@echo Testing disabled, discussion in comment below.
