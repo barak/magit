@@ -2,7 +2,7 @@ Source: magit
 Section: vcs
 Priority: optional
 Maintainer: Debian Emacs addons team <pkg-emacsen-addons@lists.debian.org>
-Uploaders: Timo Juhani Lindfors <timo.lindfors@iki.fi>, Marius Vollmer <marius.vollmer@gmail.com>, Teemu Hukkanen <tjhukkan@iki.fi>, Rémi Vanicat <vanicat@debian.org>
+Uploaders: Timo Juhani Lindfors <timo.lindfors@iki.fi>, Rémi Vanicat <vanicat@debian.org>, Barak A. Pearlmutter <bap@debian.org>
 Build-Depends: debhelper (>= 9),
 	emacs-nox | emacs, dh-elpa, dash-el,
 	texinfo, install-info
