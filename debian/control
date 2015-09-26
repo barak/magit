@@ -13,8 +13,8 @@ Vcs-Git: git://anonscm.debian.org/collab-maint/magit.git
 
 Package: elpa-magit
 Architecture: all
-Provide: magit
-Replace: magit
+Provides: magit
+Replaces: magit
 Depends: ${misc:Depends}, git, dash-el, elpa-with-editor, elpa-magit-popup, elpa-git-commit
 Description: Emacs interface for Git
  With Magit, you can inspect and modify your Git repositories with
