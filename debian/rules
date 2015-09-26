@@ -13,7 +13,7 @@ override_dh_auto_build:
 
 override_dh_install:
 	dh_install
-	dh_elpa -Nmagit --no-byte-compile
+	dh_elpa -Nmagit
 
 override_dh_auto_install:
 	@echo do not run make install
