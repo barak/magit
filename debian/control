@@ -33,16 +33,20 @@ Description: Call program using Emacs as $EDITOR
 Package: elpa-git-commit
 Architecture: all
 Depends: ${misc:Depends}, dash-el, elpa-with-editor
-Description: A major mode for edditing git commit message
- TODO
+Description: Major mode for edditing git commit message
+ A mode for edditing COMMIT_MSG file from git in Emacs.
 
 Package: elpa-magit-popup
 Architecture: all
 Depends: ${misc:Depends}, dash-el
 Description: Use popup like Magit
- TODO
+ Magit use popup to run different git function and select the option
+ you want
+ .
+ This package allow you to use those popup in other Emacs mode.
 
 Package: magit
 Architecture: all
-Depends: elpa-magit
-Description: transitional dummy package
+Depends: ${misc:Depends}, elpa-magit
+Description: transitional dummy package for elpa-magit
+ This transitional package is safe to remove.
