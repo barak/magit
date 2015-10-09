@@ -46,6 +46,8 @@ Description: Use popup like Magit
  This package allow you to use those popup in other Emacs mode.
 
 Package: magit
+Priority: extra
+Section: oldlibs
 Architecture: all
 Depends: ${misc:Depends}, elpa-magit
 Description: transitional dummy package for elpa-magit
