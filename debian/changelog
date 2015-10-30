@@ -1,3 +1,9 @@
+magit (2.3.0-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Rémi Vanicat <vanicat@debian.org>  Fri, 30 Oct 2015 12:59:28 +0100
+
 magit (2.2.2-3) unstable; urgency=medium
 
   [ Barak A. Pearlmutter ]
