@@ -28,11 +28,11 @@ Author: Barak A. Pearlmutter <barak@pearlmutter.net>
  default.mk             | 2 +-
  3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/Makefile b/Documentation/Makefile
-index da3b1f5..aae00d5 100644
---- a/Documentation/Makefile
-+++ b/Documentation/Makefile
-@@ -23,15 +23,15 @@ texi: $(TEXIPAGES)
+Index: magit/Documentation/Makefile
+===================================================================
+--- magit.orig/Documentation/Makefile	2015-10-30 12:38:07.867050482 +0100
++++ magit/Documentation/Makefile	2015-10-30 12:38:07.863050446 +0100
+@@ -23,15 +23,15 @@
  	@printf "WARNING: Discard these whitespace errors before committing.\n"
  	@printf "WARNING: Also see https://github.com/magit/magit/issues/1912.\n"
  	@printf "Generating magit.texi\n"
@@ -51,11 +51,11 @@ index da3b1f5..aae00d5 100644
  	-l ox-texinfo+.el with-editor.org -f org-texinfo+export-to-texinfo
  	@echo >> with-editor.texi
  
-diff --git a/Makefile b/Makefile
-index 17730e7..1543a13 100644
---- a/Makefile
-+++ b/Makefile
-@@ -80,7 +80,7 @@ test:
+Index: magit/Makefile
+===================================================================
+--- magit.orig/Makefile	2015-10-30 12:38:07.867050482 +0100
++++ magit/Makefile	2015-10-30 12:38:07.863050446 +0100
+@@ -82,7 +82,7 @@
  	(ert-run-tests-batch-and-exit))"
  
  test-interactive:
@@ -64,13 +64,13 @@ index 17730e7..1543a13 100644
  	(load-file \"t/magit-tests.el\")\
  	(ert t))"
  
-diff --git a/default.mk b/default.mk
-index 4309ca5..8b2598a 100644
---- a/default.mk
-+++ b/default.mk
-@@ -70,7 +70,7 @@ else
-   LOAD_PATH ?= -L $(TOP)/lisp -L $(DASH_DIR)
- endif
+Index: magit/default.mk
+===================================================================
+--- magit.orig/default.mk	2015-10-30 12:38:07.867050482 +0100
++++ magit/default.mk	2015-10-30 12:38:07.863050446 +0100
+@@ -81,7 +81,7 @@
+ 
+ endif # ifndef LOAD_PATH
  
 -BATCH = $(EMACSBIN) -batch -Q $(LOAD_PATH)
 +BATCH = $(EMACSBIN) -batch -q $(LOAD_PATH)

@@ -12,11 +12,11 @@ system.
  lisp/with-editor.el | 2 +-
  5 files changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 0728416..63e91c0 100644
---- a/Makefile
-+++ b/Makefile
-@@ -162,8 +162,7 @@ elpa: $(ELPA_ARCHIVES)
+Index: magit/Makefile
+===================================================================
+--- magit.orig/Makefile	2015-10-30 12:44:12.190044009 +0100
++++ magit/Makefile	2015-10-30 12:44:12.186043979 +0100
+@@ -165,8 +165,7 @@
  define with_editor_pkg
  (define-package "with-editor" "$(VERSION)"
    "Use the Emacsclient as $$EDITOR"
@@ -26,7 +26,7 @@ index 0728416..63e91c0 100644
  endef
  # '
  export with_editor_pkg
-@@ -186,8 +185,7 @@ git-commit-$(VERSION).el:
+@@ -189,8 +188,7 @@
  define magit_popup_pkg
  (define-package "magit-popup" "$(VERSION)"
    "Define prefix-infix-suffix command combos"
@@ -36,7 +36,7 @@ index 0728416..63e91c0 100644
  endef
  # '
  export magit_popup_pkg
-@@ -209,7 +207,6 @@ define magit_pkg
+@@ -212,7 +210,6 @@
  (define-package "magit" "$(VERSION)"
    "A Git porcelain inside Emacs"
    '((emacs "$(EMACS_VERSION)")
@@ -44,54 +44,54 @@ index 0728416..63e91c0 100644
      (with-editor "$(VERSION)")
      (git-commit "$(VERSION)")
      (magit-popup "$(VERSION)")))
-diff --git a/lisp/git-commit.el b/lisp/git-commit.el
-index ea273d7..ba54a30 100644
---- a/lisp/git-commit.el
-+++ b/lisp/git-commit.el
+Index: magit/lisp/git-commit.el
+===================================================================
+--- magit.orig/lisp/git-commit.el	2015-10-30 12:44:12.190044009 +0100
++++ magit/lisp/git-commit.el	2015-10-30 12:45:04.402436713 +0100
 @@ -11,7 +11,7 @@
  ;;	Marius Vollmer <marius.vollmer@gmail.com>
  ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
  
--;; Package-Requires: ((emacs "24.4") (dash "2.11.0") (with-editor "2.2.2"))
-+;; Package-Requires: ((emacs "24.4") (with-editor "2.2.2"))
+-;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.3.0"))
++;; Package-Requires: ((emacs "24.4") (with-editor "2.3.0"))
  ;; Keywords: git tools vc
  ;; Homepage: https://github.com/magit/magit
  
-diff --git a/lisp/magit-popup.el b/lisp/magit-popup.el
-index 1844bbb..66646f1 100644
---- a/lisp/magit-popup.el
-+++ b/lisp/magit-popup.el
+Index: magit/lisp/magit-popup.el
+===================================================================
+--- magit.orig/lisp/magit-popup.el	2015-10-30 12:44:12.190044009 +0100
++++ magit/lisp/magit-popup.el	2015-10-30 12:45:38.298688084 +0100
 @@ -12,7 +12,7 @@
  ;; Author: Jonas Bernoulli <jonas@bernoul.li>
  ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
  
--;; Package-Requires: ((emacs "24.4") (dash "2.11.0"))
+-;; Package-Requires: ((emacs "24.4") (dash "2.12.1"))
 +;; Package-Requires: ((emacs "24.4"))
  ;; Keywords: bindings
  ;; Homepage: https://github.com/magit/magit
  
-diff --git a/lisp/magit.el b/lisp/magit.el
-index 761ac88..25e646f 100644
---- a/lisp/magit.el
-+++ b/lisp/magit.el
-@@ -14,7 +14,7 @@
+Index: magit/lisp/magit.el
+===================================================================
+--- magit.orig/lisp/magit.el	2015-10-30 12:44:12.190044009 +0100
++++ magit/lisp/magit.el	2015-10-30 12:46:44.883174446 +0100
+@@ -16,7 +16,7 @@
  ;;	Rémi Vanicat      <vanicat@debian.org>
  ;;	Yann Hodique      <yann.hodique@gmail.com>
  
--;; Package-Requires: ((emacs "24.4") (dash "2.11.0") (with-editor "2.2.2") (git-commit "2.2.2") (magit-popup "2.2.2"))
-+;; Package-Requires: ((emacs "24.4") (with-editor "2.2.2") (git-commit "2.2.2") (magit-popup "2.2.2"))
+-;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.3.0") (git-commit "2.3.0") (magit-popup "2.3.0"))
++;; Package-Requires: ((emacs "24.4") (with-editor "2.3.0") (git-commit "2.3.0") (magit-popup "2.3.0"))
  ;; Keywords: git tools vc
  ;; Homepage: https://github.com/magit/magit
  
-diff --git a/lisp/with-editor.el b/lisp/with-editor.el
-index d9664e2..1bb029f 100644
---- a/lisp/with-editor.el
-+++ b/lisp/with-editor.el
+Index: magit/lisp/with-editor.el
+===================================================================
+--- magit.orig/lisp/with-editor.el	2015-10-30 12:44:12.190044009 +0100
++++ magit/lisp/with-editor.el	2015-10-30 12:47:08.107341952 +0100
 @@ -8,7 +8,7 @@
  ;; Author: Jonas Bernoulli <jonas@bernoul.li>
  ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
  
--;; Package-Requires: ((emacs "24.4") (dash "2.11.0"))
+-;; Package-Requires: ((emacs "24.4") (dash "2.12.1"))
 +;; Package-Requires: ((emacs "24.4"))
  ;; Keywords: tools
  ;; Homepage: https://github.com/magit/magit
