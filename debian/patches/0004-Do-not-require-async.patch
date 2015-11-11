@@ -3,6 +3,7 @@ Date: Sun, 23 Aug 2015 15:37:15 +0200
 Subject: Do not require async.
 
 It is not needed for debian package.
+Forwarded: not-needed
 ---
  Makefile            | 3 ---
  lisp/magit-popup.el | 2 +-
@@ -10,11 +11,11 @@ It is not needed for debian package.
  lisp/with-editor.el | 2 +-
  4 files changed, 3 insertions(+), 6 deletions(-)
 
-Index: magit/Makefile
-===================================================================
---- magit.orig/Makefile	2015-10-30 12:39:19.327681167 +0100
-+++ magit/Makefile	2015-10-30 12:39:19.323681132 +0100
-@@ -166,7 +166,6 @@
+diff --git a/Makefile b/Makefile
+index 97d1c32..4e7db42 100644
+--- a/Makefile
++++ b/Makefile
+@@ -166,7 +166,6 @@ define with_editor_pkg
  (define-package "with-editor" "$(VERSION)"
    "Use the Emacsclient as $$EDITOR"
    '((emacs "$(EMACS_VERSION)")
@@ -22,7 +23,7 @@ Index: magit/Makefile
      (dash "$(DASH_VERSION)")))
  endef
  # '
-@@ -191,7 +190,6 @@
+@@ -191,7 +190,6 @@ define magit_popup_pkg
  (define-package "magit-popup" "$(VERSION)"
    "Define prefix-infix-suffix command combos"
    '((emacs "$(EMACS_VERSION)")
@@ -30,7 +31,7 @@ Index: magit/Makefile
      (dash "$(DASH_VERSION)")))
  endef
  # '
-@@ -214,7 +212,6 @@
+@@ -214,7 +212,6 @@ define magit_pkg
  (define-package "magit" "$(VERSION)"
    "A Git porcelain inside Emacs"
    '((emacs "$(EMACS_VERSION)")
@@ -38,10 +39,10 @@ Index: magit/Makefile
      (dash "$(DASH_VERSION)")
      (with-editor "$(VERSION)")
      (git-commit "$(VERSION)")
-Index: magit/lisp/magit-popup.el
-===================================================================
---- magit.orig/lisp/magit-popup.el	2015-10-30 12:39:19.327681167 +0100
-+++ magit/lisp/magit-popup.el	2015-10-30 12:40:24.116231886 +0100
+diff --git a/lisp/magit-popup.el b/lisp/magit-popup.el
+index e22c3be..689e680 100644
+--- a/lisp/magit-popup.el
++++ b/lisp/magit-popup.el
 @@ -12,7 +12,7 @@
  ;; Author: Jonas Bernoulli <jonas@bernoul.li>
  ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
@@ -51,10 +52,23 @@ Index: magit/lisp/magit-popup.el
  ;; Keywords: bindings
  ;; Homepage: https://github.com/magit/magit
  
-Index: magit/lisp/with-editor.el
-===================================================================
---- magit.orig/lisp/with-editor.el	2015-10-30 12:39:19.327681167 +0100
-+++ magit/lisp/with-editor.el	2015-10-30 12:41:19.616689585 +0100
+diff --git a/lisp/magit.el b/lisp/magit.el
+index 32ae48d..8270469 100644
+--- a/lisp/magit.el
++++ b/lisp/magit.el
+@@ -16,7 +16,7 @@
+ ;;	Rémi Vanicat      <vanicat@debian.org>
+ ;;	Yann Hodique      <yann.hodique@gmail.com>
+ 
+-;; Package-Requires: ((emacs "24.4") (async "1.5") (dash "2.12.1") (with-editor "2.3.1") (git-commit "2.3.1") (magit-popup "2.3.1"))
++;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.3.1") (git-commit "2.3.1") (magit-popup "2.3.1"))
+ ;; Keywords: git tools vc
+ ;; Homepage: https://github.com/magit/magit
+ 
+diff --git a/lisp/with-editor.el b/lisp/with-editor.el
+index d0b5d17..25c970b 100644
+--- a/lisp/with-editor.el
++++ b/lisp/with-editor.el
 @@ -8,7 +8,7 @@
  ;; Author: Jonas Bernoulli <jonas@bernoul.li>
  ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
@@ -62,18 +76,5 @@ Index: magit/lisp/with-editor.el
 -;; Package-Requires: ((emacs "24.4") (async "1.5") (dash "2.12.1"))
 +;; Package-Requires: ((emacs "24.4") (dash "2.12.1"))
  ;; Keywords: tools
- ;; Homepage: https://github.com/magit/magit
- 
-Index: magit/lisp/magit.el
-===================================================================
---- magit.orig/lisp/magit.el	2015-10-30 12:39:19.327681167 +0100
-+++ magit/lisp/magit.el	2015-10-30 12:42:23.973205908 +0100
-@@ -16,7 +16,7 @@
- ;;	Rémi Vanicat      <vanicat@debian.org>
- ;;	Yann Hodique      <yann.hodique@gmail.com>
- 
--;; Package-Requires: ((emacs "24.4") (async "1.5") (dash "2.12.1") (with-editor "2.3.0") (git-commit "2.3.0") (magit-popup "2.3.0"))
-+;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.3.0") (git-commit "2.3.0") (magit-popup "2.3.0"))
- ;; Keywords: git tools vc
  ;; Homepage: https://github.com/magit/magit
  

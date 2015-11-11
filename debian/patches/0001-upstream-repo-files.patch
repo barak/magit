@@ -2,18 +2,18 @@ From: "Barak A. Pearlmutter" <barak+git@pearlmutter.net>
 Date: Tue, 1 Sep 2015 16:54:29 +0100
 Subject: upstream repo files
 
-Take some files from upstream repo tag 2.2.1 which are not present in
-the 2.2.1 distributed tarball.  To whit:
+Take some files from upstream repo tag 2.3.1 which are not present in
+the 2.3.1 distributed tarball.  To whit:
 
 /CONTRIBUTING.md (documentation)
 /Documentation/*.org (complete sources for .info files)
 /Documentation/RelNotes/* (complete upstream changelog)
 /t/* (allow "make test" at build time)
 
-Origin: git://github.com/magit/magit.git tag 2.2.1
+Origin: git://github.com/magit/magit.git tag 2.3.1
 Forwarded: not-needed
 ---
- CONTRIBUTING.md                  |   43 +
+ CONTRIBUTING.md                  |   55 +
  Documentation/RelNotes/0.5.1.txt |   11 +
  Documentation/RelNotes/0.6.1.txt |   24 +
  Documentation/RelNotes/0.7.0.txt |   70 +
@@ -34,12 +34,13 @@ Forwarded: not-needed
  Documentation/RelNotes/2.2.0.txt |  235 ++
  Documentation/RelNotes/2.2.1.txt |   45 +
  Documentation/RelNotes/2.2.2.txt |   45 +
- Documentation/RelNotes/2.3.0.txt |   25 +
- Documentation/magit-popup.org    |  580 +++++
- Documentation/magit.org          | 5059 ++++++++++++++++++++++++++++++++++++++
+ Documentation/RelNotes/2.3.0.txt |  264 ++
+ Documentation/RelNotes/2.3.1.txt |   31 +
+ Documentation/magit-popup.org    |  590 +++++
+ Documentation/magit.org          | 5426 ++++++++++++++++++++++++++++++++++++++
  Documentation/with-editor.org    |  259 ++
- t/magit-tests.el                 |  131 +
- 26 files changed, 7727 insertions(+)
+ t/magit-tests.el                 |  263 ++
+ 27 files changed, 8518 insertions(+)
  create mode 100644 CONTRIBUTING.md
  create mode 100644 Documentation/RelNotes/0.5.1.txt
  create mode 100644 Documentation/RelNotes/0.6.1.txt
@@ -62,16 +63,30 @@ Forwarded: not-needed
  create mode 100644 Documentation/RelNotes/2.2.1.txt
  create mode 100644 Documentation/RelNotes/2.2.2.txt
  create mode 100644 Documentation/RelNotes/2.3.0.txt
+ create mode 100644 Documentation/RelNotes/2.3.1.txt
  create mode 100644 Documentation/magit-popup.org
  create mode 100644 Documentation/magit.org
  create mode 100644 Documentation/with-editor.org
  create mode 100644 t/magit-tests.el
 
-Index: magit/CONTRIBUTING.md
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/CONTRIBUTING.md	2015-10-30 12:48:41.016002260 +0100
-@@ -0,0 +1,43 @@
+diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+new file mode 100644
+index 0000000..5c45ab1
+--- /dev/null
++++ b/CONTRIBUTING.md
+@@ -0,0 +1,55 @@
++<p align="center">
++  <img src="http://magit.vc/img/L.png" align="left">
++  <img src="http://magit.vc/img/R.png" align="right">
++  <b>
++    When something doesn't work as expected, then please first consult the
++    <a href="http://magit.vc/manual/magit/FAQ.html">FAQ</a> and ask a
++	search engine.   If that doesn't solve your problem, then please ask for help on
++    <a href="http://emacs.stackexchange.com/questions/tagged/magit"> Emacs.Stackexchange</a>.
++  </b>
++</p>
++***
++
 +Getting help
 +============
 +
@@ -97,7 +112,7 @@ Index: magit/CONTRIBUTING.md
 +==================
 +
 +If you have some code which you would like to be merged, then open a
-+[pull requests][pulls].  Please create atomic commits with descriptive
++[pull request][pulls].  Please create atomic commits with descriptive
 +commit messages.
 +
 +Donations
@@ -115,10 +130,11 @@ Index: magit/CONTRIBUTING.md
 +[list]:      https://groups.google.com/forum/?fromgroups#!forum/magit
 +[manual]:    http://magit.vc/manual
 +[pulls]:     https://github.com/magit/magit/pulls
-Index: magit/Documentation/RelNotes/0.5.1.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/0.5.1.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/0.5.1.txt b/Documentation/RelNotes/0.5.1.txt
+new file mode 100644
+index 0000000..d08cdb0
+--- /dev/null
++++ b/Documentation/RelNotes/0.5.1.txt
 @@ -0,0 +1,11 @@
 +Magit v0.5.1 Release Notes
 +==========================
@@ -131,10 +147,11 @@ Index: magit/Documentation/RelNotes/0.5.1.txt
 +-------
 +
 +   157  Marius Vollmer
-Index: magit/Documentation/RelNotes/0.6.1.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/0.6.1.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/0.6.1.txt b/Documentation/RelNotes/0.6.1.txt
+new file mode 100644
+index 0000000..a58c3ba
+--- /dev/null
++++ b/Documentation/RelNotes/0.6.1.txt
 @@ -0,0 +1,24 @@
 +Magit v0.6.1 Release Notes
 +==========================
@@ -160,10 +177,11 @@ Index: magit/Documentation/RelNotes/0.6.1.txt
 +
 +   212  Marius Vollmer
 +     -  John Wiegley
-Index: magit/Documentation/RelNotes/0.7.0.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/0.7.0.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/0.7.0.txt b/Documentation/RelNotes/0.7.0.txt
+new file mode 100644
+index 0000000..9191804
+--- /dev/null
++++ b/Documentation/RelNotes/0.7.0.txt
 @@ -0,0 +1,70 @@
 +Magit v0.7.0 Release Notes
 +==========================
@@ -235,10 +253,11 @@ Index: magit/Documentation/RelNotes/0.7.0.txt
 +     1  David Wallin
 +     1  Ian Eure
 +     1  Jesse Alama
-Index: magit/Documentation/RelNotes/0.8.0.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/0.8.0.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/0.8.0.txt b/Documentation/RelNotes/0.8.0.txt
+new file mode 100644
+index 0000000..538f09a
+--- /dev/null
++++ b/Documentation/RelNotes/0.8.0.txt
 @@ -0,0 +1,55 @@
 +Magit v0.8.0 Release Notes
 +==========================
@@ -295,10 +314,11 @@ Index: magit/Documentation/RelNotes/0.8.0.txt
 +     1  Pavel Holejsovsky
 +     1  Ramkumar Ramachandra
 +     1  Steve Purcell
-Index: magit/Documentation/RelNotes/0.8.1.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/0.8.1.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/0.8.1.txt b/Documentation/RelNotes/0.8.1.txt
+new file mode 100644
+index 0000000..95b204f
+--- /dev/null
++++ b/Documentation/RelNotes/0.8.1.txt
 @@ -0,0 +1,28 @@
 +Magit v0.8.1 Release Notes
 +==========================
@@ -328,10 +348,11 @@ Index: magit/Documentation/RelNotes/0.8.1.txt
 +     2  Ramkumar Ramachandra
 +     1  Mark Hepburn
 +     1  Moritz Bunkus
-Index: magit/Documentation/RelNotes/0.8.2.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/0.8.2.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/0.8.2.txt b/Documentation/RelNotes/0.8.2.txt
+new file mode 100644
+index 0000000..9367486
+--- /dev/null
++++ b/Documentation/RelNotes/0.8.2.txt
 @@ -0,0 +1,27 @@
 +Magit v0.8.2 Release Notes
 +==========================
@@ -360,10 +381,11 @@ Index: magit/Documentation/RelNotes/0.8.2.txt
 +     1  Sean Bryant
 +     1  Ævar Arnfjörð Bjarmason
 +     1  Óscar Fuentes
-Index: magit/Documentation/RelNotes/1.0.0.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/1.0.0.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/1.0.0.txt b/Documentation/RelNotes/1.0.0.txt
+new file mode 100644
+index 0000000..92f9175
+--- /dev/null
++++ b/Documentation/RelNotes/1.0.0.txt
 @@ -0,0 +1,84 @@
 +Magit v1.0.0 Release Notes
 +==========================
@@ -449,10 +471,11 @@ Index: magit/Documentation/RelNotes/1.0.0.txt
 +     1  Robert Boone
 +     1  Rüdiger Sonderfeld
 +     1  Tom Feist
-Index: magit/Documentation/RelNotes/1.1.0.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/1.1.0.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/1.1.0.txt b/Documentation/RelNotes/1.1.0.txt
+new file mode 100644
+index 0000000..0e1c1fb
+--- /dev/null
++++ b/Documentation/RelNotes/1.1.0.txt
 @@ -0,0 +1,112 @@
 +Magit v1.1.0 Release Notes
 +==========================
@@ -566,10 +589,11 @@ Index: magit/Documentation/RelNotes/1.1.0.txt
 +     1  Tibor Simko
 +     1  Tom Feist
 +     1  Ævar Arnfjörð Bjarmason
-Index: magit/Documentation/RelNotes/1.1.1.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/1.1.1.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/1.1.1.txt b/Documentation/RelNotes/1.1.1.txt
+new file mode 100644
+index 0000000..21b3baf
+--- /dev/null
++++ b/Documentation/RelNotes/1.1.1.txt
 @@ -0,0 +1,25 @@
 +Magit v1.1.1 Release Notes
 +==========================
@@ -596,10 +620,11 @@ Index: magit/Documentation/RelNotes/1.1.1.txt
 +     1  Peter J. Weisberg
 +     1  Ryan C. Thompson
 +     1  Timo Juhani Lindfors
-Index: magit/Documentation/RelNotes/1.1.2.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/1.1.2.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/1.1.2.txt b/Documentation/RelNotes/1.1.2.txt
+new file mode 100644
+index 0000000..2c5aea2
+--- /dev/null
++++ b/Documentation/RelNotes/1.1.2.txt
 @@ -0,0 +1,33 @@
 +Magit v1.1.2 Release Notes
 +==========================
@@ -634,10 +659,11 @@ Index: magit/Documentation/RelNotes/1.1.2.txt
 +     1  Nic Ferier
 +     1  Nick Alcock
 +     1  Rémi Vanicat
-Index: magit/Documentation/RelNotes/1.2.0.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/1.2.0.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/1.2.0.txt b/Documentation/RelNotes/1.2.0.txt
+new file mode 100644
+index 0000000..b27f259
+--- /dev/null
++++ b/Documentation/RelNotes/1.2.0.txt
 @@ -0,0 +1,73 @@
 +Magit v1.2.0 Release Notes
 +==========================
@@ -712,10 +738,11 @@ Index: magit/Documentation/RelNotes/1.2.0.txt
 +     1  Ole Arndt
 +     1  Ron Parker
 +     1  Suhail Shergill
-Index: magit/Documentation/RelNotes/1.2.1.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/1.2.1.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/1.2.1.txt b/Documentation/RelNotes/1.2.1.txt
+new file mode 100644
+index 0000000..6e255bf
+--- /dev/null
++++ b/Documentation/RelNotes/1.2.1.txt
 @@ -0,0 +1,15 @@
 +Magit v1.2.1 Release Notes
 +==========================
@@ -732,10 +759,11 @@ Index: magit/Documentation/RelNotes/1.2.1.txt
 +-------
 +
 +     1  Jonas Bernoulli
-Index: magit/Documentation/RelNotes/1.2.2.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/1.2.2.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/1.2.2.txt b/Documentation/RelNotes/1.2.2.txt
+new file mode 100644
+index 0000000..e529dc9
+--- /dev/null
++++ b/Documentation/RelNotes/1.2.2.txt
 @@ -0,0 +1,17 @@
 +Magit v1.2.2 Release Notes
 +==========================
@@ -754,10 +782,11 @@ Index: magit/Documentation/RelNotes/1.2.2.txt
 +-------
 +
 +     5  Jonas Bernoulli
-Index: magit/Documentation/RelNotes/1.4.0.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/1.4.0.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/1.4.0.txt b/Documentation/RelNotes/1.4.0.txt
+new file mode 100644
+index 0000000..f0f8d9e
+--- /dev/null
++++ b/Documentation/RelNotes/1.4.0.txt
 @@ -0,0 +1,231 @@
 +Magit v1.4.0 Release Notes
 +==========================
@@ -990,10 +1019,11 @@ Index: magit/Documentation/RelNotes/1.4.0.txt
 +     1  York Zhao
 +     1  aaa707
 +     1  Ævar Arnfjörð Bjarmason
-Index: magit/Documentation/RelNotes/1.4.1.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/1.4.1.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/1.4.1.txt b/Documentation/RelNotes/1.4.1.txt
+new file mode 100644
+index 0000000..15dc747
+--- /dev/null
++++ b/Documentation/RelNotes/1.4.1.txt
 @@ -0,0 +1,31 @@
 +Magit v1.4.1 Release Notes
 +==========================
@@ -1026,10 +1056,11 @@ Index: magit/Documentation/RelNotes/1.4.1.txt
 +
 +     9  Jonas Bernoulli
 +     1  Noam Postavsky
-Index: magit/Documentation/RelNotes/1.4.2.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/1.4.2.txt	2015-10-30 12:48:41.016002260 +0100
+diff --git a/Documentation/RelNotes/1.4.2.txt b/Documentation/RelNotes/1.4.2.txt
+new file mode 100644
+index 0000000..b50f1a8
+--- /dev/null
++++ b/Documentation/RelNotes/1.4.2.txt
 @@ -0,0 +1,23 @@
 +Magit v1.4.2 Release Notes
 +==========================
@@ -1054,10 +1085,11 @@ Index: magit/Documentation/RelNotes/1.4.2.txt
 +    11  Jonas Bernoulli
 +     1  Peter Vasil
 +     1  Steven E. Harris
-Index: magit/Documentation/RelNotes/2.1.0.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/2.1.0.txt	2015-10-30 12:48:41.020002287 +0100
+diff --git a/Documentation/RelNotes/2.1.0.txt b/Documentation/RelNotes/2.1.0.txt
+new file mode 100644
+index 0000000..0331193
+--- /dev/null
++++ b/Documentation/RelNotes/2.1.0.txt
 @@ -0,0 +1,446 @@
 +It's Magit!  A Git Porcelain inside Emacs
 +=========================================
@@ -1505,10 +1537,11 @@ Index: magit/Documentation/RelNotes/2.1.0.txt
 +     1  Tim Wraight
 +     1  Wei Huang
 +     1  Xavier Noria
-Index: magit/Documentation/RelNotes/2.2.0.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/2.2.0.txt	2015-10-30 12:48:41.020002287 +0100
+diff --git a/Documentation/RelNotes/2.2.0.txt b/Documentation/RelNotes/2.2.0.txt
+new file mode 100644
+index 0000000..6d2b4be
+--- /dev/null
++++ b/Documentation/RelNotes/2.2.0.txt
 @@ -0,0 +1,235 @@
 +It's Magit!  A Git Porcelain inside Emacs
 +=========================================
@@ -1745,10 +1778,11 @@ Index: magit/Documentation/RelNotes/2.2.0.txt
 +     1  Thomas Frössman
 +     1  Ting-Yu Lin
 +     1  Vineet Naik
-Index: magit/Documentation/RelNotes/2.2.1.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/2.2.1.txt	2015-10-30 12:48:41.020002287 +0100
+diff --git a/Documentation/RelNotes/2.2.1.txt b/Documentation/RelNotes/2.2.1.txt
+new file mode 100644
+index 0000000..11771bf
+--- /dev/null
++++ b/Documentation/RelNotes/2.2.1.txt
 @@ -0,0 +1,45 @@
 +Magit v2.2.1 Release Notes
 +==========================
@@ -1795,10 +1829,11 @@ Index: magit/Documentation/RelNotes/2.2.1.txt
 +
 +    16  Jonas Bernoulli
 +    11  Kyle Meyer
-Index: magit/Documentation/RelNotes/2.2.2.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/2.2.2.txt	2015-10-30 12:48:41.020002287 +0100
+diff --git a/Documentation/RelNotes/2.2.2.txt b/Documentation/RelNotes/2.2.2.txt
+new file mode 100644
+index 0000000..1d5ec52
+--- /dev/null
++++ b/Documentation/RelNotes/2.2.2.txt
 @@ -0,0 +1,45 @@
 +Magit v2.2.2 Release Notes
 +==========================
@@ -1845,10 +1880,11 @@ Index: magit/Documentation/RelNotes/2.2.2.txt
 +    29  Jonas Bernoulli
 +     5  Kyle Meyer
 +     1  Barak A. Pearlmutter
-Index: magit/Documentation/RelNotes/2.3.0.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/RelNotes/2.3.0.txt	2015-10-30 12:48:41.020002287 +0100
+diff --git a/Documentation/RelNotes/2.3.0.txt b/Documentation/RelNotes/2.3.0.txt
+new file mode 100644
+index 0000000..884f5bd
+--- /dev/null
++++ b/Documentation/RelNotes/2.3.0.txt
 @@ -0,0 +1,264 @@
 +It's Magit!  A Git Porcelain inside Emacs
 +=========================================
@@ -1876,10 +1912,10 @@ Index: magit/Documentation/RelNotes/2.3.0.txt
 +
 +* Added `--interactive' switch to `magit-rebase-popup' so that rebase
 +  variants which normally perform a non-interactive rebase can be used
-+  interactively too.  #2186
++  to perform an interactive rebase too.  #2186
 +
 +* Commands that perform an interactive rebase should no longer be used
-+  non-interactively (i.e. the should only be used as commands).  #2187
++  non-interactively (i.e. they should only be used as commands).  #2187
 +
 +* Rebasing commands now can start with a root commit.  Root commits
 +  are detected automatically, so users don't have to use the `--root'
@@ -2114,11 +2150,49 @@ Index: magit/Documentation/RelNotes/2.3.0.txt
 +     1  Nikolay Martynov
 +     1  Peter Jaros
 +     1  Phil Sainty
-Index: magit/Documentation/magit-popup.org
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/magit-popup.org	2015-10-30 12:51:06.557009953 +0100
-@@ -0,0 +1,589 @@
+diff --git a/Documentation/RelNotes/2.3.1.txt b/Documentation/RelNotes/2.3.1.txt
+new file mode 100644
+index 0000000..b1d1291
+--- /dev/null
++++ b/Documentation/RelNotes/2.3.1.txt
+@@ -0,0 +1,31 @@
++Magit v2.3.1 Release Notes
++==========================
++
++Released 11 November 2015 by Jonas Bernoulli.
++
++This is a bugfix release.
++
++* `magit-stash-drop' now shows a message with the hash of the dropped
++  stash to make it easier to recover from dropping the wrong stash.
++
++* `magit-revert-buffers' now avoids needlessly connecting to unrelated
++  hosts.  It first checks whether a given file is on the same host as
++  the repository, and only if that is so it checks whether the file is
++  located inside the repository, using `file-in-directory-p', which,
++  for Tramp files, requires connecting to the remote host.
++
++* `magit-commit-message-buffer' no longer hangs when a symlink to the
++  repository is involved.
++
++This release also contains various documentation fixes and code
++clean-ups.
++
++Authors
++-------
++
++    10  Jonas Bernoulli
++     3  Noam Postavsky
++     2  Kyle Meyer
++     1  Carl Lieberman
++     1  David L. Rager
++     1  Syohei Yoshida
+diff --git a/Documentation/magit-popup.org b/Documentation/magit-popup.org
+new file mode 100644
+index 0000000..ab082b9
+--- /dev/null
++++ b/Documentation/magit-popup.org
+@@ -0,0 +1,590 @@
 +#+TITLE: Magit-Popup User Manual
 +#+AUTHOR: Jonas Bernoulli
 +#+EMAIL: jonas@bernoul.li
@@ -2469,7 +2543,7 @@ Index: magit/Documentation/magit-popup.org
 +
 +    Ignore prefix arguments.
 +
-+  This option can be overriden for individual popups.
++  This option can be overridden for individual popups.
 +  ~magit-show-refs-popup~ for example defaults to invoking the default
 +  action directly.  It only shows the popup buffer when a prefix
 +  argument is used.  See [[*Customizing existing popups]].
@@ -2648,7 +2722,8 @@ Index: magit/Documentation/magit-popup.org
 +  - ~:sequence-predicate~
 +
 +    When this function returns non-nil, then the popup uses
-+    ~:sequence-actions~ instead of ~:actions~.
++    ~:sequence-actions~ instead of ~:actions~, and does not show the
++    ~:switches~ and ~:options~.
 +
 +  - ~:sequence-actions~
 +
@@ -2708,11 +2783,12 @@ Index: magit/Documentation/magit-popup.org
 +#  LocalWords:  ARG DESC KEY's LocalWords Magit OPTVAL POPUP PREPEND
 +#  LocalWords:  Popup SHORTNAME args desc magit manpage popup popup's
 +#  LocalWords:  popups pre prepend
-Index: magit/Documentation/magit.org
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/magit.org	2015-10-30 12:50:59.604962454 +0100
-@@ -0,0 +1,5427 @@
+diff --git a/Documentation/magit.org b/Documentation/magit.org
+new file mode 100644
+index 0000000..a68658f
+--- /dev/null
++++ b/Documentation/magit.org
+@@ -0,0 +1,5426 @@
 +#+TITLE: Magit User Manual
 +#+AUTHOR: Jonas Bernoulli
 +#+EMAIL: jonas@bernoul.li
@@ -3276,9 +3352,8 @@ Index: magit/Documentation/magit.org
 +
 +  - ~%v~
 +
-+    The value the buffer is locked to, in parentheses, if it is the
-+    buffer is actually locked to its value.  An empty string
-+    otherwise.
++    The value the buffer is locked to, in parentheses, or an empty
++    string if the buffer is not locked to a value.
 +
 +  - ~%V~
 +
@@ -3288,10 +3363,10 @@ Index: magit/Documentation/magit.org
 +  - ~%t~
 +
 +    The top-level directory of the working tree of the repository, or
-+    if ~magit-uniquify-buffer-name~ is non-nil an abbreviation of that.
++    if ~magit-uniquify-buffer-names~ is non-nil an abbreviation of that.
 +
 +  The value should always contain either ~%m~ or ~%M~, ~%v~ or ~%V~, and ~%t~.
-+  If ~magit-uniquify-buffer-name~ is non-nil, then the value must end
++  If ~magit-uniquify-buffer-names~ is non-nil, then the value must end
 +  with ~%t~.
 +
 +- User Option: magit-uniquify-buffer-names
@@ -3658,7 +3733,7 @@ Index: magit/Documentation/magit.org
 +
 +  Recursively show the bodies of children of the current section.
 +  With a prefix argument show children down to the level of the
-+  currect section, and hide deeper children.
++  current section, and hide deeper children.
 +
 +- Command: magit-section-hide-children
 +
@@ -4628,7 +4703,7 @@ Index: magit/Documentation/magit.org
 +
 +  This command resets the context for diff hunks to the default height.
 +
-+The following commands quicky change what diff is being displayed
++The following commands quickly change what diff is being displayed
 +without having to using one of the diff popups.
 +
 +- Key: C-c C-d, magit-diff-while-committing
@@ -5392,7 +5467,7 @@ Index: magit/Documentation/magit.org
 +  Cancel the current editing session by returning with exit code 1.
 +  Git then cancels the commit, but leaves the file untouched.
 +
-+In additon to being used by Git, these messages may also be stored in
++In addition to being used by Git, these messages may also be stored in
 +a ring that persists until Emacs is closed.  By default the message is
 +stored at the beginning and the end of an edit session (regardless of
 +whether the session is finished successfully or was canceled).  It is
@@ -6396,7 +6471,7 @@ Index: magit/Documentation/magit.org
 +
 +- Key: P i, magit-push-implicitly
 +
-+  Push without explicitly specifing what to push.  This runs ~git push
++  Push without explicitly specifying what to push.  This runs ~git push
 +  -v~.  What is being pushed depends on various Git variables as
 +  described in the info:gitman#git-push and info:gitman#git-config
 +  manpages.
@@ -8140,10 +8215,11 @@ Index: magit/Documentation/magit.org
 +#  LocalWords:  sym texinfo theming todo topdir un unhighlighted unpulled
 +#  LocalWords:  unpushed unstage unstaged unstages unstaging untracked url
 +#  LocalWords:  versa whitespace wip workflow worktree wtree
-Index: magit/Documentation/with-editor.org
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/Documentation/with-editor.org	2015-10-30 12:51:17.893087282 +0100
+diff --git a/Documentation/with-editor.org b/Documentation/with-editor.org
+new file mode 100644
+index 0000000..53f06c6
+--- /dev/null
++++ b/Documentation/with-editor.org
 @@ -0,0 +1,259 @@
 +#+TITLE: With-Editor User Manual
 +#+AUTHOR: Jonas Bernoulli
@@ -8404,11 +8480,12 @@ Index: magit/Documentation/with-editor.org
 +
 +#  LocalWords:  Emacsclient LocalWords Magit async emacs emacsclient
 +#  LocalWords:  hg init rebase startup
-Index: magit/t/magit-tests.el
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ magit/t/magit-tests.el	2015-10-30 12:48:41.024002316 +0100
-@@ -0,0 +1,131 @@
+diff --git a/t/magit-tests.el b/t/magit-tests.el
+new file mode 100644
+index 0000000..2f7b82b
+--- /dev/null
++++ b/t/magit-tests.el
+@@ -0,0 +1,263 @@
 +;;; magit-tests.el --- tests for Magit
 +
 +;; Copyright (C) 2011-2015  The Magit Project Contributors
@@ -8443,6 +8520,109 @@ Index: magit/t/magit-tests.el
 +  `(magit-with-test-directory (magit-git "init" ".") ,@body))
 +
 +;;; Git
++
++(ert-deftest magit--with-safe-default-directory ()
++  (magit-with-test-directory
++    (let ((find-file-visit-truename nil))
++      (should (equal (magit-toplevel "repo/")
++                     (magit-toplevel (expand-file-name "repo/"))))
++      (should (equal (magit-toplevel "repo")
++                     (magit-toplevel (expand-file-name "repo/")))))))
++
++(ert-deftest magit-toplevel:basic ()
++  (let ((find-file-visit-truename nil))
++    (magit-with-test-directory
++      (magit-git "init" "repo")
++      (magit-test-magit-toplevel)
++      (should (equal (magit-toplevel   "repo/.git/")
++                     (expand-file-name "repo/")))
++      (should (equal (magit-toplevel   "repo/.git/objects/")
++                     (expand-file-name "repo/")))
++      (should (equal (magit-toplevel   "repo-link/.git/")
++                     (expand-file-name "repo-link/")))
++      (should (equal (magit-toplevel   "repo-link/.git/objects/")
++                     ;; We could theoretically return "repo-link/"
++                     ;; here by going up until `--git-dir' gives us
++                     ;; "." .  But that would be a bit risky and Magit
++                     ;; never goes there anyway, so it's not worth it.
++                     ;; But in the doc-string we say we cannot do it.
++                     (expand-file-name "repo/"))))))
++
++(ert-deftest magit-toplevel:tramp ()
++  (let ((find-file-visit-truename nil))
++    (magit-with-test-directory
++      (setq default-directory
++            (concat (format "/sudo:%s@localhost:" (user-login-name))
++                    default-directory))
++      (magit-git "init" "repo")
++      (magit-test-magit-toplevel)
++      (should (equal (magit-toplevel   "repo/.git/")
++                     (expand-file-name "repo/")))
++      (should (equal (magit-toplevel   "repo/.git/objects/")
++                     (expand-file-name "repo/")))
++      (should (equal (magit-toplevel   "repo-link/.git/")
++                     (expand-file-name "repo-link/")))
++      (should (equal (magit-toplevel   "repo-link/.git/objects/")
++                     (expand-file-name "repo/"))))))
++
++(ert-deftest magit-toplevel:submodule ()
++  (let ((find-file-visit-truename nil))
++    (magit-with-test-directory
++      (magit-git "init" "remote")
++      (let ((default-directory (expand-file-name "remote/")))
++        (magit-git "commit" "-m" "init" "--allow-empty"))
++      (magit-git "init" "super")
++      (setq default-directory (expand-file-name "super/"))
++      (magit-git "submodule" "add" "../remote" "repo/")
++      (magit-test-magit-toplevel)
++      (should (equal (magit-toplevel   ".git/modules/repo/")
++                     (expand-file-name "repo/")))
++      (should (equal (magit-toplevel   ".git/modules/repo/objects/")
++                     (expand-file-name "repo/"))))))
++
++(defun magit-test-magit-toplevel ()
++  ;; repo
++  (make-directory "repo/subdir/subsubdir" t)
++  (should (equal (magit-toplevel   "repo/")
++                 (expand-file-name "repo/")))
++  (should (equal (magit-toplevel   "repo/")
++                 (expand-file-name "repo/")))
++  (should (equal (magit-toplevel   "repo/subdir/")
++                 (expand-file-name "repo/")))
++  (should (equal (magit-toplevel   "repo/subdir/subsubdir/")
++                 (expand-file-name "repo/")))
++  ;; repo-link
++  (make-symbolic-link "repo" "repo-link")
++  (should (equal (magit-toplevel   "repo-link/")
++                 (expand-file-name "repo-link/")))
++  (should (equal (magit-toplevel   "repo-link/subdir/")
++                 (expand-file-name "repo-link/")))
++  (should (equal (magit-toplevel   "repo-link/subdir/subsubdir/")
++                 (expand-file-name "repo-link/")))
++  ;; *subdir-link
++  (make-symbolic-link "repo/subdir"           "subdir-link")
++  (make-symbolic-link "repo/subdir/subsubdir" "subsubdir-link")
++  (should (equal (magit-toplevel   "subdir-link/")
++                 (expand-file-name "repo/")))
++  (should (equal (magit-toplevel   "subdir-link/subsubdir/")
++                 (expand-file-name "repo/")))
++  (should (equal (magit-toplevel   "subsubdir-link")
++                 (expand-file-name "repo/")))
++  ;; subdir-link-indirect
++  (make-symbolic-link "subdir-link" "subdir-link-indirect")
++  (should (equal (magit-toplevel   "subdir-link-indirect")
++                 (expand-file-name "repo/")))
++  ;; wrap/*link
++  (magit-git "init" "wrap")
++  (make-symbolic-link "../repo"                  "wrap/repo-link")
++  (make-symbolic-link "../repo/subdir"           "wrap/subdir-link")
++  (make-symbolic-link "../repo/subdir/subsubdir" "wrap/subsubdir-link")
++  (should (equal (magit-toplevel   "wrap/repo-link/")
++                 (expand-file-name "wrap/repo-link/")))
++  (should (equal (magit-toplevel   "wrap/subdir-link")
++                 (expand-file-name "repo/")))
++  (should (equal (magit-toplevel   "wrap/subsubdir-link")
++                 (expand-file-name "repo/"))))
 +
 +(ert-deftest magit-get-boolean ()
 +  (magit-with-test-repository
@@ -8489,6 +8669,35 @@ Index: magit/t/magit-tests.el
 +                   (list "origin/master")))
 +    (should (equal (magit-list-remote-branch-names "origin" t)
 +                   (list "master")))))
++
++(ert-deftest magit-process:match-prompt-nil-when-no-match ()
++  (should (null (magit-process-match-prompt '("^foo: ?$") "bar: "))))
++
++(ert-deftest magit-process:match-prompt-non-nil-when-match ()
++  (should (magit-process-match-prompt '("^foo: ?$") "foo: ")))
++
++(ert-deftest magit-process:match-prompt-match-non-first-prompt ()
++  (should (magit-process-match-prompt '("^bar: ?$ " "^foo: ?$") "foo: ")))
++
++(ert-deftest magit-process:match-prompt-suffixes-prompt ()
++  (let ((prompts '("^foo: ?$")))
++    (should (equal (magit-process-match-prompt prompts "foo:")  "foo: "))
++    (should (equal (magit-process-match-prompt prompts "foo: ") "foo: "))))
++
++(ert-deftest magit-process:match-prompt-preserves-match-group ()
++  (let* ((prompts '("^foo '\\(?99:.*\\)': ?$"))
++         (prompt (magit-process-match-prompt prompts "foo 'bar':")))
++    (should (equal prompt "foo 'bar': "))
++    (should (equal (match-string 99 "foo 'bar':") "bar"))))
++
++(ert-deftest magit-process:password-prompt ()
++  (let ((magit-process-find-password-functions
++         (list (lambda (host) (when (string= host "www.host.com") "mypasswd")))))
++    (cl-letf (((symbol-function 'process-send-string)
++               (lambda (process string) string)))
++      (should (string-equal (magit-process-password-prompt
++                             nil "Password for 'www.host.com':")
++                            "mypasswd\n")))))
 +
 +;;; Status
 +

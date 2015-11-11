@@ -6,11 +6,11 @@ Subject: Do not build .elc for magit elpa package
  Makefile | 8 +++++++-
  1 file changed, 7 insertions(+), 1 deletion(-)
 
-Index: magit/Makefile
-===================================================================
---- magit.orig/Makefile	2015-10-30 12:38:21.135169577 +0100
-+++ magit/Makefile	2015-10-30 12:38:21.131169542 +0100
-@@ -56,6 +56,12 @@
+diff --git a/Makefile b/Makefile
+index 7d91cd5..97d1c32 100644
+--- a/Makefile
++++ b/Makefile
+@@ -56,6 +56,12 @@ lisp:
  	@$(RM) $(ELCS) $(ELGS) # temporary cleanup kludge
  	@$(MAKE) -C lisp lisp
  
@@ -23,7 +23,7 @@ Index: magit/Makefile
  docs:
  	@$(MAKE) -C Documentation all
  
-@@ -216,7 +222,7 @@
+@@ -216,7 +222,7 @@ define magit_pkg
  endef
  # '
  export magit_pkg
