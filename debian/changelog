@@ -2,8 +2,11 @@ magit (2.3.0-3) unstable; urgency=low
 
   * Bug fix: "maintainer address bounces", thanks to Ansgar Burchardt
     (Closes: #804654).
+  * Adding some code in prerm for problem when upgrading from elpa-magit
+    2.2.2-3. Fix: "pre-removal script fails: “No such file or directory”
+    for ‘site-lisp’ entries", thanks to Ben Finney (Closes: #803606).
 
- -- Rémi Vanicat <vanicat@debian.org>  Wed, 11 Nov 2015 10:38:41 +0100
+ -- Rémi Vanicat <vanicat@debian.org>  Wed, 11 Nov 2015 16:17:16 +0100
 
 magit (2.3.0-2) unstable; urgency=medium
 
