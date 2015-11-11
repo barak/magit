@@ -11,8 +11,4 @@ if [ "$1" = "failed-upgrade" ] ; then
     fi
 fi
 
-# Automatically added by dh_elpa
-if [ -e /var/lib/emacsen-common/state/package/installed/emacsen-common -a -x /usr/lib/emacsen-common/emacs-package-remove ] ; then
-	/usr/lib/emacsen-common/emacs-package-remove --prerm elpa-magit
-fi
-# End automatically added section
+#DEBHELPER#
