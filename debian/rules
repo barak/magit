@@ -2,7 +2,7 @@
 VERSION=2.3.1
 
 %:
-	dh $@ --parallel
+	dh $@ --with elpa --parallel
 
 override_dh_auto_build:
 	make elpa VERSION=$(VERSION)
@@ -11,10 +11,6 @@ override_dh_auto_build:
 	@echo magit-$(VERSION).tar > debian/elpa-magit.elpa
 	@echo magit-popup-$(VERSION).tar > debian/elpa-magit-popup.elpa
 	@echo with-editor-$(VERSION).tar > debian/elpa-with-editor.elpa
-
-override_dh_install:
-	dh_install
-	dh_elpa -Nmagit
 
 override_dh_auto_install:
 	@echo do not run make install
