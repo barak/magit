@@ -6,8 +6,9 @@
   <b>
     When something doesn't work as expected, then please first consult the
     <a href="http://magit.vc/manual/magit/FAQ.html">FAQ</a> and ask a
-	search engine.   If that doesn't solve your problem, then please ask for help on
-    <a href="http://emacs.stackexchange.com/questions/tagged/magit"> Emacs.Stackexchange</a>.
+	search engine.   If that doesn't solve your problem, then please ask for help on the
+    <a href="http://emacs.stackexchange.com/questions/tagged/magit">Emacs Stackexchange site</a>
+	or the <a href="https://gitter.im/magit/magit">Gitter chat</a>.
   </b>
 </p>
 ***
@@ -52,18 +53,17 @@
 Support
 =======
 
-**When something doesn't work as expected then please first see the
-[FAQ][faq].** Then also try the list of [open issues][issues] and use
+When something doesn't work as expected then please first see the
+[FAQ][faq].  Then also try the list of [open issues][issues] and use
 the search box at the top of that page to find older related issues.
 You should also consult the [manual][manual] and ask a general-purpose
 search engine.
 
-If everything else fails then ask for help on the
-**[Emacs Stackexchange site][forum]**, the
-[mailing list][list], or the
-[Gitter chat][chat].
+If that doesn't answer your question, then ask for help on the
+**[Emacs Stackexchange site][forum]**, the [mailing list][list], or
+the [Gitter chat][chat].
 
-**Please do NOT use the Github issue tracker for support requests.**
+**Please do NOT use the GitHub issue tracker for support requests.**
 **We only use it for feature requests and bug reports.**
 
 Contributing

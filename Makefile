@@ -47,6 +47,7 @@ help:
 	$(info make authors          - regenerate AUTHORS.md)
 	$(info make dist             - create tarballs)
 	$(info make elpa             - create elpa tarballs)
+	$(info make marmalade        - upload to marmalade)
 	$(info make VERSION=... bump-version)
 	$(info make VERSION=... melpa-post-release)
 	$(info -                     - fixup version strings)
@@ -87,7 +88,7 @@ test-interactive:
 	(ert t))"
 
 magit: clean-lisp
-	@$(EMACSBIN) -Q $(LOAD_PATH) --eval "(progn\
+	@$(EMACSBIN) -Q $(LOAD_PATH) --debug-init --eval "(progn\
 	(require 'magit)\
 	(global-set-key \"\\C-xg\" 'magit-status)\
 	(tool-bar-mode 0)\
@@ -259,7 +260,8 @@ endef
 #'
 export set_manual_version
 
-bump-version:
+bump-version: bump-version-1 texi
+bump-version-1:
 	@$(BATCH) --eval "(progn\
         (setq async-version \"$(ASYNC_VERSION)\")\
         (setq dash-version \"$(DASH_VERSION)\")\
@@ -271,3 +273,4 @@ melpa-post-release:
         (setq async-version \"$(ASYNC_MELPA_SNAPSHOT)\")\
         (setq dash-version \"$(DASH_MELPA_SNAPSHOT)\")\
         $$set_package_requires)"
+	git commit -a -m "reset Package-Requires for Melpa"
