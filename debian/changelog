@@ -1,3 +1,11 @@
+magit (2.4.1-1) unstable; urgency=low
+
+  * New upstream version.
+  * Bug fix: "missing info files", thanks to David Bremner (Closes:
+    #806499).
+
+ -- Rémi Vanicat <vanicat@debian.org>  Thu, 21 Jan 2016 19:24:14 +0100
+
 magit (2.3.1-2) unstable; urgency=medium
 
   * Use dh --with elpa
