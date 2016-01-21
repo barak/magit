@@ -30,6 +30,7 @@ ELS += magit-popup.el
 ELS += magit-utils.el
 ELS += magit-section.el
 ELS += magit-git.el
+ELS += magit-autorevert.el
 ELS += magit-mode.el
 ELS += magit-process.el
 ELS += magit-core.el
@@ -71,7 +72,10 @@ ifeq "$(DASH_DIR)" ""
   DASH_DIR = $(TOP)../dash
 endif
 
-CYGPATH := $(shell cygpath --version 2>/dev/null)
+SYSTYPE := $(shell $(EMACSBIN) -Q --batch --eval "(princ system-type)")
+ifeq ($(SYSTYPE), windows-nt)
+  CYGPATH := $(shell cygpath --version 2>/dev/null)
+endif
 
 ifdef CYGPATH
   LOAD_PATH ?= -L $(TOP)/lisp -L $(shell cygpath --mixed $(DASH_DIR))
