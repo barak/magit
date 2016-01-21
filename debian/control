@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 9),
 	emacs-nox | emacs, dh-elpa (>= 0.0.17), dash-el,
 	texinfo, install-info
 Standards-Version: 3.9.6
-Homepage: http://magit.github.com/magit/index.html
+Homepage: http://magit.vc/
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/magit.git
 Vcs-Git: git://anonscm.debian.org/collab-maint/magit.git
 
