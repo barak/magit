@@ -14,10 +14,10 @@ Forwarded: not-needed
  5 files changed, 6 insertions(+), 9 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 4e7db42..47f159c 100644
+index 05aa84e..8260d57 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -165,8 +165,7 @@ elpa: $(ELPA_ARCHIVES)
+@@ -166,8 +166,7 @@ elpa: $(ELPA_ARCHIVES)
  define with_editor_pkg
  (define-package "with-editor" "$(VERSION)"
    "Use the Emacsclient as $$EDITOR"
@@ -27,7 +27,7 @@ index 4e7db42..47f159c 100644
  endef
  # '
  export with_editor_pkg
-@@ -189,8 +188,7 @@ git-commit-$(VERSION).el:
+@@ -190,8 +189,7 @@ git-commit-$(VERSION).el:
  define magit_popup_pkg
  (define-package "magit-popup" "$(VERSION)"
    "Define prefix-infix-suffix command combos"
@@ -37,7 +37,7 @@ index 4e7db42..47f159c 100644
  endef
  # '
  export magit_popup_pkg
-@@ -212,7 +210,6 @@ define magit_pkg
+@@ -213,7 +211,6 @@ define magit_pkg
  (define-package "magit" "$(VERSION)"
    "A Git porcelain inside Emacs"
    '((emacs "$(EMACS_VERSION)")
@@ -46,20 +46,20 @@ index 4e7db42..47f159c 100644
      (git-commit "$(VERSION)")
      (magit-popup "$(VERSION)")))
 diff --git a/lisp/git-commit.el b/lisp/git-commit.el
-index a0cf0a0..2303230 100644
+index b7ed9d8..872c089 100644
 --- a/lisp/git-commit.el
 +++ b/lisp/git-commit.el
 @@ -11,7 +11,7 @@
  ;;	Marius Vollmer <marius.vollmer@gmail.com>
  ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
  
--;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.3.1"))
-+;; Package-Requires: ((emacs "24.4") (with-editor "2.3.1"))
+-;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.4.1"))
++;; Package-Requires: ((emacs "24.4") (with-editor "2.4.1"))
  ;; Keywords: git tools vc
  ;; Homepage: https://github.com/magit/magit
  
 diff --git a/lisp/magit-popup.el b/lisp/magit-popup.el
-index 689e680..534f57a 100644
+index 342754f..90384a5 100644
 --- a/lisp/magit-popup.el
 +++ b/lisp/magit-popup.el
 @@ -12,7 +12,7 @@
@@ -72,20 +72,20 @@ index 689e680..534f57a 100644
  ;; Homepage: https://github.com/magit/magit
  
 diff --git a/lisp/magit.el b/lisp/magit.el
-index 8270469..d2bd574 100644
+index 57f53d6..630ddf9 100644
 --- a/lisp/magit.el
 +++ b/lisp/magit.el
 @@ -16,7 +16,7 @@
  ;;	Rémi Vanicat      <vanicat@debian.org>
  ;;	Yann Hodique      <yann.hodique@gmail.com>
  
--;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.3.1") (git-commit "2.3.1") (magit-popup "2.3.1"))
-+;; Package-Requires: ((emacs "24.4") (with-editor "2.3.1") (git-commit "2.3.1") (magit-popup "2.3.1"))
+-;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.4.1") (git-commit "2.4.1") (magit-popup "2.4.1"))
++;; Package-Requires: ((emacs "24.4") (with-editor "2.4.1") (git-commit "2.4.1") (magit-popup "2.4.1"))
  ;; Keywords: git tools vc
  ;; Homepage: https://github.com/magit/magit
  
 diff --git a/lisp/with-editor.el b/lisp/with-editor.el
-index 25c970b..9e08bfd 100644
+index e59c0f5..08d4ada 100644
 --- a/lisp/with-editor.el
 +++ b/lisp/with-editor.el
 @@ -8,7 +8,7 @@

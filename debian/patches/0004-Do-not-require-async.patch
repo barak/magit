@@ -12,10 +12,10 @@ Forwarded: not-needed
  4 files changed, 3 insertions(+), 6 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 97d1c32..4e7db42 100644
+index 8b38796..05aa84e 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -166,7 +166,6 @@ define with_editor_pkg
+@@ -167,7 +167,6 @@ define with_editor_pkg
  (define-package "with-editor" "$(VERSION)"
    "Use the Emacsclient as $$EDITOR"
    '((emacs "$(EMACS_VERSION)")
@@ -23,7 +23,7 @@ index 97d1c32..4e7db42 100644
      (dash "$(DASH_VERSION)")))
  endef
  # '
-@@ -191,7 +190,6 @@ define magit_popup_pkg
+@@ -192,7 +191,6 @@ define magit_popup_pkg
  (define-package "magit-popup" "$(VERSION)"
    "Define prefix-infix-suffix command combos"
    '((emacs "$(EMACS_VERSION)")
@@ -31,7 +31,7 @@ index 97d1c32..4e7db42 100644
      (dash "$(DASH_VERSION)")))
  endef
  # '
-@@ -214,7 +212,6 @@ define magit_pkg
+@@ -215,7 +213,6 @@ define magit_pkg
  (define-package "magit" "$(VERSION)"
    "A Git porcelain inside Emacs"
    '((emacs "$(EMACS_VERSION)")
@@ -40,7 +40,7 @@ index 97d1c32..4e7db42 100644
      (with-editor "$(VERSION)")
      (git-commit "$(VERSION)")
 diff --git a/lisp/magit-popup.el b/lisp/magit-popup.el
-index e22c3be..689e680 100644
+index f99d294..342754f 100644
 --- a/lisp/magit-popup.el
 +++ b/lisp/magit-popup.el
 @@ -12,7 +12,7 @@
@@ -53,20 +53,20 @@ index e22c3be..689e680 100644
  ;; Homepage: https://github.com/magit/magit
  
 diff --git a/lisp/magit.el b/lisp/magit.el
-index 32ae48d..8270469 100644
+index 57c2cb2..57f53d6 100644
 --- a/lisp/magit.el
 +++ b/lisp/magit.el
 @@ -16,7 +16,7 @@
  ;;	Rémi Vanicat      <vanicat@debian.org>
  ;;	Yann Hodique      <yann.hodique@gmail.com>
  
--;; Package-Requires: ((emacs "24.4") (async "1.5") (dash "2.12.1") (with-editor "2.3.1") (git-commit "2.3.1") (magit-popup "2.3.1"))
-+;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.3.1") (git-commit "2.3.1") (magit-popup "2.3.1"))
+-;; Package-Requires: ((emacs "24.4") (async "1.5") (dash "2.12.1") (with-editor "2.4.1") (git-commit "2.4.1") (magit-popup "2.4.1"))
++;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.4.1") (git-commit "2.4.1") (magit-popup "2.4.1"))
  ;; Keywords: git tools vc
  ;; Homepage: https://github.com/magit/magit
  
 diff --git a/lisp/with-editor.el b/lisp/with-editor.el
-index d0b5d17..25c970b 100644
+index 3207014..e59c0f5 100644
 --- a/lisp/with-editor.el
 +++ b/lisp/with-editor.el
 @@ -8,7 +8,7 @@

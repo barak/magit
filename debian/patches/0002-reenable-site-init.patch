@@ -29,10 +29,10 @@ Author: Barak A. Pearlmutter <barak@pearlmutter.net>
  3 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/Documentation/Makefile b/Documentation/Makefile
-index da3b1f5..aae00d5 100644
+index 66369c9..84f4526 100644
 --- a/Documentation/Makefile
 +++ b/Documentation/Makefile
-@@ -23,15 +23,15 @@ texi: $(TEXIPAGES)
+@@ -20,15 +20,15 @@ texi: $(TEXIPAGES)
  	@printf "WARNING: Discard these whitespace errors before committing.\n"
  	@printf "WARNING: Also see https://github.com/magit/magit/issues/1912.\n"
  	@printf "Generating magit.texi\n"
@@ -52,10 +52,10 @@ index da3b1f5..aae00d5 100644
  	@echo >> with-editor.texi
  
 diff --git a/Makefile b/Makefile
-index 405f3bc..7d91cd5 100644
+index 1fa0e8c..330dd03 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -82,7 +82,7 @@ test:
+@@ -83,7 +83,7 @@ test:
  	(ert-run-tests-batch-and-exit))"
  
  test-interactive:
@@ -65,10 +65,10 @@ index 405f3bc..7d91cd5 100644
  	(ert t))"
  
 diff --git a/default.mk b/default.mk
-index 32dfdcf..4e59a63 100644
+index a69bed1..ab51b0f 100644
 --- a/default.mk
 +++ b/default.mk
-@@ -81,7 +81,7 @@ endif
+@@ -85,7 +85,7 @@ endif
  
  endif # ifndef LOAD_PATH
  
