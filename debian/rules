@@ -1,5 +1,5 @@
 #!/usr/bin/make -f
-VERSION=2.4.1
+VERSION=2.5.0
 
 %:
 	dh $@ --with elpa --parallel
@@ -10,14 +10,13 @@ override_dh_auto_build:
 	@echo git-commit-$(VERSION).el > debian/elpa-git-commit.elpa
 	@echo magit-$(VERSION).tar > debian/elpa-magit.elpa
 	@echo magit-popup-$(VERSION).tar > debian/elpa-magit-popup.elpa
-	@echo with-editor-$(VERSION).tar > debian/elpa-with-editor.elpa
 
 override_dh_auto_install:
 	@echo do not run make install
 
 override_dh_clean:
 	dh_clean
-	rm -f debian/elpa-git-commit.elpa debian/elpa-magit.elpa debian/elpa-magit-popup.elpa debian/elpa-with-editor.elpa
+	rm -f debian/elpa-git-commit.elpa debian/elpa-magit.elpa debian/elpa-magit-popup.elpa
 
 
 override_dh_auto_test:

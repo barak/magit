@@ -23,13 +23,6 @@ Description: Emacs interface for Git
  changes.  There is support for cherry picking, reverting, merging,
  rebasing, and other common Git operations.
 
-Package: elpa-with-editor
-Architecture: all
-Depends: ${misc:Depends}, dash-el
-Description: Call program using Emacs as $EDITOR
- With this package, you can call program from Emacs such that they
- will use Emacs as an editor.
-
 Package: elpa-git-commit
 Architecture: all
 Depends: ${misc:Depends}, dash-el, elpa-with-editor
