@@ -5,19 +5,11 @@ VERSION=2.5.0
 	dh $@ --with elpa --parallel
 
 override_dh_auto_build:
-	make elpa VERSION=$(VERSION)
-	tar --delete --file magit-$(VERSION).tar magit-$(VERSION)/COPYING
-	@echo git-commit-$(VERSION).el > debian/elpa-git-commit.elpa
-	@echo magit-$(VERSION).tar > debian/elpa-magit.elpa
-	@echo magit-popup-$(VERSION).tar > debian/elpa-magit-popup.elpa
+	make lisp/magit-version.el
+	@echo do not run make
 
 override_dh_auto_install:
 	@echo do not run make install
-
-override_dh_clean:
-	dh_clean
-	rm -f debian/elpa-git-commit.elpa debian/elpa-magit.elpa debian/elpa-magit-popup.elpa
-
 
 override_dh_auto_test:
 	@echo Testing disabled, discussion in comment below.
