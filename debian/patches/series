@@ -1,5 +1,4 @@
 0001-upstream-repo-files.patch
-0002-reenable-site-init.patch
 0003-Do-not-build-.elc-for-magit-elpa-package.patch
 0004-Do-not-require-async.patch
 0005-Remove-dependency-on-dash-elpa-package.patch
