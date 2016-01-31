@@ -15,10 +15,6 @@ all: info
 # use "%.texi: %.org".  Instead we have to hardcode each file
 # using a shared target.
 texi: $(TEXIPAGES)
-	@printf "Generating texi files\n"
-	@printf "WARNING: This creates whitespace errors in code blocks.\n"
-	@printf "WARNING: Discard these whitespace errors before committing.\n"
-	@printf "WARNING: Also see https://github.com/magit/magit/issues/1912.\n"
 	@printf "Generating magit.texi\n"
 	@$(EMACSBIN) -batch -Q $(DOC_LOAD_PATH) \
 	-l ox-texinfo+.el magit.org -f org-texinfo+export-to-texinfo
@@ -27,10 +23,6 @@ texi: $(TEXIPAGES)
 	@$(EMACSBIN) -batch -Q $(DOC_LOAD_PATH) \
 	-l ox-texinfo+.el magit-popup.org -f org-texinfo+export-to-texinfo
 	@echo >> magit-popup.texi
-	@printf "Generating with-editor.texi\n"
-	@$(EMACSBIN) -batch -Q $(DOC_LOAD_PATH) \
-	-l ox-texinfo+.el with-editor.org -f org-texinfo+export-to-texinfo
-	@echo >> with-editor.texi
 
 info: $(INFOPAGES) dir
 
@@ -38,7 +30,7 @@ info: $(INFOPAGES) dir
 	@printf "Generating $@\n"
 	@$(MAKEINFO) --no-split $< -o $@
 
-dir: magit.info magit-popup.info with-editor.info
+dir: magit.info magit-popup.info
 	@printf "Generating dir\n"
 	@echo $^ | xargs -n 1 $(INSTALL_INFO) --dir=$@
 
