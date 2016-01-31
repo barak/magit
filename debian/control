@@ -8,8 +8,8 @@ Build-Depends: debhelper (>= 9),
 	texinfo, install-info
 Standards-Version: 3.9.6
 Homepage: http://magit.vc/
-Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/magit.git
-Vcs-Git: git://anonscm.debian.org/collab-maint/magit.git
+Vcs-Browser: https://anonscm.debian.org/cgit/pkg-emacsen/pkg/magit.git
+Vcs-Git: https://anonscm.debian.org/git/pkg-emacsen/pkg/magit.git
 
 Package: elpa-magit
 Architecture: all
