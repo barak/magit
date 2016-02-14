@@ -1,3 +1,9 @@
+magit (2.5.0-2) unstable; urgency=medium
+
+  * Add Breaks on older magit to make piupart happy (Closes: #814620)
+
+ -- Rémi Vanicat <vanicat@debian.org>  Sun, 14 Feb 2016 10:10:12 +0100
+
 magit (2.5.0-1) unstable; urgency=medium
 
   * New upstream version.
