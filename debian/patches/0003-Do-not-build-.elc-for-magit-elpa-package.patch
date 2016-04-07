@@ -3,20 +3,17 @@ Date: Sun, 23 Aug 2015 10:20:17 +0200
 Subject: Do not build .elc for magit elpa package
 
 ---
- Makefile | 6 ++++++
- 1 file changed, 6 insertions(+)
+ Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/Makefile b/Makefile
-index afa85df..79ddcea 100644
+index afa85df..cb2b69b 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -54,6 +54,12 @@ lisp:
+@@ -54,6 +54,9 @@ lisp:
  	@$(RM) $(ELCS) $(ELGS) # temporary cleanup kludge
  	@$(MAKE) -C lisp lisp
  
-+lisp/magit-version.el:
-+	@$(MAKE) -C lisp magit-version.el
-+
 +lisp/magit-autoloads.el:
 +	@$(MAKE) -C lisp magit-autoloads.el
 +

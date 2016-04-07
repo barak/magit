@@ -5,7 +5,6 @@ VERSION=2.5.0
 	dh $@ --with elpa --parallel
 
 override_dh_auto_build:
-	make lisp/magit-version.el
 	make info
 	@echo do not run make
 
