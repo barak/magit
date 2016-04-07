@@ -37,15 +37,15 @@ index 883088d..45db0d1 100644
  ;; Homepage: https://github.com/magit/magit
  
 diff --git a/lisp/magit.el b/lisp/magit.el
-index 2acdba4..45e814f 100644
+index c725618..0cf12bd 100644
 --- a/lisp/magit.el
 +++ b/lisp/magit.el
 @@ -16,7 +16,7 @@
  ;;	Rémi Vanicat      <vanicat@debian.org>
  ;;	Yann Hodique      <yann.hodique@gmail.com>
  
--;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.5.0") (git-commit "2.4.1") (magit-popup "2.4.1"))
-+;; Package-Requires: ((emacs "24.4") (with-editor "2.5.0") (git-commit "2.4.1") (magit-popup "2.4.1"))
+-;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.5.0") (git-commit "2.5.0") (magit-popup "2.5.0"))
++;; Package-Requires: ((emacs "24.4") (with-editor "2.5.0") (git-commit "2.5.0") (magit-popup "2.5.0"))
  ;; Keywords: git tools vc
  ;; Homepage: https://github.com/magit/magit
  

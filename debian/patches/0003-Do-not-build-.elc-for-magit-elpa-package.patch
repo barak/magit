@@ -7,7 +7,7 @@ Subject: Do not build .elc for magit elpa package
  1 file changed, 6 insertions(+)
 
 diff --git a/Makefile b/Makefile
-index f674afa..47e3669 100644
+index afa85df..79ddcea 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -54,6 +54,12 @@ lisp:

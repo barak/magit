@@ -8,10 +8,10 @@ It is not needed for debian package.
  lisp/magit.el       | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-Index: magit/lisp/magit-popup.el
-===================================================================
---- magit.orig/lisp/magit-popup.el	2016-01-31 12:16:36.690371994 +0100
-+++ magit/lisp/magit-popup.el	2016-01-31 12:16:49.000000000 +0100
+diff --git a/lisp/magit-popup.el b/lisp/magit-popup.el
+index 1a7f587..883088d 100644
+--- a/lisp/magit-popup.el
++++ b/lisp/magit-popup.el
 @@ -12,7 +12,7 @@
  ;; Author: Jonas Bernoulli <jonas@bernoul.li>
  ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
@@ -21,16 +21,16 @@ Index: magit/lisp/magit-popup.el
  ;; Keywords: bindings
  ;; Homepage: https://github.com/magit/magit
  
-Index: magit/lisp/magit.el
-===================================================================
---- magit.orig/lisp/magit.el	2016-01-31 12:16:36.690371994 +0100
-+++ magit/lisp/magit.el	2016-01-31 12:16:49.000000000 +0100
+diff --git a/lisp/magit.el b/lisp/magit.el
+index 0f7def8..c725618 100644
+--- a/lisp/magit.el
++++ b/lisp/magit.el
 @@ -16,7 +16,7 @@
  ;;	Rémi Vanicat      <vanicat@debian.org>
  ;;	Yann Hodique      <yann.hodique@gmail.com>
  
--;; Package-Requires: ((emacs "24.4") (async "1.5") (dash "2.12.1") (with-editor "2.5.0") (git-commit "2.4.1") (magit-popup "2.4.1"))
-+;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.5.0") (git-commit "2.4.1") (magit-popup "2.4.1"))
+-;; Package-Requires: ((emacs "24.4") (async "1.5") (dash "2.12.1") (with-editor "2.5.0") (git-commit "2.5.0") (magit-popup "2.5.0"))
++;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.5.0") (git-commit "2.5.0") (magit-popup "2.5.0"))
  ;; Keywords: git tools vc
  ;; Homepage: https://github.com/magit/magit
  
