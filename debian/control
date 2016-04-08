@@ -6,7 +6,7 @@ Uploaders: Timo Juhani Lindfors <timo.lindfors@iki.fi>, Rémi Vanicat <vanicat@d
 Build-Depends: debhelper (>= 9),
 	emacs-nox | emacs, dh-elpa (>= 0.0.17), dash-el,
 	texinfo, install-info
-Standards-Version: 3.9.6
+Standards-Version: 3.9.7
 Homepage: http://magit.vc/
 Vcs-Browser: https://anonscm.debian.org/cgit/pkg-emacsen/pkg/magit.git
 Vcs-Git: https://anonscm.debian.org/git/pkg-emacsen/pkg/magit.git
