@@ -16,7 +16,7 @@
 ;;	Rémi Vanicat      <vanicat@debian.org>
 ;;	Yann Hodique      <yann.hodique@gmail.com>
 
-;; Package-Requires: ((emacs "24.4") (async "1.5") (dash "2.12.1") (with-editor "2.5.0") (git-commit "2.5.0") (magit-popup "2.5.0"))
+;; Package-Requires: ((emacs "24.4") (async "1.5") (dash "2.12.1") (with-editor "2.5.0") (git-commit "2.6.0") (magit-popup "2.6.0"))
 ;; Keywords: git tools vc
 ;; Homepage: https://github.com/magit/magit
 
@@ -640,8 +640,8 @@ Do so depending on the value of `status.showUntrackedFiles'."
             (magit-insert-heading "Untracked files:")
             (dolist (file files)
               (magit-insert-section (file file)
-                (insert (propertize file 'face 'magit-filename) ?\n))))
-          (insert ?\n))))))
+                (insert (propertize file 'face 'magit-filename) ?\n)))
+            (insert ?\n)))))))
 
 (defun magit-insert-un/tracked-files-1 (files directory)
   (while (and files (string-prefix-p (or directory "") (car files)))
@@ -1143,7 +1143,10 @@ FILE must be relative to the top directory of the repository."
           (setq magit-buffer-revision  (magit-rev-format "%H" rev)
                 magit-buffer-refname   rev
                 magit-buffer-file-name (expand-file-name file topdir))
-          (let ((buffer-file-name magit-buffer-file-name))
+          (let ((buffer-file-name magit-buffer-file-name)
+                (after-change-major-mode-hook
+                 (remq 'global-diff-hl-mode-enable-in-buffers
+                       after-change-major-mode-hook)))
             (normal-mode t))
           (setq buffer-read-only t)
           (set-buffer-modified-p nil)
