@@ -1,5 +1,5 @@
 #!/usr/bin/make -f
-VERSION=2.5.0
+VERSION=2.6.1
 
 %:
 	dh $@ --with elpa --parallel
