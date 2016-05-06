@@ -16,7 +16,7 @@
 ;;	Rémi Vanicat      <vanicat@debian.org>
 ;;	Yann Hodique      <yann.hodique@gmail.com>
 
-;; Package-Requires: ((emacs "24.4") (async "1.5") (dash "2.12.1") (with-editor "2.5.0") (git-commit "2.6.0") (magit-popup "2.6.0"))
+;; Package-Requires: ((emacs "24.4") (async "1.5") (dash "2.12.1") (with-editor "2.5.1") (git-commit "2.6.1") (magit-popup "2.6.1"))
 ;; Keywords: git tools vc
 ;; Homepage: https://github.com/magit/magit
 
@@ -1795,10 +1795,11 @@ merge.
   "Merge commit REV into the current branch; and edit message.
 Perform the merge and prepare a commit message but let the user
 edit it.
-\n(git merge --edit [ARGS] rev)"
+\n(git merge --edit --no-ff [ARGS] rev)"
   (interactive (list (magit-read-other-branch-or-commit "Merge")
                      (magit-merge-arguments)))
   (magit-merge-assert)
+  (cl-pushnew "--no-ff" args :test #'equal)
   (with-editor "GIT_EDITOR"
     (let ((magit-process-popup-time -1))
       (magit-run-git-async "merge" "--edit" args rev))))
@@ -1808,10 +1809,11 @@ edit it.
   "Merge commit REV into the current branch; pretending it failed.
 Pretend the merge failed to give the user the opportunity to
 inspect the merge and change the commit message.
-\n(git merge --no-commit [ARGS] rev)"
+\n(git merge --no-commit --no-ff [ARGS] rev)"
   (interactive (list (magit-read-other-branch-or-commit "Merge")
                      (magit-merge-arguments)))
   (magit-merge-assert)
+  (cl-pushnew "--no-ff" args :test #'equal)
   (magit-run-git "merge" "--no-commit" args rev))
 
 ;;;###autoload
@@ -2274,6 +2276,7 @@ the current repository."
     map)
   "Keymap for `magit-file-mode'.")
 
+;;;###autoload (autoload 'magit-file-popup "magit" nil t)
 (magit-define-popup magit-file-popup
   "Popup console for Magit commands in file-visiting buffers."
   :actions '((?s "Stage"     magit-stage-file)
