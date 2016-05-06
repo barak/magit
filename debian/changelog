@@ -1,3 +1,9 @@
+magit (2.6.2-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Rémi Vanicat <vanicat@debian.org>  Fri, 06 May 2016 16:52:53 +0200
+
 magit (2.6.1-1) unstable; urgency=low
 
   * Standards-Version: 3.9.7, no changec needed
