@@ -2,8 +2,9 @@ magit (2.6.2-2) unstable; urgency=medium
 
   * Use dh-elpa for generating *-pkg.el files
     needed for better version management
+  * Using Built-Using
 
- -- Rémi Vanicat <vanicat@debian.org>  Mon, 09 May 2016 06:24:08 +0200
+ -- Rémi Vanicat <vanicat@debian.org>  Mon, 09 May 2016 06:28:25 +0200
 
 magit (2.6.2-1) unstable; urgency=low
 
