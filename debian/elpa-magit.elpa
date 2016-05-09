@@ -1,4 +1,3 @@
-debian/magit-pkg.el
 lisp/magit.el
 lisp/magit-apply.el
 lisp/git-rebase.el

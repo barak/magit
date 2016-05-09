@@ -1,11 +1,14 @@
 #!/usr/bin/make -f
-VERSION=2.6.1
+include /usr/share/dpkg/pkg-info.mk
 
 %:
 	dh $@ --with elpa --parallel
 
 override_dh_auto_build:
 	make info
+	sed -i lisp/magit.el -e "/;; Homepage: https:..github.com.magit./a;; Version:$(DEB_VERSION_UPSTREAM)"
+	sed -i lisp/git-commit.el -e "/;; Homepage: https:..github.com.magit./a;; Version:$(DEB_VERSION_UPSTREAM)"
+	sed -i lisp/magit-popup.el -e "/;; Homepage: https:..github.com.magit./a;; Version:$(DEB_VERSION_UPSTREAM)"
 	@echo do not run make
 
 override_dh_auto_install:
@@ -13,6 +16,13 @@ override_dh_auto_install:
 
 override_dh_auto_test:
 	@echo Testing disabled, discussion in comment below.
+
+override_dh_clean:
+	sed -i lisp/magit.el -e "/;; Version:$(DEB_VERSION_UPSTREAM)/d"
+	sed -i lisp/git-commit.el -e "/;; Version:$(DEB_VERSION_UPSTREAM)/d"
+	sed -i lisp/magit-popup.el -e "/;; Version:$(DEB_VERSION_UPSTREAM)/d"
+	dh_clean
+
 
 # "make test" runs a test suite, which works fine on a development
 # environment, but not on the autobuilders.  To get it to work on the
