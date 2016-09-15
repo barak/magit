@@ -19,5 +19,4 @@ lisp/magit-sequence.el
 lisp/magit-stash.el
 lisp/magit-submodule.el
 lisp/magit-utils.el
-lisp/magit-version.el
 lisp/magit-wip.el
