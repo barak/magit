@@ -11,41 +11,41 @@ system.
  3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/lisp/git-commit.el b/lisp/git-commit.el
-index af28c5b..623fd6b 100644
+index 38e4e94..623fd6b 100644
 --- a/lisp/git-commit.el
 +++ b/lisp/git-commit.el
 @@ -11,7 +11,7 @@
  ;;	Marius Vollmer <marius.vollmer@gmail.com>
  ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
  
--;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.5.1"))
+-;; Package-Requires: ((emacs "24.4") (dash "2.13.0") (with-editor "2.5.1"))
 +;; Package-Requires: ((emacs "24.4") (with-editor "2.5.1"))
  ;; Keywords: git tools vc
  ;; Homepage: https://github.com/magit/magit
  
 diff --git a/lisp/magit-popup.el b/lisp/magit-popup.el
-index 221217b..b5dc9df 100644
+index 68161a6..fda24da 100644
 --- a/lisp/magit-popup.el
 +++ b/lisp/magit-popup.el
 @@ -12,7 +12,7 @@
  ;; Author: Jonas Bernoulli <jonas@bernoul.li>
  ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
  
--;; Package-Requires: ((emacs "24.4") (dash "2.12.1"))
+-;; Package-Requires: ((emacs "24.4") (dash "2.13.0"))
 +;; Package-Requires: ((emacs "24.4"))
  ;; Keywords: bindings
  ;; Homepage: https://github.com/magit/magit
  
 diff --git a/lisp/magit.el b/lisp/magit.el
-index dfa7484..20b0ae0 100644
+index ad1ed25..57aedd1 100644
 --- a/lisp/magit.el
 +++ b/lisp/magit.el
 @@ -16,7 +16,7 @@
  ;;	Rémi Vanicat      <vanicat@debian.org>
  ;;	Yann Hodique      <yann.hodique@gmail.com>
  
--;; Package-Requires: ((emacs "24.4") (dash "2.12.1") (with-editor "2.5.1") (git-commit "2.6.2") (magit-popup "2.6.2"))
-+;; Package-Requires: ((emacs "24.4") (with-editor "2.5.1") (git-commit "2.6.2") (magit-popup "2.6.2"))
+-;; Package-Requires: ((emacs "24.4") (dash "2.13.0") (with-editor "2.5.1") (git-commit "2.7.0") (magit-popup "2.7.0"))
++;; Package-Requires: ((emacs "24.4") (with-editor "2.5.1") (git-commit "2.7.0") (magit-popup "2.7.0"))
  ;; Keywords: git tools vc
  ;; Homepage: https://github.com/magit/magit
  
