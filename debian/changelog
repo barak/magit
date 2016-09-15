@@ -1,3 +1,10 @@
+magit (2.8.0-1) unstable; urgency=medium
+
+  * New upstream version
+  * use dh-elpa to find upstream version
+
+ -- Rémi Vanicat <vanicat@debian.org>  Thu, 15 Sep 2016 20:11:09 +0200
+
 magit (2.7.0-1) unstable; urgency=medium
 
   * Use dh-elpa for generating *-pkg.el files
