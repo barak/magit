@@ -29,8 +29,8 @@ Package: elpa-git-commit
 Architecture: all
 Depends: ${misc:Depends}, dash-el, ${elpa:Depends}
 Built-Using: ${misc:Built-Using}
-Description: Major mode for edditing git commit message
- A mode for edditing COMMIT_MSG file from git in Emacs.
+Description: Major mode for editing git commit message
+ A mode for editing COMMIT_MSG file from git in Emacs.
 
 Package: elpa-magit-popup
 Architecture: all
