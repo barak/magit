@@ -9,7 +9,7 @@ It is not needed for debian package.
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/lisp/magit-popup.el b/lisp/magit-popup.el
-index 68c58a0c..4c90d492 100644
+index fd1e6cc1..ec8f1053 100644
 --- a/lisp/magit-popup.el
 +++ b/lisp/magit-popup.el
 @@ -12,7 +12,7 @@
@@ -22,15 +22,15 @@ index 68c58a0c..4c90d492 100644
  ;; Homepage: https://github.com/magit/magit
  
 diff --git a/lisp/magit.el b/lisp/magit.el
-index 6abc346d..386dbdf0 100644
+index ea002865..ab27c293 100644
 --- a/lisp/magit.el
 +++ b/lisp/magit.el
 @@ -16,7 +16,7 @@
  ;;	Rémi Vanicat      <vanicat@debian.org>
  ;;	Yann Hodique      <yann.hodique@gmail.com>
  
--;; Package-Requires: ((emacs "24.4") (async "1.9") (dash "2.13.0") (with-editor "2.5.8") (git-commit "2.8.0") (magit-popup "2.8.0"))
-+;; Package-Requires: ((emacs "24.4") (dash "2.13.0") (with-editor "2.5.8") (git-commit "2.8.0") (magit-popup "2.8.0"))
+-;; Package-Requires: ((emacs "24.4") (async "1.9") (dash "2.13.0") (with-editor "2.5.9") (git-commit "2.9.0") (magit-popup "2.9.0"))
++;; Package-Requires: ((emacs "24.4") (dash "2.13.0") (with-editor "2.5.9") (git-commit "2.9.0") (magit-popup "2.9.0"))
  ;; Keywords: git tools vc
  ;; Homepage: https://github.com/magit/magit
  
