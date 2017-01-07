@@ -22,7 +22,7 @@ Released 7 December 2016 by Jonas Bernoulli.
 We are pleased to announce the release of Magit version 2.9.0,
 representing 250 commits by 18 people over 15 weeks.
 
-Also see http://emacsair.me/2016/12/07/magit-2.9.
+Also see https://emacsair.me/2016/12/07/magit-2.9.
 
 Breaking changes since v2.8.0
 -----------------------------
@@ -78,7 +78,7 @@ Breaking changes since v2.8.0
   "magit-popup.el".  Now we don't need that safety net anymore.  #2868
 
 * If, and only if, point is on a removed line in a diff, then "RET"
-  now jump to the last commit which still had that line, not the
+  now jumps to the last commit which still had that line, not the
   commit which removed that line.  Staged changes are excluded from
   this new behavior because in that case it seems favorable to always
   visit the file in the working tree to make further changes.  #2755
@@ -182,7 +182,7 @@ Changes since v2.8.0
   when jumping to the file in the working tree from a diff that wasn't
   about changes in the working tree).  #2828
 
-* When visiting a file or blob buffer by pressing `RET` while point is
+* When visiting a file or blob buffer by pressing "RET" while point is
   inside a diff, then the buffer may be widened but only if necessary.
   If it isn't necessary to widen the buffer to jump to the appropriate
   location, because that position falls into the narrowed region, then
@@ -202,8 +202,8 @@ Changes since v2.8.0
   italic).  I recommend you customize the above option to use this
   function instead of one of the functions mentioned below.
 
-  The new functions `magit-diff-highlight-hunk-region-using-overlay'
-  and `magit-diff-highlight-hunk-region-using-overlay' draw one-pixel
+  The new functions `magit-diff-highlight-hunk-region-using-overlays'
+  and `magit-diff-highlight-hunk-region-using-underline' draw one-pixel
   lines before and after the hunk-internal region.  Both of these
   functions have (different) glitches and due to limitations of Emacs'
   display engine it is not possible to fix those.  #2293, #2758, #2791
@@ -274,8 +274,8 @@ Changes since v2.8.0
 * The environment variable `INSIDE_EMACS' is now set when calling git.
   #2789
 
-* `magit-define-popup' now allows specify `:max-action-columns' per
-  section by using a function that return a different value based on
+* `magit-define-popup' now allows specifying `:max-action-columns' per
+  section by using a function that returns a different value based on
   the heading, which is passed as argument.  964fcbe0
 
 * Added support for new gpg status letters X, Y, R, and E.  #2845
@@ -306,7 +306,7 @@ Fixes since v2.8.0
   the current branch is being rebased onto its upstream in order to
   display that information in the status buffer.  9c946ee3
 
-* On 32bit systems `magit-format-log-margin' failed because it tried
+* On 32-bit systems `magit-format-log-margin' failed because it tried
   to truncate a time float that was too large for that.  #2765
 
 * On Emacs v25.1 the hunk-internal region flashed briefly on
@@ -371,7 +371,7 @@ Fixes since v2.8.0
 
 * The user name and email, which are displayed when reading a gpg key
   from the user, were not stripped from the chosen value before being
-  handed of to git.  #2761
+  handed off to git.  #2761
 
 * When the upstream of the current branch is a remote whose url isn't
   configured then that caused an error when refreshing the status
