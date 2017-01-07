@@ -1,9 +1,13 @@
-magit (2.9.0-2) UNRELEASED; urgency=medium
+magit (2.10.0-1) UNRELEASED; urgency=medium
 
+  [ Sean Whitton ]
   * Team upload.
   * Fix typo in elpa-git-commit's description.
 
- -- Sean Whitton <spwhitton@spwhitton.name>  Thu, 29 Dec 2016 20:27:52 +0000
+  [ Rémi Vanicat ]
+  * New upstream version
+
+ -- Rémi Vanicat <vanicat@debian.org>  Sat, 07 Jan 2017 13:55:44 +0100
 
 magit (2.9.0-1) unstable; urgency=medium
 
