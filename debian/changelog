@@ -6,6 +6,7 @@ magit (2.10.0-1) UNRELEASED; urgency=medium
 
   [ Rémi Vanicat ]
   * New upstream version
+  * debian/watch: dowload the "source" archive
 
  -- Rémi Vanicat <vanicat@debian.org>  Sat, 07 Jan 2017 13:55:44 +0100
 
