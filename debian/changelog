@@ -1,9 +1,9 @@
-magit (2.10.0-2) UNRELEASED; urgency=medium
+magit (2.10.0-2) unstable; urgency=medium
 
   * Team upload.
   * Add files new in this upstream version to d/elpa-magit.elpa.
 
- -- Sean Whitton <spwhitton@spwhitton.name>  Sun, 15 Jan 2017 10:26:34 -0700
+ -- Sean Whitton <spwhitton@spwhitton.name>  Sun, 15 Jan 2017 10:34:53 -0700
 
 magit (2.10.0-1) unstable; urgency=medium
 
