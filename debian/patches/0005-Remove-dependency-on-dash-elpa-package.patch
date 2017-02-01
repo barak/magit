@@ -11,7 +11,7 @@ system.
  3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/lisp/git-commit.el b/lisp/git-commit.el
-index 9de53234..0de2dbff 100644
+index 266cf5c..30797d0 100644
 --- a/lisp/git-commit.el
 +++ b/lisp/git-commit.el
 @@ -11,7 +11,7 @@
@@ -24,7 +24,7 @@ index 9de53234..0de2dbff 100644
  ;; Homepage: https://github.com/magit/magit
  
 diff --git a/lisp/magit-popup.el b/lisp/magit-popup.el
-index ec8f1053..3f4bbb51 100644
+index ec8f105..3f4bbb5 100644
 --- a/lisp/magit-popup.el
 +++ b/lisp/magit-popup.el
 @@ -12,7 +12,7 @@
@@ -37,15 +37,15 @@ index ec8f1053..3f4bbb51 100644
  ;; Homepage: https://github.com/magit/magit
  
 diff --git a/lisp/magit.el b/lisp/magit.el
-index ab27c293..60153ea6 100644
+index 1f43317..86c7102 100644
 --- a/lisp/magit.el
 +++ b/lisp/magit.el
 @@ -16,7 +16,7 @@
  ;;	Rémi Vanicat      <vanicat@debian.org>
  ;;	Yann Hodique      <yann.hodique@gmail.com>
  
--;; Package-Requires: ((emacs "24.4") (dash "2.13.0") (with-editor "2.5.9") (git-commit "2.9.0") (magit-popup "2.9.0"))
-+;; Package-Requires: ((emacs "24.4") (with-editor "2.5.9") (git-commit "2.9.0") (magit-popup "2.9.0"))
+-;; Package-Requires: ((emacs "24.4") (dash "2.13.0") (with-editor "2.5.9") (git-commit "2.10.0") (magit-popup "2.10.0"))
++;; Package-Requires: ((emacs "24.4") (with-editor "2.5.9") (git-commit "2.10.0") (magit-popup "2.10.0"))
  ;; Keywords: git tools vc
  ;; Homepage: https://github.com/magit/magit
  
