@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Debian Emacs addons team <pkg-emacsen-addons@lists.alioth.debian.org>
 Uploaders: Timo Juhani Lindfors <timo.lindfors@iki.fi>, Rémi Vanicat <vanicat@debian.org>, Barak A. Pearlmutter <bap@debian.org>
 Build-Depends: debhelper (>= 9),
-	emacs-nox | emacs, dh-elpa (>= 0.0.17), dash-el,
+	emacs-nox | emacs, dh-elpa (>= 0.0.17), elpa-dash,
 	texinfo, install-info
 Standards-Version: 3.9.8
 Homepage: http://magit.vc/
@@ -16,7 +16,7 @@ Architecture: all
 Provides: magit
 Replaces: magit (<< 2.2.2-3)
 Breaks: magit (<< 2.2.2-3)
-Depends: ${misc:Depends}, git, dash-el, ${elpa:Depends}
+Depends: ${misc:Depends}, git, ${elpa:Depends}
 Built-Using: ${misc:Built-Using}
 Description: Emacs interface for Git
  With Magit, you can inspect and modify your Git repositories with
@@ -27,14 +27,14 @@ Description: Emacs interface for Git
 
 Package: elpa-git-commit
 Architecture: all
-Depends: ${misc:Depends}, dash-el, ${elpa:Depends}
+Depends: ${misc:Depends}, ${elpa:Depends}
 Built-Using: ${misc:Built-Using}
 Description: Major mode for editing git commit message
  A mode for editing COMMIT_MSG file from git in Emacs.
 
 Package: elpa-magit-popup
 Architecture: all
-Depends: ${misc:Depends}, dash-el, ${elpa:Depends}
+Depends: ${misc:Depends}, ${elpa:Depends}
 Built-Using: ${misc:Built-Using}
 Description: Use popup like Magit
  Magit use popup to run different git function and select the option
