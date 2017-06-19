@@ -2,8 +2,10 @@ magit (2.10.3-1) unstable; urgency=medium
 
   * New upstream version
   * Normal elpa dependency for dash
+  * Build depend on newer dh-elpa
+  * Enhances: emacs, emacs24, emacs25 and git
 
- -- Rémi Vanicat <vanicat@debian.org>  Sun, 18 Jun 2017 13:13:57 +0200
+ -- Rémi Vanicat <vanicat@debian.org>  Mon, 19 Jun 2017 12:45:08 +0200
 
 magit (2.10.1-1) unstable; urgency=medium
 
