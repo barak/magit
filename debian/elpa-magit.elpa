@@ -31,3 +31,5 @@ lisp/magit-subtree.el
 lisp/magit-utils.el
 lisp/magit-wip.el
 lisp/magit-worktree.el
+lisp/magit-bookmark.el
+lisp/magit-imenu.el

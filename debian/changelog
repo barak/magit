@@ -1,8 +1,9 @@
 magit (2.11.0-1) unstable; urgency=medium
 
   * New upstream version
+  * Add magit-bookmark.el and magit-imenu.el to elpa-magit
 
- -- Rémi Vanicat <vanicat@debian.org>  Fri, 15 Sep 2017 10:14:46 +0200
+ -- Rémi Vanicat <vanicat@debian.org>  Sat, 16 Sep 2017 14:57:13 +0200
 
 magit (2.10.3-1) unstable; urgency=medium
 
