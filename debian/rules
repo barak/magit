@@ -4,7 +4,7 @@ include /usr/share/dpkg/pkg-info.mk
 export DEB_VERSION_UPSTREAM
 
 %:
-	dh $@ --with elpa --parallel
+	dh $@ --with elpa
 
 override_dh_auto_build:
 	make info
