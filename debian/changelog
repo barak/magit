@@ -1,3 +1,9 @@
+magit (2.12.1-1) UNRELEASED; urgency=medium
+
+  * New upstream version
+
+ -- Rémi Vanicat <vanicat@debian.org>  Tue, 03 Apr 2018 05:30:37 +0200
+
 magit (2.11.0-1) unstable; urgency=medium
 
   * New upstream version
