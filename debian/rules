@@ -13,7 +13,7 @@ override_dh_auto_build:
 override_dh_auto_install:
 	@echo do not run make install
 
-override_dh_auto_test:
+override_dh_elpa_test:
 	@echo Testing disabled, discussion in comment below.
 
 override_dh_clean:
