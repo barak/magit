@@ -33,17 +33,6 @@ Built-Using: ${misc:Built-Using}
 Description: Major mode for editing git commit message
  A mode for editing COMMIT_MSG file from git in Emacs.
 
-Package: elpa-magit-popup
-Architecture: all
-Depends: ${misc:Depends}, ${elpa:Depends}
-Built-Using: ${misc:Built-Using}
-Enhances: emacs, emacs24, emacs25
-Description: Use popup like Magit
- Magit use popup to run different git function and select the option
- you want
- .
- This package allow you to use those popup in other Emacs mode.
-
 Package: magit
 Priority: extra
 Section: oldlibs
