@@ -3,6 +3,11 @@ include /usr/share/dpkg/pkg-info.mk
 
 export DEB_VERSION_UPSTREAM
 
+# This is needed for running correctly the test in auto-builder
+export GIT_AUTHOR_NAME = "Magit testeur"
+export GIT_COMMITTER_NAME = "Magit committer"
+export LC_ALL = C.UTF-8
+
 %:
 	dh $@ --with elpa
 
@@ -14,22 +19,7 @@ override_dh_auto_install:
 	@echo do not run make install
 
 override_dh_elpa_test:
-	@echo Testing disabled, discussion in comment below.
+	make test
 
 override_dh_clean:
 	dh_clean
-
-
-# "make test" runs a test suite, which works fine on a development
-# environment, but not on the autobuilders.  To get it to work on the
-# autobuilders requires a few tweaks, as of 2.2.1:
-
-# - The upstream tarball does not contain /t/magit-tests.el; for
-#   convenience this is included in
-#   debian/patch/*-upstream-repo-files.patch
-
-# - The testing routines require git to be installed, so you need a
-#   build dependency on git
-
-# - There is one more mysterious error with a non-ASCII filename that
-#   occurs only in a minimal chroot environment

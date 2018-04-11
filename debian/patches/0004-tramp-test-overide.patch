@@ -1,0 +1,49 @@
+Description: set tramp-histfile-override in tramp test
+ In Debian building system, we can't wrote in home direcetory
+Author: Rémi Vanicat <vanicat@debian.org>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: debian
+Forwarded: not-needed
+Last-Update: 2018-04-11
+
+--- magit-2.12.1.orig/t/magit-tests.el
++++ magit-2.12.1/t/magit-tests.el
+@@ -71,19 +71,20 @@
+               (list shell-file-name))
+              ((cdr (assq 'tramp-login-args sudo-method)) nil))
+     (magit-with-test-directory
+-     (setq default-directory
+-           (concat (format "/sudo:%s@localhost:" (user-login-name))
+-                   default-directory))
+-     (magit-git "init" "repo")
+-     (magit-test-magit-toplevel)
+-     (should (equal (magit-toplevel   "repo/.git/")
+-                    (expand-file-name "repo/")))
+-     (should (equal (magit-toplevel   "repo/.git/objects/")
+-                    (expand-file-name "repo/")))
+-     (should (equal (magit-toplevel   "repo-link/.git/")
+-                    (expand-file-name "repo-link/")))
+-     (should (equal (magit-toplevel   "repo-link/.git/objects/")
+-                    (expand-file-name "repo/"))))))
++     (let ((tramp-histfile-override default-directory))
++       (setq default-directory
++             (concat (format "/sudo:%s@localhost:" (user-login-name))
++                     default-directory))
++       (magit-git "init" "repo")
++       (magit-test-magit-toplevel)
++       (should (equal (magit-toplevel   "repo/.git/")
++                      (expand-file-name "repo/")))
++       (should (equal (magit-toplevel   "repo/.git/objects/")
++                      (expand-file-name "repo/")))
++       (should (equal (magit-toplevel   "repo-link/.git/")
++                      (expand-file-name "repo-link/")))
++       (should (equal (magit-toplevel   "repo-link/.git/objects/")
++                      (expand-file-name "repo/")))))))
+ 
+ (ert-deftest magit-toplevel:submodule ()
+   (let ((find-file-visit-truename nil))

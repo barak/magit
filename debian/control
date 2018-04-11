@@ -3,8 +3,9 @@ Section: vcs
 Priority: optional
 Maintainer: Debian Emacs addons team <pkg-emacsen-addons@lists.alioth.debian.org>
 Uploaders: Timo Juhani Lindfors <timo.lindfors@iki.fi>, Rémi Vanicat <vanicat@debian.org>, Barak A. Pearlmutter <bap@debian.org>
-Build-Depends: debhelper (>= 10), dh-elpa (>= 1.7), elpa-dash,
-	texinfo, install-info
+Build-Depends: debhelper (>= 10), dh-elpa (>= 1.7),
+               git, elpa-dash, elpa-with-editor, elpa-magit-popup, elpa-ghub,
+               texinfo, install-info
 Standards-Version: 4.1.3
 Homepage: http://magit.vc/
 Vcs-Browser: https://salsa.debian.org/emacsen-team/magit

@@ -1,8 +1,12 @@
 magit (2.12.1-1) UNRELEASED; urgency=medium
 
   * New upstream version
+  * Run test:
+    * Depend on git, elpa-dash, elpa-with-editor, elpa-magit-popup, elpa-ghub
+    * Set some variable (locale, and GIT variables)
+    * Ensure tramp test do not write in ~/
 
- -- Rémi Vanicat <vanicat@debian.org>  Tue, 03 Apr 2018 05:30:37 +0200
+ -- Rémi Vanicat <vanicat@debian.org>  Wed, 11 Apr 2018 19:06:16 +0200
 
 magit (2.11.0-1) unstable; urgency=medium
 
