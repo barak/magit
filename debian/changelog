@@ -1,4 +1,4 @@
-magit (2.12.1-1) UNRELEASED; urgency=medium
+magit (2.13.0-1) unstable; urgency=medium
 
   * New upstream version
   * Run test:
@@ -6,7 +6,7 @@ magit (2.12.1-1) UNRELEASED; urgency=medium
     * Set some variable (locale, and GIT variables)
     * Ensure tramp test do not write in ~/
 
- -- Rémi Vanicat <vanicat@debian.org>  Wed, 11 Apr 2018 19:06:16 +0200
+ -- Rémi Vanicat <vanicat@debian.org>  Sat, 09 Jun 2018 18:52:31 +0200
 
 magit (2.11.0-1) unstable; urgency=medium
 
