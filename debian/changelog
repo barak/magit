@@ -4,8 +4,9 @@ magit (2.13.0-3) unstable; urgency=medium
     - change dependency on debhelper
     - put magit transitional package in optional
   * Standards-Version: 4.1.4, no change needed
+  * Use https for magit home page
 
- -- Rémi Vanicat <vanicat@debian.org>  Sat, 07 Jul 2018 11:49:09 +0200
+ -- Rémi Vanicat <vanicat@debian.org>  Sat, 07 Jul 2018 11:58:04 +0200
 
 magit (2.13.0-2) unstable; urgency=medium
 
