@@ -35,7 +35,7 @@ Description: Major mode for editing git commit message
  A mode for editing COMMIT_MSG file from git in Emacs.
 
 Package: magit
-Priority: extra
+Priority: optional
 Section: oldlibs
 Architecture: all
 Depends: ${misc:Depends}, elpa-magit
