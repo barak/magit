@@ -2,8 +2,9 @@ magit (2.90.0-1) UNRELEASED; urgency=medium
 
   * New upstream version
   * Update patches metadata
+  * Update debian/docs file
 
- -- Rémi Vanicat <vanicat@debian.org>  Sun, 11 Nov 2018 14:26:10 +0100
+ -- Rémi Vanicat <vanicat@debian.org>  Sun, 11 Nov 2018 14:37:39 +0100
 
 magit (2.13.0-3) unstable; urgency=medium
 
