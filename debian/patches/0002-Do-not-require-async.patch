@@ -3,20 +3,20 @@ Description: Do not require async.
  It is not needed for debian package.
 Forwarded: not-needed
 Author: Rémi Vanicat <vanicat@debian.org>
-Last-Update: 2018-11-11
+Last-Update: 2018-11-17
 ---
  lisp/magit-pkg.el | 1 -
  1 file changed, 1 deletion(-)
 
 diff --git a/lisp/magit-pkg.el b/lisp/magit-pkg.el
-index 0ea80de..b64f45b 100644
+index 915eb28..6665db2 100644
 --- a/lisp/magit-pkg.el
 +++ b/lisp/magit-pkg.el
 @@ -1,7 +1,6 @@
- (define-package "magit" "2.90.0"
+ (define-package "magit" "2.90.1"
    "A Git porcelain inside Emacs."
    '((emacs "25.1")
 -    (async "1.9.3")
      (dash "2.14.1")
      (ghub "3.0.0")
-     (git-commit "2.13.0")
+     (git-commit "2.90.0")
