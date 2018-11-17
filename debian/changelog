@@ -1,4 +1,4 @@
-magit (2.90.0-1) UNRELEASED; urgency=medium
+magit (2.90.1-1) UNRELEASED; urgency=medium
 
   * New upstream version
   * Update patches metadata
@@ -6,7 +6,7 @@ magit (2.90.0-1) UNRELEASED; urgency=medium
   * Update debian/elpa-magit.elpa file
   * Update debian/watch to add the v in the version
 
- -- Rémi Vanicat <vanicat@debian.org>  Sat, 17 Nov 2018 13:18:04 +0100
+ -- Rémi Vanicat <vanicat@debian.org>  Sat, 17 Nov 2018 13:19:50 +0100
 
 magit (2.13.0-3) unstable; urgency=medium
 
