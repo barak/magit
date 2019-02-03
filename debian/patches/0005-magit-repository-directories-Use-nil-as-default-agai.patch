@@ -1,0 +1,323 @@
+From: Jonas Bernoulli <jonas@bernoul.li>
+Date: Sat, 24 Nov 2018 10:42:33 +0100
+Origin: https://github.com/magit/magit/commit/97ac2dcdf68f535b70f5ca0d88fd1ce207c03c5a
+Bug: https://github.com/magit/magit/issues/3673
+Reviewed-by: Rémi Vanicat <vanicat@debian.org>
+Applied-Upstream: 2.91
+Subject: magit-repository-directories: Use nil as default again
+
+Because many users put "~/.emacs.d/" under version-control but don't
+customize `magit-repository-directory', that directory should not be
+a member of `magit-repository-directories'.  Otherwise `magit-status'
+would not fall through to either offering to initialize the current
+directory as a repository (`magit-init' would have to be used) or to
+read a repository using regular file-name completion (except with two
+prefix arguments), and users have grown accustomed to these fallback
+behaviors.
+
+Also update the documentation about `magit-repository-directories'
+and `magit-status'.  The documentation about the latter was rather
+ambiguous until now.  We trade that for making it a bit scary instead.
+
+This reverts commit f77d1158b01923ca11d065f12aa0e69d6ce2415b, and
+then also improves the documentation.
+
+This fixes #3673.
+---
+ Documentation/RelNotes/2.91.0.org |  5 ++++
+ Documentation/magit.org           | 50 +++++++++++++++++++++++--------
+ Documentation/magit.texi          | 63 ++++++++++++++++++++++++++++++---------
+ lisp/magit-repos.el               | 18 ++++++-----
+ lisp/magit-status.el              | 37 +++++++++++++++++++----
+ 5 files changed, 133 insertions(+), 40 deletions(-)
+
+diff --git a/Documentation/RelNotes/2.91.0.org b/Documentation/RelNotes/2.91.0.org
+index ce45589..9e9d5a0 100644
+--- a/Documentation/RelNotes/2.91.0.org
++++ b/Documentation/RelNotes/2.91.0.org
+@@ -20,6 +20,11 @@ ** Changes since v2.90.0
+ 
+   #3657
+ 
++- The option ~magit-repository-directories~ defaults to ~nil~ again
++  because the non-nil default added in v2.90.0 lead to surprising
++  changes in behavior.  Related to that, ~magit-status~'s documentation
++  was made less ambigious.  #3673
++
+ ** Fixes since v2.90.0
+ 
+ - Bumped the minimal required version of ~git-commit~ to the correct
+diff --git a/Documentation/magit.org b/Documentation/magit.org
+index 20d0abc..4c67a2e 100644
+--- a/Documentation/magit.org
++++ b/Documentation/magit.org
+@@ -8,7 +8,7 @@
+ #+TEXINFO_DIR_CATEGORY: Emacs
+ #+TEXINFO_DIR_TITLE: Magit: (magit).
+ #+TEXINFO_DIR_DESC: Using Git from Emacs with Magit.
+-#+SUBTITLE: for version 2.90.1
++#+SUBTITLE: for version 2.90.1 (with debian Patches)
+ #+BIND: ox-texinfo+-before-export-hook ox-texinfo+-update-version-strings
+ 
+ #+TEXINFO_DEFFN: t
+@@ -23,7 +23,7 @@
+ Magit and Git itself deserve to be called porcelains.
+ 
+ #+TEXINFO: @noindent
+-This manual is for Magit version 2.90.1.
++This manual is for Magit version 2.90.1 (with debian Patches)
+ 
+ #+BEGIN_QUOTE
+ Copyright (C) 2015-2018 Jonas Bernoulli <jonas@bernoul.li>
+@@ -1818,11 +1818,38 @@ ** Status Buffer
+ 
+ - Key: C-x g, magit-status
+ 
+-  Show the status of the current Git repository in a buffer.
+-  With a prefix argument prompt for a repository to be shown.
+-  With two prefix arguments prompt for an arbitrary directory.
+-  If that directory isn't the root of an existing repository,
+-  then offer to initialize it as a new repository.
++  When invoked from within an existing Git repository, then this
++  command shows the status of that repository in a buffer.
++
++  If the current directory isn't located within a Git repository, then
++  this command prompts for an existing repository or an arbitrary
++  directory, depending on the option ~magit-repository-directories~ and
++  the status for the selected repository is shown instead.
++
++  - If that option specifies any existing repositories, then the user
++    is asked to select one of them.
++
++  - Otherwise the user is asked to select an arbitrary directory using
++    regular file-name completion.  If the selected directory is the
++    top-level directory of an existing working tree, then the status
++    buffer for that is shown.
++
++  - Otherwise the user is offered to initialize the selected directory
++    as a new repository.  After creating the repository its status
++    buffer is shown.
++
++  These fallback behaviors can also be forced using one or more
++  prefix arguments:
++
++  - With two prefix arguments (or more precisely a numeric prefix
++    value of 16 or greater) an arbitrary directory is read, which is
++    then acted on it as described above.  The same could be
++    accomplished using the command ~magit-init~.
++
++  - With a single prefix argument an existing repository is read from
++    the user, or if no repository can be found based on the value of
++    ~magit-repository-directories~, then the behavior is the same as with
++    two prefix arguments.
+ 
+ - User Option: magit-repository-directories
+ 
+@@ -1834,12 +1861,9 @@ ** Status Buffer
+   specifies the maximum depth to look for Git repositories.  If it is
+   0, then only add DIRECTORY itself.
+ 
+-- User Option: magit-repository-directories-depth
+-
+-  The maximum depth to look for Git repositories.  This option is
+-  obsolete and only used for elements of the option
+-  ~magit-repository-directories~ (which see) that don't specify the
+-  depth directly.
++  This option controls which repositories are being listed by
++  ~magit-list-repositories~.  It also affects ~magit-status~ (which see)
++  in potentially surprising ways (see above).
+ 
+ - Command: ido-enter-magit-status
+ 
+diff --git a/Documentation/magit.texi b/Documentation/magit.texi
+index 09048c0..88a65cb 100644
+--- a/Documentation/magit.texi
++++ b/Documentation/magit.texi
+@@ -31,7 +31,7 @@ General Public License for more details.
+ @finalout
+ @titlepage
+ @title Magit User Manual
+-@subtitle for version 2.90.1
++@subtitle for version 2.90.1 (with Debian patches)
+ @author Jonas Bernoulli
+ @page
+ @vskip 0pt plus 1filll
+@@ -53,7 +53,7 @@ directly from within Emacs.  While many fine Git clients exist, only
+ Magit and Git itself deserve to be called porcelains.
+ 
+ @noindent
+-This manual is for Magit version 2.90.1.
++This manual is for Magit version 2.90.1 (with Debian patches)
+ 
+ @quotation
+ Copyright (C) 2015-2018 Jonas Bernoulli <jonas@@bernoul.li>
+@@ -2501,11 +2501,50 @@ that it should be bound globally.  We recommend using @code{C-x g}:
+ @cindex magit-status
+ @item @kbd{C-x g} @tie{}@tie{}@tie{}@tie{}(@code{magit-status})
+ 
+-Show the status of the current Git repository in a buffer.
+-With a prefix argument prompt for a repository to be shown.
+-With two prefix arguments prompt for an arbitrary directory.
+-If that directory isn't the root of an existing repository,
+-then offer to initialize it as a new repository.
++When invoked from within an existing Git repository, then this
++command shows the status of that repository in a buffer.
++
++If the current directory isn't located within a Git repository, then
++this command prompts for an existing repository or an arbitrary
++directory, depending on the option @code{magit-repository-directories} and
++the status for the selected repository is shown instead.
++
++@itemize
++@item
++If that option specifies any existing repositories, then the user
++is asked to select one of them.
++
++
++@item
++Otherwise the user is asked to select an arbitrary directory using
++regular file-name completion.  If the selected directory is the
++top-level directory of an existing working tree, then the status
++buffer for that is shown.
++
++
++@item
++Otherwise the user is offered to initialize the selected directory
++as a new repository.  After creating the repository its status
++buffer is shown.
++@end itemize
++
++These fallback behaviors can also be forced using one or more
++prefix arguments:
++
++@itemize
++@item
++With two prefix arguments (or more precisely a numeric prefix
++value of 16 or greater) an arbitrary directory is read, which is
++then acted on it as described above.  The same could be
++accomplished using the command @code{magit-init}.
++
++
++@item
++With a single prefix argument an existing repository is read from
++the user, or if no repository can be found based on the value of
++@code{magit-repository-directories}, then the behavior is the same as with
++two prefix arguments.
++@end itemize
+ 
+ @end table
+ 
+@@ -2518,14 +2557,10 @@ Each element has the form @code{(DIRECTORY . DEPTH)}.  DIRECTORY has to be
+ a directory or a directory file-name, a string.  DEPTH, an integer,
+ specifies the maximum depth to look for Git repositories.  If it is
+ 0, then only add DIRECTORY itself.
+-@end defopt
+-
+-@defopt magit-repository-directories-depth
+ 
+-The maximum depth to look for Git repositories.  This option is
+-obsolete and only used for elements of the option
+-@code{magit-repository-directories} (which see) that don't specify the
+-depth directly.
++This option controls which repositories are being listed by
++@code{magit-list-repositories}.  It also affects @code{magit-status} (which see)
++in potentially surprising ways (see above).
+ @end defopt
+ 
+ @cindex ido-enter-magit-status
+diff --git a/lisp/magit-repos.el b/lisp/magit-repos.el
+index 8db44d8..e26e1b8 100644
+--- a/lisp/magit-repos.el
++++ b/lisp/magit-repos.el
+@@ -40,16 +40,18 @@
+ 
+ ;;; Options
+ 
+-(defcustom magit-repository-directories
+-  '(("~/.emacs.d/"     . 0)  ; this should always be a repository
+-    ("~/.emacs.d/lib/" . 1)) ; useful for `borg' users
++(defcustom magit-repository-directories nil
+   "List of directories that are or contain Git repositories.
+ 
+ Each element has the form (DIRECTORY . DEPTH).  DIRECTORY has
+ to be a directory or a directory file-name, a string.  DEPTH,
+ an integer, specifies the maximum depth to look for Git
+-repositories.  If it is 0, then only add DIRECTORY itself."
+-  :package-version '(magit . "2.90.0")
++repositories.  If it is 0, then only add DIRECTORY itself.
++
++This option controls which repositories are being listed by
++`magit-list-repositories'.  It also affects `magit-status'
++\(which see) in potentially surprising ways."
++  :package-version '(magit . "2.91.0")
+   :group 'magit-essentials
+   :type '(repeat (cons directory (integer :tag "Depth"))))
+ 
+@@ -255,8 +257,10 @@ the basenames are prefixed with the name of the respective
+ parent directories.  The returned value is the actual path
+ to the selected repository.
+ 
+-With prefix argument simply read a directory name using
+-`read-directory-name'."
++If READ-DIRECTORY-NAME is non-nil or no repositories can be
++found based on the value of ``magit-repository-directories',
++then read an arbitrary directory using `read-directory-name'
++instead."
+   (if-let ((repos (and (not read-directory-name)
+                        magit-repository-directories
+                        (magit-list-repos-uniquify
+diff --git a/lisp/magit-status.el b/lisp/magit-status.el
+index 73a3167..12601a4 100644
+--- a/lisp/magit-status.el
++++ b/lisp/magit-status.el
+@@ -190,10 +190,36 @@ Non-interactively DIRECTORY is (re-)initialized unconditionally."
+ ;;;###autoload
+ (defun magit-status (&optional directory cache)
+   "Show the status of the current Git repository in a buffer.
+-With a prefix argument prompt for a repository to be shown.
+-With two prefix arguments prompt for an arbitrary directory.
+-If that directory isn't the root of an existing repository,
+-then offer to initialize it as a new repository."
++
++If the current directory isn't located within a Git repository,
++then prompt for an existing repository or an arbitrary directory,
++depending on option `magit-repository-directories' and show the
++status of the selected repository instead.
++
++* If that option specifies any existing repositories, then offer
++  those for completion and show the status buffer for the
++  selected one.
++
++* Otherwise read an arbitrary directory using regular file-name
++  completion.  If the selected directory is the top-level of an
++  existing working tree, then show the status buffer for that.
++
++* Otherwise offer to initialize the selected directory as a new
++  repository.  After creating the repository show its status
++  buffer.
++
++These fallback behaviors can also be forced using one or more
++prefix arguments:
++
++* With two prefix arguments (or more precisely a numeric prefix
++  value of 16 or greater) read an arbitrary directory and act on
++  it as described above.  The same could be accomplished using
++  the command `magit-init'.
++
++* With a single prefix argument read an existing repository, or
++  if none can be found based on `magit-repository-directories',
++  then fall back to the same behavior as with two prefix
++  arguments."
+   (interactive
+    (let ((magit--refresh-cache (list (cons 0 0))))
+      (list (and (or current-prefix-arg (not (magit-toplevel)))
+@@ -212,8 +238,7 @@ then offer to initialize it as a new repository."
+                        (format "%s is a repository.  Create another in %s? "
+                                toplevel directory)
+                      (format "Create repository in %s? " directory)))
+-              ;; Creating a new repository will invalidate cached
+-              ;; values.
++              ;; Creating a new repository invalidates cached values.
+               (setq magit--refresh-cache nil)
+               (magit-init directory))))
+       (magit-status-internal default-directory))))
