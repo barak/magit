@@ -1,11 +1,11 @@
-magit (2.90.1-2) UNRELEASED; urgency=medium
+magit (2.90.1-2) unstable; urgency=medium
 
   * Remove emacs24 and emacs25 from Enhances
   * Use nil as default for magit-repository-directories 
     fix: "magit-status doesn't honor path auto-completion
     anymore", thanks to Matteo F. Vescovi (Closes: #914137).
 
- -- Rémi Vanicat <vanicat@debian.org>  Sun, 03 Feb 2019 10:47:54 +0100
+ -- Rémi Vanicat <vanicat@debian.org>  Sat, 09 Feb 2019 08:17:36 +0100
 
 magit (2.90.1-1) unstable; urgency=medium
 
