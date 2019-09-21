@@ -1,3 +1,10 @@
+magit (2.90.1-3) UNRELEASED; urgency=medium
+
+  * Drop transitional package magit from src:magit",
+    thanks to Holger Levsen (Closes: #940746).
+
+ -- Rémi Vanicat <vanicat@debian.org>  Sat, 21 Sep 2019 08:56:26 +0200
+
 magit (2.90.1-2) unstable; urgency=medium
 
   * Remove emacs24 and emacs25 from Enhances

@@ -33,12 +33,3 @@ Enhances: emacs, git
 Built-Using: ${misc:Built-Using}
 Description: Major mode for editing git commit message
  A mode for editing COMMIT_MSG file from git in Emacs.
-
-Package: magit
-Priority: optional
-Section: oldlibs
-Architecture: all
-Depends: ${misc:Depends}, elpa-magit
-Built-Using: ${misc:Built-Using}
-Description: transitional dummy package for elpa-magit
- This transitional package is safe to remove.
