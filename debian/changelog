@@ -1,9 +1,12 @@
-magit (2.90.1-3) UNRELEASED; urgency=medium
+magit (2.99.0.git1-1) UNRELEASED; urgency=medium
 
   * Drop transitional package magit from src:magit",
     thanks to Holger Levsen (Closes: #940746).
+  * Git snapshot e8c7bd03 (Thanks to Jonas Bernoulli
+    https://github.com/magit/magit/issues/4095)
+  * Update patches to new version
 
- -- Rémi Vanicat <vanicat@debian.org>  Sat, 21 Sep 2019 08:56:26 +0200
+ -- Rémi Vanicat <vanicat@debian.org>  Sun, 26 Apr 2020 13:24:28 +0200
 
 magit (2.90.1-2) unstable; urgency=medium
 
