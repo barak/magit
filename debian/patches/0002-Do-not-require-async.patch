@@ -1,22 +1,28 @@
-Description: Do not require async.
+From: =?utf-8?q?R=C3=A9mi_Vanicat?= <vanicat@debian.org>
+Date: Tue, 3 Apr 2018 05:47:10 +0200
+Subject: Do not require async.
 
- It is not needed for debian package.
-Forwarded: not-needed
-Author: Rémi Vanicat <vanicat@debian.org>
-Last-Update: 2018-11-17
+It is not needed for debian package.
 ---
- lisp/magit-pkg.el | 1 -
- 1 file changed, 1 deletion(-)
+ lisp/magit-pkg.el | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/lisp/magit-pkg.el b/lisp/magit-pkg.el
-index 915eb28..6665db2 100644
+index ee981ce..fa8271e 100644
 --- a/lisp/magit-pkg.el
 +++ b/lisp/magit-pkg.el
-@@ -1,7 +1,6 @@
+@@ -1,10 +1,9 @@
  (define-package "magit" "2.90.1"
    "A Git porcelain inside Emacs."
    '((emacs "25.1")
--    (async "1.9.3")
-     (dash "2.14.1")
-     (ghub "3.0.0")
-     (git-commit "2.90.0")
+-    (async "20180527")
+-    (dash "20180910")
+-    (git-commit "20181104")
+-    (transient "20190812")
+-    (with-editor "20181103"))
++    (dash "2.17.0")
++    (git-commit "2.90.1")
++    (transient "0.2.0")
++    (with-editor "2.9.1"))
+   :keywords
+   '("git" "tools" "vc"))
