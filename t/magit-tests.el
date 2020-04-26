@@ -255,6 +255,29 @@
                              nil "Password for 'www.host.com':")
                             "mypasswd\n")))))
 
+(ert-deftest magit-process:password-prompt-observed ()
+  (with-temp-buffer
+    (cl-letf* ((test-proc (start-process
+                           "dummy-proc" (current-buffer)
+                           (concat invocation-directory invocation-name)
+                           "-Q" "--batch" "--eval" "(read-string \"\")"))
+               ((symbol-function 'read-passwd)
+                (lambda (_) "mypasswd"))
+               (sent-strings nil)
+               ((symbol-function 'process-send-string)
+                (lambda (_proc string) (push string sent-strings))))
+      ;; Don't get stuck when we close the buffer.
+      (set-process-query-on-exit-flag test-proc nil)
+      ;; Try some example passphrase prompts, reported by users.
+      (dolist (prompt '("
+Enter passphrase for key '/home/user/.ssh/id_rsa': "
+                        ;; Openssh 8.0 sends carriage return.
+                        "\
+\rEnter passphrase for key '/home/user/.ssh/id_ed25519': "))
+        (magit-process-filter test-proc prompt)
+        (should (equal (pop sent-strings) "mypasswd\n")))
+      (should (null sent-strings)))))
+
 ;;; Status
 
 (defun magit-test-get-section (list file)
@@ -300,6 +323,14 @@
     (should (magit-test-get-section
              '(unpushed . "@{upstream}..")
              (magit-rev-parse "--short" "master")))))
+
+;;; Utils
+
+(ert-deftest magit-utils:add-face-text-property ()
+  (let ((str (concat (propertize "ab" 'font-lock-face 'highlight) "cd")))
+    (magit--add-face-text-property 0 (length str) 'bold nil str)
+    (should (equal (get-text-property 0 'font-lock-face str) '(bold highlight)))
+    (should (equal (get-text-property 2 'font-lock-face str) '(bold)))))
 
 ;;; magit-tests.el ends soon
 (provide 'magit-tests)
