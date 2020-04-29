@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Debian Emacsen team <debian-emacsen@lists.debian.org>
 Uploaders: Timo Juhani Lindfors <timo.lindfors@iki.fi>, Rémi Vanicat <vanicat@debian.org>, Barak A. Pearlmutter <bap@debian.org>
 Build-Depends: debhelper (>= 11), dh-elpa (>= 1.7),
-               git, elpa-dash, elpa-with-editor, elpa-magit-popup, elpa-ghub,
+               git, elpa-dash, elpa-with-editor, elpa-transient, elpa-ghub,
                texinfo, install-info
 Standards-Version: 4.1.4
 Homepage: https://magit.vc/
