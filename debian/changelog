@@ -3,11 +3,13 @@ magit (2.99.0.git1-1) UNRELEASED; urgency=medium
   * Drop transitional package magit from src:magit",
     thanks to Holger Levsen (Closes: #940746).
   * Git snapshot e8c7bd03 (Thanks to Jonas Bernoulli
-    https://github.com/magit/magit/issues/4095)
+    https://github.com/magit/magit/issues/4095).
+    Bug fix: "please package new upstream snapshot", thanks to Antoine
+    Beaupre (Closes: #952560).
   * Update patches to new version
   * Change build depend from magit-popup to transient
 
- -- Rémi Vanicat <vanicat@debian.org>  Wed, 29 Apr 2020 11:28:50 +0200
+ -- Rémi Vanicat <vanicat@debian.org>  Wed, 29 Apr 2020 11:32:27 +0200
 
 magit (2.90.1-2) unstable; urgency=medium
 
