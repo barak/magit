@@ -1,4 +1,4 @@
-magit (2.99.0.git0957.ge8c7bd03-1) UNRELEASED; urgency=medium
+magit (2.99.0.git0957.ge8c7bd03-1) unstable; urgency=medium
 
   [ Rémi Vanicat ]
   * Drop transitional package magit from src:magit",
@@ -19,7 +19,7 @@ magit (2.99.0.git0957.ge8c7bd03-1) UNRELEASED; urgency=medium
   * Remove unnecessary ${misc:Built-Using} for elpa-magit, elpa-git-
     commit
 
- -- Rémi Vanicat <vanicat@debian.org>  Sat, 21 Sep 2019 08:56:26 +0200
+ -- Rémi Vanicat <vanicat@debian.org>  Mon, 06 Jul 2020 17:56:39 +0200
 
 magit (2.90.1-2) unstable; urgency=medium
 
