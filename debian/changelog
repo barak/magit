@@ -1,4 +1,4 @@
-magit (2.99.0~git957.ge8c7bd03-1) UNRELEASED; urgency=medium
+magit (2.99.0.git0957.ge8c7bd03-1) UNRELEASED; urgency=medium
 
   [ Rémi Vanicat ]
   * Drop transitional package magit from src:magit",
