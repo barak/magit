@@ -1,5 +1,6 @@
 magit (2.99.0~git957.ge8c7bd03-1) UNRELEASED; urgency=medium
 
+  [ Rémi Vanicat ]
   * Drop transitional package magit from src:magit",
     thanks to Holger Levsen (Closes: #940746).
   * Git snapshot e8c7bd03 (Thanks to Jonas Bernoulli
@@ -9,12 +10,21 @@ magit (2.99.0~git957.ge8c7bd03-1) UNRELEASED; urgency=medium
   * Update patches to new version
   * Change build depend from magit-popup to transient
 
- -- Rémi Vanicat <vanicat@debian.org>  Wed, 29 Apr 2020 11:32:27 +0200
+  [ Debian Janitor ]
+  * Trim trailing whitespace.
+  * Use secure copyright file specification URI.
+  * Bump debhelper from old 11 to 12.
+  * Set debhelper-compat version in Build-Depends.
+  * Set upstream metadata fields: Repository, Repository-Browse.
+  * Remove unnecessary ${misc:Built-Using} for elpa-magit, elpa-git-
+    commit
+
+ -- Rémi Vanicat <vanicat@debian.org>  Sat, 21 Sep 2019 08:56:26 +0200
 
 magit (2.90.1-2) unstable; urgency=medium
 
   * Remove emacs24 and emacs25 from Enhances
-  * Use nil as default for magit-repository-directories 
+  * Use nil as default for magit-repository-directories
     fix: "magit-status doesn't honor path auto-completion
     anymore", thanks to Matteo F. Vescovi (Closes: #914137).
 
