@@ -1,9 +1,14 @@
 magit (3.0.0-1) UNRELEASED; urgency=medium
 
   * New upstream version
-  * adapt watch file
+  * Adapt watch file
+  * Adapt patches
+    - 0002-Do-not-require-async.patch not needed anymore
+    - 0005-Update-version-and-require-of-git-commit.patch: most is
+      integrated upstream, the rest in:
+      0004-Signal-in-the-documentation-there-are-Debian-patches.patch
 
- -- Rémi Vanicat <vanicat@debian.org>  Tue, 25 May 2021 12:23:52 +0200
+ -- Rémi Vanicat <vanicat@debian.org>  Tue, 25 May 2021 12:52:58 +0200
 
 magit (2.99.0.git0957.ge8c7bd03-1) unstable; urgency=medium
 
