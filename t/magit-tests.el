@@ -1,6 +1,6 @@
 ;;; magit-tests.el --- tests for Magit
 
-;; Copyright (C) 2011-2018  The Magit Project Contributors
+;; Copyright (C) 2011-2021  The Magit Project Contributors
 ;;
 ;; License: GPLv3
 
@@ -14,6 +14,12 @@
 
 (require 'magit)
 
+(defun magit-test-init-repo (dir &rest args)
+  (let ((magit-git-global-arguments
+         (nconc (list "-c" "init.defaultBranch=master")
+                magit-git-global-arguments)))
+    (magit-git "init" args dir)))
+
 (defmacro magit-with-test-directory (&rest body)
   (declare (indent 0) (debug t))
   (let ((dir (make-symbol "dir")))
@@ -23,7 +29,7 @@
        (push "GIT_AUTHOR_EMAIL=a.u.thor@example.com" process-environment)
        (condition-case err
            (cl-letf (((symbol-function #'message) (lambda (&rest _))))
-             (let ((default-directory ,dir))
+             (let ((default-directory (file-truename ,dir)))
                ,@body))
          (error (message "Keeping test directory:\n  %s" ,dir)
                 (signal (car err) (cdr err))))
@@ -31,7 +37,11 @@
 
 (defmacro magit-with-test-repository (&rest body)
   (declare (indent 0) (debug t))
-  `(magit-with-test-directory (magit-git "init" ".") ,@body))
+  `(magit-with-test-directory (magit-test-init-repo ".") ,@body))
+
+(defmacro magit-with-bare-test-repository (&rest body)
+  (declare (indent 1) (debug t))
+  `(magit-with-test-directory (magit-test-init-repo "." "--bare") ,@body))
 
 ;;; Git
 
@@ -46,7 +56,7 @@
 (ert-deftest magit-toplevel:basic ()
   (let ((find-file-visit-truename nil))
     (magit-with-test-directory
-      (magit-git "init" "repo")
+      (magit-test-init-repo "repo")
       (magit-test-magit-toplevel)
       (should (equal (magit-toplevel   "repo/.git/")
                      (expand-file-name "repo/")))
@@ -68,13 +78,15 @@
              ;; require a functioning `sudo'.
              (sudo-method (cdr (assoc "sudo" tramp-methods)))
              ((cdr (assq 'tramp-login-program sudo-method))
-              (list shell-file-name))
+              (list (if (file-executable-p "/bin/sh")
+                        "/bin/sh"
+                      shell-file-name)))
              ((cdr (assq 'tramp-login-args sudo-method)) nil))
     (magit-with-test-directory
      (setq default-directory
            (concat (format "/sudo:%s@localhost:" (user-login-name))
                    default-directory))
-     (magit-git "init" "repo")
+     (magit-test-init-repo "repo")
      (magit-test-magit-toplevel)
      (should (equal (magit-toplevel   "repo/.git/")
                     (expand-file-name "repo/")))
@@ -88,10 +100,10 @@
 (ert-deftest magit-toplevel:submodule ()
   (let ((find-file-visit-truename nil))
     (magit-with-test-directory
-      (magit-git "init" "remote")
+      (magit-test-init-repo "remote")
       (let ((default-directory (expand-file-name "remote/")))
         (magit-git "commit" "-m" "init" "--allow-empty"))
-      (magit-git "init" "super")
+      (magit-test-init-repo "super")
       (setq default-directory (expand-file-name "super/"))
       (magit-git "submodule" "add" "../remote" "repo/")
       (magit-test-magit-toplevel)
@@ -133,7 +145,7 @@
   (should (equal (magit-toplevel   "subdir-link-indirect")
                  (expand-file-name "repo/")))
   ;; wrap/*link
-  (magit-git "init" "wrap")
+  (magit-test-init-repo "wrap")
   (make-symbolic-link "../repo"                  "wrap/repo-link")
   (make-symbolic-link "../repo/subdir"           "wrap/subdir-link")
   (make-symbolic-link "../repo/subdir/subsubdir" "wrap/subsubdir-link")
@@ -154,11 +166,11 @@
 
 (ert-deftest magit-get ()
   (magit-with-test-directory
-   (magit-git "init" "remote")
+   (magit-test-init-repo "remote")
    (let ((default-directory (expand-file-name "remote/")))
      (magit-git "commit" "-m" "init" "--allow-empty")
      (magit-git "config" "a.b" "remote-value"))
-   (magit-git "init" "super")
+   (magit-test-init-repo "super")
    (setq default-directory (expand-file-name "super/"))
    ;; Some tricky cases:
    ;; Multiple config values.
@@ -323,6 +335,18 @@ Enter passphrase for key '/home/user/.ssh/id_rsa': "
     (should (magit-test-get-section
              '(unpushed . "@{upstream}..")
              (magit-rev-parse "--short" "master")))))
+
+;;; libgit
+
+(ert-deftest magit-in-bare-repo ()
+  "Test `magit-bare-repo-p' in a bare repository."
+  (magit-with-bare-test-repository
+    (should (magit-bare-repo-p))))
+
+(ert-deftest magit-in-non-bare-repo ()
+  "Test `magit-bare-repo-p' in a non-bare repository."
+  (magit-with-test-repository
+    (should-not (magit-bare-repo-p))))
 
 ;;; Utils
 

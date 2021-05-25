@@ -1,12 +1,14 @@
 ;;; magit-sequence.el --- history manipulation in Magit  -*- lexical-binding: t -*-
 
-;; Copyright (C) 2011-2020  The Magit Project Contributors
+;; Copyright (C) 2011-2021  The Magit Project Contributors
 ;;
 ;; You should have received a copy of the AUTHORS.md file which
 ;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+
+;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;; Magit is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
@@ -28,9 +30,6 @@
 ;; `rebase--interactive' and `am'.
 
 ;;; Code:
-
-(eval-when-compile
-  (require 'subr-x))
 
 (require 'magit)
 
@@ -131,7 +130,7 @@ This discards all changes made since the sequence started."
   "The Perl executable.")
 
 ;;;###autoload (autoload 'magit-cherry-pick "magit-sequence" nil t)
-(define-transient-command magit-cherry-pick ()
+(transient-define-prefix magit-cherry-pick ()
   "Apply or transplant commits."
   :man-page "git-cherry-pick"
   :value '("--ff")
@@ -160,7 +159,7 @@ This discards all changes made since the sequence started."
    ("s" "Skip"     magit-sequencer-skip)
    ("a" "Abort"    magit-sequencer-abort)])
 
-(define-infix-argument magit-cherry-pick:--mainline ()
+(transient-define-argument magit-cherry-pick:--mainline ()
   :description "Replay merge relative to parent"
   :class 'transient-option
   :shortarg "-m"
@@ -351,7 +350,7 @@ the process manually."
 ;;; Revert
 
 ;;;###autoload (autoload 'magit-revert "magit-sequence" nil t)
-(define-transient-command magit-revert ()
+(transient-define-prefix magit-revert ()
   "Revert existing commits, with or without creating new commits."
   :man-page "git-revert"
   :value '("--edit")
@@ -403,7 +402,7 @@ without prompting."
 ;;; Patch
 
 ;;;###autoload (autoload 'magit-am "magit-sequence" nil t)
-(define-transient-command magit-am ()
+(transient-define-prefix magit-am ()
   "Apply patches received by email."
   :man-page "git-am"
   :value '("--3way")
@@ -432,7 +431,7 @@ without prompting."
 (defun magit-am-arguments ()
   (transient-args 'magit-am))
 
-(define-infix-argument magit-apply:-p ()
+(transient-define-argument magit-apply:-p ()
   :description "Remove leading slashes from paths"
   :class 'transient-option
   :argument "-p"
@@ -495,7 +494,7 @@ This discards all changes made since the sequence started."
 ;;; Rebase
 
 ;;;###autoload (autoload 'magit-rebase "magit-sequence" nil t)
-(define-transient-command magit-rebase ()
+(transient-define-prefix magit-rebase ()
   "Transplant commits and/or modify existing commits."
   :man-page "git-rebase"
   ["Arguments"
@@ -503,6 +502,8 @@ This discards all changes made since the sequence started."
    ("-k" "Keep empty commits"       "--keep-empty")
    ("-p" "Preserve merges"          ("-p" "--preserve-merges"))
    (7 magit-merge:--strategy)
+   (7 magit-merge:--strategy-option)
+   (7 "=X" magit-diff:--diff-algorithm :argument "-Xdiff-algorithm=")
    ("-d" "Lie about committer date" "--committer-date-is-author-date")
    ("-a" "Autosquash"               "--autosquash")
    ("-A" "Autostash"                "--autostash")
@@ -535,7 +536,7 @@ This discards all changes made since the sequence started."
    ("e" "Edit"     magit-rebase-edit)
    ("a" "Abort"    magit-rebase-abort)])
 
-(define-infix-argument magit-rebase:--exec ()
+(transient-define-argument magit-rebase:--exec ()
   :description "Run command after commits"
   :class 'transient-option
   :shortarg "-x"
@@ -554,7 +555,7 @@ This discards all changes made since the sequence started."
   (magit-run-git-sequencer "rebase" args target))
 
 ;;;###autoload (autoload 'magit-rebase-onto-pushremote "magit-sequence" nil t)
-(define-suffix-command magit-rebase-onto-pushremote (args)
+(transient-define-suffix magit-rebase-onto-pushremote (args)
   "Rebase the current branch onto its push-remote branch.
 
 With a prefix argument or when the push-remote is either not
@@ -568,7 +569,7 @@ push-remote."
     (magit-git-rebase (concat remote "/" branch) args)))
 
 ;;;###autoload (autoload 'magit-rebase-onto-upstream "magit-sequence" nil t)
-(define-suffix-command magit-rebase-onto-upstream (args)
+(transient-define-suffix magit-rebase-onto-upstream (args)
   "Rebase the current branch onto its upstream branch.
 
 With a prefix argument or when the upstream is either not
@@ -667,8 +668,13 @@ START has to be selected from a list of recent commits."
                                  (unless (member "--root" args) commit)))
     (magit-log-select
       `(lambda (commit)
-         (magit-rebase-interactive-1 commit (list ,@args)
-           ,message ,editor ,delay-edit-confirm ,noassert))
+         ;; In some cases (currently just magit-rebase-remove-commit), "-c
+         ;; commentChar=#" is added to the global arguments for git.  Ensure
+         ;; that the same happens when we chose the commit via
+         ;; magit-log-select, below.
+         (let ((magit-git-global-arguments (list ,@magit-git-global-arguments)))
+           (magit-rebase-interactive-1 commit (list ,@args)
+             ,message ,editor ,delay-edit-confirm ,noassert)))
       message)))
 
 (defvar magit--rebase-published-symbol nil)
@@ -753,10 +759,14 @@ START has to be selected from a list of recent commits."
   "Remove a single older commit using rebase."
   (interactive (list (magit-commit-at-point)
                      (magit-rebase-arguments)))
-  (magit-rebase-interactive-1 commit args
-    "Type %p on a commit to remove it,"
-    (apply-partially #'magit-rebase--perl-editor 'remove)
-    nil nil t))
+  ;; magit-rebase--perl-editor assumes that the comment character is "#".
+  (let ((magit-git-global-arguments
+         (nconc (list "-c" "core.commentChar=#")
+                magit-git-global-arguments)))
+    (magit-rebase-interactive-1 commit args
+      "Type %p on a commit to remove it,"
+      (apply-partially #'magit-rebase--perl-editor 'remove)
+      nil nil t)))
 
 (defun magit-rebase--perl-editor (action since)
   (let ((commit (magit-rev-abbrev (magit-rebase--target-commit since))))
@@ -765,7 +775,7 @@ START has to be selected from a list of recent commits."
             commit
             (cl-case action
               (edit   "edit")
-              (remove "# pick")
+              (remove "noop\n# pick")
               (reword "reword")
               (t      (error "unknown action: %s" action)))
             commit)))
@@ -783,7 +793,8 @@ edit.  With a prefix argument the old message is reused as-is."
                    (file-exists-p (magit-git-dir "rebase-merge"))
                    (not (member (magit-toplevel)
                                 magit--rebase-public-edit-confirmed)))
-          (magit-commit-amend-assert))
+          (magit-commit-amend-assert
+           (magit-file-line (magit-git-dir "rebase-merge/orig-head"))))
         (if noedit
             (let ((process-environment process-environment))
               (push "GIT_EDITOR=true" process-environment)
@@ -899,8 +910,12 @@ If no such sequence is in progress, do nothing."
   (when (magit-rebase-in-progress-p)
     (let* ((interactive (file-directory-p (magit-git-dir "rebase-merge")))
            (dir  (if interactive "rebase-merge/" "rebase-apply/"))
-           (name (-> (concat dir "head-name") magit-git-dir magit-file-line))
-           (onto (-> (concat dir "onto")      magit-git-dir magit-file-line))
+           (name (thread-first (concat dir "head-name")
+                   magit-git-dir
+                   magit-file-line))
+           (onto (thread-first (concat dir "onto")
+                   magit-git-dir
+                   magit-file-line))
            (onto (or (magit-rev-name onto name)
                      (magit-rev-name onto "refs/heads/*") onto))
            (name (or (magit-rev-name name "refs/heads/*") name)))
