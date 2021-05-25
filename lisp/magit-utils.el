@@ -1,6 +1,6 @@
 ;;; magit-utils.el --- various utilities  -*- lexical-binding: t; coding: utf-8 -*-
 
-;; Copyright (C) 2010-2020  The Magit Project Contributors
+;; Copyright (C) 2010-2021  The Magit Project Contributors
 ;;
 ;; You should have received a copy of the AUTHORS.md file which
 ;; lists all contributors.  If not, see http://magit.vc/authors.
@@ -10,6 +10,8 @@
 
 ;; Contains code from GNU Emacs https://www.gnu.org/software/emacs,
 ;; released under the GNU General Public License version 3 or later.
+
+;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;; Magit is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
@@ -40,9 +42,9 @@
 
 (require 'cl-lib)
 (require 'dash)
-
-(eval-when-compile
-  (require 'subr-x))
+(require 'eieio)
+(require 'seq)
+(require 'subr-x)
 
 (require 'crm)
 
@@ -100,13 +102,16 @@ alphabetical order, depending on your version of Ivy."
     (forge-browse-pullreq     nil t)
     (forge-edit-topic-title   nil t)
     (forge-edit-topic-state   nil t)
+    (forge-edit-topic-milestone nil t)
     (forge-edit-topic-labels  nil t)
     (forge-edit-topic-marks   nil t)
     (forge-edit-topic-assignees nil t)
     (forge-edit-topic-review-requests nil t)
+    (forge-edit-topic-note    nil t)
     (forge-pull-pullreq       nil t)
     (forge-visit-issue        nil t)
-    (forge-visit-pullreq      nil t))
+    (forge-visit-pullreq      nil t)
+    (forge-visit-topic        nil t))
   "When not to offer alternatives and ask for confirmation.
 
 Many commands by default ask the user to select from a list of
@@ -145,18 +150,34 @@ The value has the form ((COMMAND nil|PROMPT DEFAULT)...).
                         (const  :tag "use default without confirmation" t)))))
 
 (defconst magit--confirm-actions
-  '((const reverse)           (const discard)
-    (const rename)            (const resurrect)
-    (const untrack)           (const trash)
-    (const delete)            (const abort-rebase)
-    (const abort-merge)       (const merge-dirty)
-    (const drop-stashes)      (const reset-bisect)
-    (const kill-process)      (const delete-unmerged-branch)
-    (const delete-pr-branch)  (const remove-modules)
-    (const stage-all-changes) (const unstage-all-changes)
+  '((const discard)
+    (const reverse)
+    (const stage-all-changes)
+    (const unstage-all-changes)
+    (const delete)
+    (const trash)
+    (const resurrect)
+    (const untrack)
+    (const rename)
+    (const reset-bisect)
+    (const abort-rebase)
+    (const abort-merge)
+    (const merge-dirty)
+    (const delete-unmerged-branch)
+    (const delete-branch-on-remote)
+    (const delete-pr-remote)
+    (const drop-stashes)
+    (const set-and-push)
+    (const amend-published)
+    (const rebase-published)
+    (const edit-published)
+    (const remove-modules)
+    (const remove-dirty-modules)
+    (const trash-module-gitdirs)
+    (const kill-process)
     (const safe-with-wip)))
 
-(defcustom magit-no-confirm nil
+(defcustom magit-no-confirm '(set-and-push)
   "A list of symbols for actions Magit should not confirm, or t.
 
 Many potentially dangerous commands by default ask the user for
@@ -224,6 +245,13 @@ References:
   choice (or selecting another branch), but when a branch has
   not been merged yet, also make sure the user is aware of that.
 
+  `delete-branch-on-remote' Deleting a \"remote branch\" may mean
+  deleting the (local) \"remote-tracking\" branch only, or also
+  removing it from the remote itself.  The latter often makes more
+  sense because otherwise simply fetching from the remote would
+  restore the remote-tracking branch, but doing that can be
+  surprising and hard to recover from, so we ask.
+
   `delete-pr-remote' When deleting a branch that was created from
   a pull-request and if no other branches still exist on that
   remote, then `magit-branch-delete' offers to delete the remote
@@ -238,6 +266,15 @@ References:
   to confirm by accepting the default (or selecting another).
   This action only concerns the deletion of multiple stashes at
   once.
+
+Publishing:
+
+  `set-and-push' When pushing to the upstream or the push-remote
+  and that isn't actually configured yet, then the user can first
+  set the target.  If s/he confirms the default too quickly, then
+  s/he might end up pushing to the wrong branch and if the remote
+  repository is configured to disallow fixing such mistakes, then
+  that can be quite embarrassing and annoying.
 
 Edit published history:
 
@@ -353,14 +390,21 @@ Messages which can currently be suppressed using this option are:
   :group 'magit-miscellaneous
   :type '(repeat string))
 
-(defcustom magit-ellipsis ?…
-  "Character used to abbreviate text.
+(defcustom magit-ellipsis (if (char-displayable-p ?…) "…" "...")
+  "String used to abbreviate text in process buffers.
 
-Currently this is used to abbreviate author names in the margin
-and in process buffers to elide `magit-git-global-arguments'."
-  :package-version '(magit . "2.1.0")
+Currently this is only used to elide `magit-git-global-arguments'
+in process buffers.  In the future it may be used in other places
+as well, but not the following:
+
+- Author names in the log margin are always abbreviated using
+  \"…\" or if that is not displayable, then \">\".
+
+- Whether collapsed sections are indicated using ellipsis is
+  controlled by `magit-section-visibility-indicator'."
+  :package-version '(magit . "3.0.0")
   :group 'magit-miscellaneous
-  :type 'character)
+  :type 'string)
 
 (defcustom magit-update-other-window-delay 0.2
   "Delay before automatically updating the other window.
@@ -400,7 +444,9 @@ and delay of your graphical environment or operating system."
 ;;; User Input
 
 (defvar helm-completion-in-region-default-sort-fn)
+(defvar helm-crm-default-separator)
 (defvar ivy-sort-functions-alist)
+(defvar ivy-sort-matches-functions-alist)
 
 (defvar magit-completing-read--silent-default nil)
 
@@ -474,7 +520,8 @@ acts similarly to `completing-read', except for the following:
                           predicate
                           require-match initial-input hist def)))
       (setq this-command command)
-      (if (string= reply "")
+      ;; Note: Avoid `string=' to support `helm-comp-read-use-marked'.
+      (if (equal reply "")
           (if require-match
               (user-error "Nothing selected")
             nil)
@@ -521,6 +568,8 @@ into a list."
          (minibuffer-completion-table #'crm--collection-fn)
          (minibuffer-completion-confirm t)
          (helm-completion-in-region-default-sort-fn nil)
+         (helm-crm-default-separator nil)
+         (ivy-sort-matches-functions-alist nil)
          (input
           (cl-letf (((symbol-function 'completion-pcm--all-completions)
                      #'magit-completion-pcm--all-completions))
@@ -555,6 +604,7 @@ to nil."
                         crm-local-must-match-map
                       crm-local-completion-map))
                (helm-completion-in-region-default-sort-fn nil)
+               (ivy-sort-matches-functions-alist nil)
                ;; If the user enters empty input, `read-from-minibuffer'
                ;; returns the empty string, not DEF.
                (input (read-from-minibuffer
@@ -655,9 +705,11 @@ This is similar to `read-string', but
            (debug (form form &rest (characterp form body))))
   `(prog1 (pcase (read-char-choice
                   (concat ,prompt
-                          ,(concat (mapconcat 'cadr clauses ", ")
-                                   (and verbose ", or [C-g] to abort") " "))
-                  ',(mapcar 'car clauses))
+                          (mapconcat #'identity
+                                     (list ,@(mapcar #'cadr clauses))
+                                     ", ")
+                          ,(if verbose ", or [C-g] to abort " " "))
+                  ',(mapcar #'car clauses))
             ,@(--map `(,(car it) ,@(cddr it)) clauses))
      (message "")))
 
@@ -780,7 +832,11 @@ as STRING."
         (i 0))
     `(let ((,s ,string))
        (let ,(save-match-data
-               (--map (list it (list 'match-string (cl-incf i) s)) varlist))
+               (cl-mapcan (lambda (sym)
+                            (cl-incf i)
+                            (and (not (eq (aref (symbol-name sym) 0) ?_))
+                                 (list (list sym (list 'match-string i s)))))
+                          varlist))
          ,@body))))
 
 (defun magit-delete-line ()
@@ -813,49 +869,36 @@ Unless optional argument KEEP-EMPTY-LINES is t, trim all empty lines."
   "Set the header-line using STRING.
 Propertize STRING with the `magit-header-line'.  If the `face'
 property of any part of STRING is already set, then that takes
-precedence.  Also pad the left and right sides of STRING so that
-it aligns with the text area."
+precedence.  Also pad the left side of STRING so that it aligns
+with the text area."
   (setq header-line-format
-        (concat
-         (propertize " " 'display '(space :align-to 0))
-         string
-         (propertize " " 'display
-                     `(space :width
-                             (+ left-fringe
-                                left-margin
-                                ,@(and (eq (car (window-current-scroll-bars))
-                                           'left)
-                                       '(scroll-bar)))))))
-  (magit--add-face-text-property 0 (1- (length header-line-format))
-                                 'magit-header-line t header-line-format))
+        (concat (propertize " " 'display '(space :align-to 0))
+                string)))
 
 (defun magit-face-property-all (face string)
   "Return non-nil if FACE is present in all of STRING."
-  (cl-loop for pos = 0 then (next-single-property-change
-                             pos 'font-lock-face string)
-           unless pos
-             return t
-           for current = (get-text-property pos 'font-lock-face string)
-           unless (if (consp current)
-                      (memq face current)
-                    (eq face current))
-             return nil))
+  (catch 'missing
+    (let ((pos 0))
+      (while (setq pos (next-single-property-change pos 'font-lock-face string))
+        (let ((val (get-text-property pos 'font-lock-face string)))
+          (unless (if (consp val)
+                      (memq face val)
+                    (eq face val))
+            (throw 'missing nil))))
+      (not pos))))
 
 (defun magit--add-face-text-property (beg end face &optional append object)
   "Like `add-face-text-property' but for `font-lock-face'."
-  (cl-loop for pos = (next-single-property-change
-                      beg 'font-lock-face object end)
-           for current = (get-text-property beg 'font-lock-face object)
-           for newface = (if (listp current)
-                             (if append
-                                 (append current (list face))
-                               (cons face current))
-                           (if append
-                               (list current face)
-                             (list face current)))
-           do (progn (put-text-property beg pos 'font-lock-face newface object)
-                     (setq beg pos))
-           while (< beg end)))
+  (while (< beg end)
+    (let* ((pos (next-single-property-change beg 'font-lock-face object end))
+           (val (get-text-property beg 'font-lock-face object))
+           (val (if (listp val) val (list val))))
+      (put-text-property beg pos 'font-lock-face
+                         (if append
+                             (append val (list face))
+                           (cons face val))
+                         object)
+      (setq beg pos))))
 
 (defun magit--propertize-face (string face)
   (propertize string 'face face 'font-lock-face face))
@@ -1104,66 +1147,22 @@ the %s(1) manpage.
 (advice-add 'org-man-export :around
             'org-man-export--magit-gitman)
 
-;;; Bitmaps
+;;; Kludges for Package Managers
 
-(when (fboundp 'define-fringe-bitmap)
-  (define-fringe-bitmap 'magit-fringe-bitmap+
-    [#b00000000
-     #b00011000
-     #b00011000
-     #b01111110
-     #b01111110
-     #b00011000
-     #b00011000
-     #b00000000])
-  (define-fringe-bitmap 'magit-fringe-bitmap-
-    [#b00000000
-     #b00000000
-     #b00000000
-     #b01111110
-     #b01111110
-     #b00000000
-     #b00000000
-     #b00000000])
+(defun magit--straight-chase-links (filename)
+  "Chase links in FILENAME until a name that is not a link.
 
-  (define-fringe-bitmap 'magit-fringe-bitmap>
-    [#b01100000
-     #b00110000
-     #b00011000
-     #b00001100
-     #b00011000
-     #b00110000
-     #b01100000
-     #b00000000])
-  (define-fringe-bitmap 'magit-fringe-bitmapv
-    [#b00000000
-     #b10000010
-     #b11000110
-     #b01101100
-     #b00111000
-     #b00010000
-     #b00000000
-     #b00000000])
+This is the same as `file-chase-links', except that it also
+handles fake symlinks that are created by the package manager
+straight.el on Windows.
 
-  (define-fringe-bitmap 'magit-fringe-bitmap-bold>
-    [#b11100000
-     #b01110000
-     #b00111000
-     #b00011100
-     #b00011100
-     #b00111000
-     #b01110000
-     #b11100000])
-  (define-fringe-bitmap 'magit-fringe-bitmap-boldv
-    [#b10000001
-     #b11000011
-     #b11100111
-     #b01111110
-     #b00111100
-     #b00011000
-     #b00000000
-     #b00000000])
-  )
+See <https://github.com/raxod502/straight.el/issues/520>."
+  (when (and (bound-and-true-p straight-symlink-emulation-mode)
+             (fboundp 'straight-chase-emulated-symlink))
+    (when-let ((target (straight-chase-emulated-symlink filename)))
+      (unless (eq target 'broken)
+        (setq filename target))))
+  (file-chase-links filename))
 
 ;;; Miscellaneous
 
@@ -1187,7 +1186,7 @@ Like `message', except that `message-log-max' is bound to nil."
      (save-excursion
        (save-restriction
          (widen)
-         (goto-char ,pos)
+         (goto-char (or ,pos 1))
          ,@body))))
 
 ;;; _

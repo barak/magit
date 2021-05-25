@@ -1,4 +1,27 @@
-* Magit v3.0.0 Release Notes (unreleased)
+* It's Magit!  A Git Porcelain inside Emacs
+
+Magit is a text-based Git user interface that puts an unmatched focus
+on streamlining workflows.  Commands are invoked using short mnemonic
+key sequences that take the cursor’s position in the highly actionable
+interface into account to provide context-sensitive behavior.
+
+With Magit you can do nearly everything that you can do when using Git
+on the command-line, but at greater speed and while taking advantage
+of advanced features that previously seemed too daunting to use on a
+daily basis.  Many users will find that by using Magit they can become
+more effective Git user.
+
+For more information about Magit, see https://magit.vc.
+
+* Magit v3.0.0 Release Notes
+
+Released 25th May 2021 by Jonas Bernoulli.
+
+I am pleased to announce the release of Magit version 3.0.0,
+representing 1264 commits by 87 contributors over 2.5 years.
+
+Also see https://emacsair.me/2021/05/25/magit-3.0.
+
 ** Breaking changes
 
 - Dropped support for Git v2.0 and v2.1.
@@ -17,7 +40,9 @@
 
 - The commands ~magit-branch-pull-request~, ~magit-checkout-pull-request~
   and ~magit-worktree-checkout-pull-request~ were removed in favor of
-  improved implementations provided by the new Forge package.
+  improved implementations provided by the new Forge package.  (See
+  https://emacsair.me/2018/12/19/forge-0.1 for more information about
+  Forge.)
 
 - ~C-c C-e~ is no longer bound to ~magit-dispatch-popup~.  It is bound to
   ~magit-edit-thing~ now, so that Forge can add section-specific
@@ -38,6 +63,24 @@
   keeping the old variable and functions around for backward
   compatibility.  Packages using the obsolete variable and functions
   should be adjusted soon.  #3836
+
+- Magit-Section is now distributed as a separate package, as announced
+  here: https://emacsair.me/2020/01/23/magit-section.  #4003
+
+- Magit now adds three global key bindings, which can be prevented
+  by setting the new option ~magit-define-global-key-bindings~ before
+  loading ~magit~.  Note that if you bind these keys to other commands
+  anywhere in your init file (even *after* loading ~magit~), then Magit
+  won't override those bindings.  See the options doc-string for
+  more information.  #4237
+
+- Magit no longer depends on ~async-bytecomp~ to avoid a certain class
+  of mystery bugs because this effort backfired.  86eec7ba3
+
+- ~global-git-commit-mode~ is no longer autoloaded.  Users who commit
+  from the command-line but still want to use ~git-commit-mode~, might
+  now have to load ~git-commit~ explicitly in their init file.
+  13f20763a
 
 ** Changes since v2.90.0
 
@@ -84,6 +127,9 @@
   performed by these commands.  This is the safe default; if you want
   to drop such commits, then you have to enable ~--autosquash~ in the
   popup and then invoke ~magit-rebase-interactive~.  #3670
+
+- ~magit-rebase-remove-commit~ now supports removing the ~HEAD~
+  commit.  #4195
 
 - The option ~magit-repository-directories~ defaults to ~nil~ again
   because the non-nil default added in v2.90.0 led to surprising
@@ -138,6 +184,10 @@
 - New command ~git-rebase-break~ inserts a "break" action in the
   rebase to-do sequence (available as of Git v2.20).  #3762
 
+- ~git-rebase-kill-line~ and the commands for changing the action of a
+  commit line (e.g., ~git-rebase-squash~) learned to work on all lines
+  selected by the region.  #4172
+
 - The ~--color-moved~ diff argument is supported now, but isn't
   available from the diff transients by default.  To enable it
   use "C-x l" in those transients.  #3424
@@ -150,7 +200,7 @@
 - ~magit-cherry~ is now available from the ~magit-dispatch~ prefix.
   ef311f378
 
-~ ~magit-cherry-spinoff~ now offers the upstream as the default
+- ~magit-cherry-spinoff~ now offers the upstream as the default
   starting-point.  e5a2a0ac2
 
 - Added new command ~magit-branch-spinout~.  #3794.
@@ -175,9 +225,15 @@
 
 - Added new option ~magit-worktree-read-directory-name-function~.  #3820
 
-- TODO Added basic support for libgit2.  #3841
+- Basic optional support for ~libgit2~ was added, but because so few
+  functions are currently implemented using that library, opting in
+  currently has almost no effect.  #3841
 
 - ~git bisect~ is now run asynchronously.  #3802
+
+- ~magit-bisect~ now supports specifying alternate terms.  The new
+  infixes and suffix related to this functionality are disabled by
+  default.
 
 - ~magit-branch-or-commit-at-point~ now falls back to an abbreviated
   hash instead of something like "master~2", because the latter often
@@ -331,6 +387,46 @@
   available from the diff transients by default.  To enable it use
   "C-x l" in those transients.  #4056
 
+- Added new command ~magit-reset-keep~.  0ea8b0ef6
+
+- Added new option ~magit-reshelve-since-committer-only~.  #4101
+
+- Added new command ~magit-commit-absorb~ as an alternative to
+  ~magit-commit-autofixup~.  9423edc0b
+
+- Added new option ~magit-status-use-buffer-arguments~.  #4046
+
+- Added new command ~magit-project-status~.  #4173
+
+- Added new variable ~magit-process-extreme-logging~ for debugging
+  purposes.  #4217
+
+- Taught Isearch and Swiper how to expand Magit sections when the
+  current match is inside a hidden section and how to close sections
+  again.  #3999
+
+- Added new command ~magit-commit-absorb-modules~.  10b4bec53
+
+- Added new transient command ~magit-shortlog~.  #4262
+
+- Added new command ~magit-generate-changelog~.  c5e118111
+
+- The name of the main branch is no longer hard-coded to "master".
+  Now we use the value of ~init.defaultBranch~ if that is set and the
+  named branch exists.  If not, then some other names that are
+  commonly used for the main branch are tried as a potential fallback.
+  c4494ac0b
+
+- Added new option ~magit-diff-extra-stat-arguments~.  1bd4fe26e
+
+- Added support for ~git-credential-manager-core~.  #4318
+
+- The name of the upstream remote is no longer hard-code to "origin".
+  See the doc-string of function ~magit-primary-remote~ to learn how to
+  customize this.  f883b62fe
+
+This release also contains numerous other improvements.
+
 ** Fixes since v2.90.0
 
 - Bumped the minimal required version of ~git-commit~ to the correct
@@ -375,6 +471,10 @@
 
 - A regression in ~magit-log-move-to-parent~ prevented it from doing its
   job.  #3682
+
+- Since v2.11.0 ~magit-log-revision-headers-format~ lines in the log
+  output (shown via ~++header~) weren't displayed properly when
+  ~--graph~ was enabled.  #4129
 
 - ~magit-clone~ didn't run ~magit-credential-hook~.  #3683
 
@@ -462,6 +562,18 @@
   unchanged" bit, and then modifying it again triggered a failure in
   ~magit-wip-commit-worktree~.  #4037
 
+- ~magit-abbrev-length~ returned an incorrect result when
+  ~core.abbrev~ was explicitly set to "auto".
+
+- Calling ~magit-status~ in a repository with a corrupt Git
+  configuration didn't propagate the error and instead preseted the
+  directory as though it was uninitialized.  #4337
+
+- When the status buffer is not shown in any buffer but point is on
+  a hunk, and editing and saving the respective file causes, that
+  hunk to disappear or change,  then Magit ended up changing point
+  in the file-visiting buffer.  #4196
+
 - Various bug fixes to
   ~magit-branch-delete~ (3e73ff19d),
   ~magit--{upstream,pushbranch}-suffix-predicate~ (0ce7fbbc2),
@@ -493,6 +605,97 @@
   ~magit-stash-drop~ (a4972766a),
   ~magit-ignore-submodules-p~ (a7699f868),
   ~magit-log-propertize-keywords~ (ac1ee3df5),
+  and then I stopped adding to this list.
 
-This release also contains other minor improvements, bug fixes, typo
-fixes, and documentation fixes.
+This release also contains numerous other bug fixes, typo fixes, and
+documentation fixes.
+
+* Authors
+
+  1001  Jonas Bernoulli
+   120  Kyle Meyer
+    10  Basil L. Contovounesios
+     9  Noam Postavsky
+     5  Vladimir Panteleev
+     4  Damien Cassou
+     4  Daniel Martín
+     4  Sam Cedarbaum
+     4  Štěpán Němec
+     3  Adam Porter
+     3  Benjamin Motz
+     3  Kévin Le Gouguec
+     2  Alban Gruin
+     2  Allen Li
+     2  Bastian Beischer
+     2  Clément Pit-Claudel
+     2  Daniel Fleischer
+     2  Evan Torrie
+     2  Ingmar Sittl
+     2  Leo Vivier
+     2  Martin Polden
+     2  Naoya Yamashita
+     2  Phil Sainty
+     2  Philipp Stephani
+     2  Radon Rosborough
+     2  Ryan C. Thompson
+     2  Szunti
+     2  Tassilo Horn
+     2  Thierry Volpiatto
+     2  Troy Hinckley
+     2  zilongshanren
+     1  Adam Kruszewski
+     1  Adam Spiers
+     1  Alexander Miller
+     1  Andrew Eggenberger
+     1  Andrew Psaltis
+     1  Andrew Schwartzmeyer
+     1  Arnau Roig Ninerola
+     1  Ashlynn Anderson
+     1  Ben North
+     1  Brian Leung
+     1  Dan Davison
+     1  Danny Zhu
+     1  David Ellison
+     1  Dominique Quatravaux
+     1  Eric
+     1  Fritz Grabo
+     1  Gregory Heytings
+     1  Hussein Ait-Lahcen
+     1  Ian Milligan
+     1  Ilya Grigoriev
+     1  Johann Klähn
+     1  Johannes Altmanninger
+     1  Jonas Galvão Xavier
+     1  Jonathan Arnett
+     1  Jonathan del Strother
+     1  Jordan Galby
+     1  Josh Elsasser
+     1  Justin Guenther
+     1  Keshav Kini
+     1  Kevin Brubeck Unhammer
+     1  Kevin J. Foley
+     1  Knut Olav Bøhmer
+     1  Magnus Malm
+     1  Mario Rodas
+     1  Martin Joerg
+     1  Matthew Kraai
+     1  Maxim Cournoyer
+     1  Michael Griffiths
+     1  Ola x Nilsson
+     1  Pancho Horrillo
+     1  Philipp Fehre
+     1  Pritam Baral
+     1  Roey Darwish Dror
+     1  Sean Whitton
+     1  Simon Pintarelli
+     1  Steve Purcell
+     1  Thomas Fini Hansen
+     1  Topi Miettinen
+     1  Tsuyoshi Kitamoto
+     1  Vitaly Ostashov
+     1  Vladimir Sedach
+     1  Wojciech Siewierski
+     1  Yann Herklotz
+     1  Ynilu
+     1  Zhu Zihao
+     1  zakora

@@ -1,12 +1,14 @@
 ;;; magit-branch.el --- branch support  -*- lexical-binding: t -*-
 
-;; Copyright (C) 2010-2020  The Magit Project Contributors
+;; Copyright (C) 2010-2021  The Magit Project Contributors
 ;;
 ;; You should have received a copy of the AUTHORS.md file which
 ;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+
+;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;; Magit is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
@@ -30,9 +32,6 @@
 ;; defined elsewhere.
 
 ;;; Code:
-
-(eval-when-compile
-  (require 'subr-x))
 
 (require 'magit)
 (require 'magit-reset)
@@ -201,9 +200,13 @@ has to be used to view and change branch related variables."
 ;;; Commands
 
 ;;;###autoload (autoload 'magit-branch "magit" nil t)
-(define-transient-command magit-branch (branch)
+(transient-define-prefix magit-branch (branch)
   "Add, configure or remove a branch."
   :man-page "git-branch"
+  ["Arguments"
+   (7 "-r" "Recurse submodules when checking out an existing branch"
+      "--recurse-submodules"
+      :if (lambda () (version<= "2.13" (magit-git-version))))]
   ["Variables"
    :if (lambda ()
          (and magit-branch-direct-configure
@@ -235,18 +238,22 @@ has to be used to view and change branch related variables."
   (interactive (list (magit-get-current-branch)))
   (transient-setup 'magit-branch nil nil :scope branch))
 
+(defun magit-branch-arguments ()
+  (transient-args 'magit-branch))
+
 ;;;###autoload
-(defun magit-checkout (revision)
+(defun magit-checkout (revision &optional args)
   "Checkout REVISION, updating the index and the working tree.
 If REVISION is a local branch, then that becomes the current
 branch.  If it is something else, then `HEAD' becomes detached.
 Checkout fails if the working tree or the staging area contain
 changes.
 \n(git checkout REVISION)."
-  (interactive (list (magit-read-other-branch-or-commit "Checkout")))
+  (interactive (list (magit-read-other-branch-or-commit "Checkout")
+                     (magit-branch-arguments)))
   (when (string-match "\\`heads/\\(.+\\)" revision)
     (setq revision (match-string 1 revision)))
-  (magit-run-git "checkout" revision))
+  (magit-run-git "checkout" args revision))
 
 ;;;###autoload
 (defun magit-branch-create (branch start-point)
@@ -257,12 +264,13 @@ changes.
   (magit-refresh))
 
 ;;;###autoload
-(defun magit-branch-and-checkout (branch start-point)
+(defun magit-branch-and-checkout (branch start-point &optional args)
   "Create and checkout BRANCH at branch or revision START-POINT."
-  (interactive (magit-branch-read-args "Create and checkout branch"))
+  (interactive (append (magit-branch-read-args "Create and checkout branch")
+                       (list (magit-branch-arguments))))
   (if (string-match-p "^stash@{[0-9]+}$" start-point)
       (magit-run-git "stash" "branch" branch start-point)
-    (magit-call-git "checkout" "-b" branch start-point)
+    (magit-call-git "checkout" args "-b" branch start-point)
     (magit-branch-maybe-adjust-upstream branch start-point)
     (magit-refresh)))
 
@@ -339,8 +347,8 @@ when using `magit-branch-and-checkout'."
            (t
             (list choice (magit-read-starting-point "Create" choice))))))
   (if (not start-point)
-      (magit-checkout branch)
-    (when (magit-anything-modified-p)
+      (magit-checkout branch (magit-branch-arguments))
+    (when (magit-anything-modified-p t)
       (user-error "Cannot checkout when there are uncommitted changes"))
     (magit-branch-and-checkout branch start-point)
     (when (magit-remote-branch-p start-point)
@@ -498,7 +506,7 @@ that is being reset."
                                   (or (and (not (equal branch atpoint)) atpoint)
                                       (magit-get-upstream-branch branch)))
            current-prefix-arg)))
-  (let ((inhibit-magit-refresh t))
+  (let ((magit-inhibit-refresh t))
     (if (equal branch (magit-get-current-branch))
         (if (and (magit-anything-modified-p)
                  (not (yes-or-no-p
@@ -562,16 +570,32 @@ defaulting to the branch at point."
      ((string-match "^refs/remotes/\\([^/]+\\)" (car refs))
       (let* ((remote (match-string 1 (car refs)))
              (offset (1+ (length remote))))
-        ;; Assume the branches actually still exists on the remote.
-        (magit-run-git-async
-         "push"
-         (and (or force magit-branch-delete-never-verify) "--no-verify")
-         remote
-         (--map (concat ":" (substring it offset)) branches))
-        ;; If that is not the case, then this deletes the tracking branches.
-        (set-process-sentinel
-         magit-this-process
-         (apply-partially 'magit-delete-remote-branch-sentinel remote refs))))
+        (cond
+         ((magit-confirm 'delete-branch-on-remote
+            "Delete %s on the remote (not just locally)"
+            "Delete %i branches on the remote (not just locally)"
+            'noabort branches)
+          ;; The ref may actually point at another rev on the remote,
+          ;; but this is better than nothing.
+          (dolist (ref refs)
+            (message "Delete %s (was %s)" ref
+                     (magit-rev-parse "--short" ref)))
+          ;; Assume the branches actually still exist on the remote.
+          (magit-run-git-async
+           "push"
+           (and (or force magit-branch-delete-never-verify) "--no-verify")
+           remote
+           (--map (concat ":" (substring it offset)) branches))
+          ;; If that is not the case, then this deletes the tracking branches.
+          (set-process-sentinel
+           magit-this-process
+           (apply-partially 'magit-delete-remote-branch-sentinel remote refs)))
+         (t
+          (dolist (ref refs)
+            (message "Delete %s (was %s)" ref
+                     (magit-rev-parse "--short" ref))
+            (magit-call-git "update-ref" "-d" ref))
+          (magit-refresh)))))
      ((> (length branches) 1)
       (setq branches (delete (magit-get-current-branch) branches))
       (mapc 'magit-branch-maybe-delete-pr-remote branches)
@@ -579,17 +603,18 @@ defaulting to the branch at point."
       (magit-run-git "branch" (if force "-D" "-d") branches))
      (t ; And now for something completely different.
       (let* ((branch (car branches))
-             (prompt (format "Branch %s is checked out.  " branch)))
+             (prompt (format "Branch %s is checked out.  " branch))
+             (main (magit-main-branch)))
         (when (equal branch (magit-get-current-branch))
-          (pcase (if (or (equal branch "master")
-                         (not (magit-rev-verify "master")))
+          (pcase (if (or (equal branch main)
+                         (not main))
                      (magit-read-char-case prompt nil
                        (?d "[d]etach HEAD & delete" 'detach)
                        (?a "[a]bort"                'abort))
                    (magit-read-char-case prompt nil
-                     (?d "[d]etach HEAD & delete"     'detach)
-                     (?c "[c]heckout master & delete" 'master)
-                     (?a "[a]bort"                    'abort)))
+                     (?d "[d]etach HEAD & delete" 'detach)
+                     (?c (format "[c]heckout %s & delete" main) 'main)
+                     (?a "[a]bort" 'abort)))
             (`detach (unless (or (equal force '(4))
                                  (member branch force)
                                  (magit-branch-merged-p branch t))
@@ -597,13 +622,13 @@ defaulting to the branch at point."
                          "Delete unmerged branch %s" ""
                          nil (list branch)))
                      (magit-call-git "checkout" "--detach"))
-            (`master (unless (or (equal force '(4))
+            (`main   (unless (or (equal force '(4))
                                  (member branch force)
-                                 (magit-branch-merged-p branch "master"))
+                                 (magit-branch-merged-p branch main))
                        (magit-confirm 'delete-unmerged-branch
                          "Delete unmerged branch %s" ""
                          nil (list branch)))
-                     (magit-call-git "checkout" "master"))
+                     (magit-call-git "checkout" main))
             (`abort  (user-error "Abort")))
           (setq force t))
         (magit-branch-maybe-delete-pr-remote branch)
@@ -686,15 +711,15 @@ the remote."
   (magit-call-git "branch" (if force "-M" "-m") old new)
   (when magit-branch-rename-push-target
     (let ((remote (magit-get-push-remote old))
-          (old-specific (magit-get "branch" old "pushRemote"))
-          (new-specific (magit-get "branch" new "pushRemote")))
-      (when (and old-specific (or force (not new-specific)))
-        ;; Keep the target setting branch specific, even if that is
+          (old-specified (magit-get "branch" old "pushRemote"))
+          (new-specified (magit-get "branch" new "pushRemote")))
+      (when (and old-specified (or force (not new-specified)))
+        ;; Keep the target setting branch specified, even if that is
         ;; redundant.  But if a branch by the same name existed before
         ;; and the rename isn't forced, then do not change a leftover
         ;; setting.  Such a leftover setting may or may not conform to
         ;; what we expect here...
-        (magit-set old-specific "branch" new "pushRemote"))
+        (magit-set old-specified "branch" new "pushRemote"))
       (when (and (equal (magit-get-push-remote new) remote)
                  ;; ...and if it does not, then we must abort.
                  (not (eq magit-branch-rename-push-target 'local-only))
@@ -762,7 +787,7 @@ and also rename the respective reflog file."
 ;;; Configure
 
 ;;;###autoload (autoload 'magit-branch-configure "magit-branch" nil t)
-(define-transient-command magit-branch-configure (branch)
+(transient-define-prefix magit-branch-configure (branch)
   "Configure a branch."
   :man-page "git-branch"
   [:description
@@ -783,7 +808,7 @@ and also rename the respective reflog file."
   (interactive
    (list (or (and (not current-prefix-arg)
                   (not (and magit-branch-direct-configure
-                            (eq current-transient-command 'magit-branch)))
+                            (eq transient-current-command 'magit-branch)))
                   (magit-get-current-branch))
              (magit--read-branch-scope))))
   (transient-setup 'magit-branch-configure nil nil :scope branch))
@@ -795,12 +820,12 @@ and also rename the respective reflog file."
                (format (oref obj variable) "<name>"))
      "Configure branch")))
 
-(define-suffix-command magit-branch.<branch>.description (branch)
+(transient-define-suffix magit-branch.<branch>.description (branch)
   "Edit the description of BRANCH."
   :class 'magit--git-variable
   :transient nil
   :variable "branch.%s.description"
-  (interactive (list (oref current-transient-prefix scope)))
+  (interactive (list (oref transient-current-prefix scope)))
   (magit-run-git-with-editor "branch" "--edit-description" branch))
 
 (add-hook 'find-file-hook 'magit-branch-description-check-buffers)
@@ -812,7 +837,7 @@ and also rename the respective reflog file."
 (defclass magit--git-branch:upstream (magit--git-variable)
   ((format :initform " %k %m %M\n   %r %R")))
 
-(define-infix-command magit-branch.<branch>.merge/remote ()
+(transient-define-infix magit-branch.<branch>.merge/remote ()
   :class 'magit--git-branch:upstream)
 
 (cl-defmethod transient-init-value ((obj magit--git-branch:upstream))
@@ -850,7 +875,7 @@ and also rename the respective reflog file."
       (propertize value 'face 'transient-argument)
     (propertize "unset" 'face 'transient-inactive-argument)))
 
-(define-infix-command magit-branch.<branch>.rebase ()
+(transient-define-infix magit-branch.<branch>.rebase ()
   :class 'magit--git-variable:choices
   :scope 'magit--read-branch-scope
   :variable "branch.%s.rebase"
@@ -858,31 +883,31 @@ and also rename the respective reflog file."
   :choices '("true" "false")
   :default "false")
 
-(define-infix-command magit-branch.<branch>.pushRemote ()
+(transient-define-infix magit-branch.<branch>.pushRemote ()
   :class 'magit--git-variable:choices
   :scope 'magit--read-branch-scope
   :variable "branch.%s.pushRemote"
   :fallback "remote.pushDefault"
   :choices 'magit-list-remotes)
 
-(define-infix-command magit-pull.rebase ()
+(transient-define-infix magit-pull.rebase ()
   :class 'magit--git-variable:choices
   :variable "pull.rebase"
   :choices '("true" "false")
   :default "false")
 
-(define-infix-command magit-remote.pushDefault ()
+(transient-define-infix magit-remote.pushDefault ()
   :class 'magit--git-variable:choices
   :variable "remote.pushDefault"
   :choices 'magit-list-remotes)
 
-(define-infix-command magit-branch.autoSetupMerge ()
+(transient-define-infix magit-branch.autoSetupMerge ()
   :class 'magit--git-variable:choices
   :variable "branch.autoSetupMerge"
   :choices '("always" "true" "false")
   :default "true")
 
-(define-infix-command magit-branch.autoSetupRebase ()
+(transient-define-infix magit-branch.autoSetupRebase ()
   :class 'magit--git-variable:choices
   :variable "branch.autoSetupRebase"
   :choices '("always" "local" "remote" "never")
