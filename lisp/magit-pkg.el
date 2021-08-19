@@ -1,4 +1,4 @@
-(define-package "magit" "3.1.0"
+(define-package "magit" "3.1.1"
   "A Git porcelain inside Emacs."
   '((emacs "25.1")
     (dash "2.18.1")
