@@ -1,2 +1,2 @@
-version=3
+version=4
 https://github.com/magit/magit/releases /magit/magit/archive/refs/tags/v(\d.+).tar.gz
