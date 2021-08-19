@@ -1,6 +1,7 @@
 From: =?utf-8?q?R=C3=A9mi_Vanicat?= <vanicat@debian.org>
-Date: Tue, 25 May 2021 12:44:46 +0200
+Date: Thu, 19 Aug 2021 22:29:23 +0200
 Subject: Signal in the documentation there are Debian patches.
+Reviewed-by: Matteo F. Vescovi <mfv@debian.org>
 
 ---
  Documentation/magit.org  | 4 ++--
@@ -8,37 +9,37 @@ Subject: Signal in the documentation there are Debian patches.
  2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/Documentation/magit.org b/Documentation/magit.org
-index edfa0c6..9e33bfe 100644
+index ae5ad975..8e0295ec 100644
 --- a/Documentation/magit.org
 +++ b/Documentation/magit.org
 @@ -8,7 +8,7 @@
  #+TEXINFO_DIR_CATEGORY: Emacs
  #+TEXINFO_DIR_TITLE: Magit: (magit).
  #+TEXINFO_DIR_DESC: Using Git from Emacs with Magit.
--#+SUBTITLE: for version 3.0.0
-+#+SUBTITLE: for version 3.0.0  (with debian Patches)
+-#+SUBTITLE: for version 3.2.1
++#+SUBTITLE: for version 3.2.1 (with Debian patches)
  
  #+TEXINFO_DEFFN: t
  #+OPTIONS: H:4 num:3 toc:2
-@@ -25,7 +25,7 @@
+@@ -25,7 +25,7 @@ directly from within Emacs.  While many fine Git clients exist, only
  Magit and Git itself deserve to be called porcelains.
  
  #+TEXINFO: @noindent
--This manual is for Magit version 3.0.0.
-+This manual is for Magit version 3.0.0 (with debian Patches)
+-This manual is for Magit version 3.2.1.
++This manual is for Magit version 3.2.1 (with Debian patches).
  
  #+BEGIN_QUOTE
  Copyright (C) 2015-2021 Jonas Bernoulli <jonas@bernoul.li>
 diff --git a/Documentation/magit.texi b/Documentation/magit.texi
-index 34ce8f0..b57f85e 100644
+index 699913ad..724d6f75 100644
 --- a/Documentation/magit.texi
 +++ b/Documentation/magit.texi
 @@ -31,7 +31,7 @@ General Public License for more details.
  @finalout
  @titlepage
  @title Magit User Manual
--@subtitle for version 3.0.0
-+@subtitle for version 3.0.0 (with Debian patches)
+-@subtitle for version 3.2.1
++@subtitle for version 3.2.1 (with Debian patches)
  @author Jonas Bernoulli
  @page
  @vskip 0pt plus 1filll
@@ -46,8 +47,8 @@ index 34ce8f0..b57f85e 100644
  Magit and Git itself deserve to be called porcelains.
  
  @noindent
--This manual is for Magit version 3.0.0.
-+This manual is for Magit version 3.0.0 (with Debian patches)
+-This manual is for Magit version 3.2.1.
++This manual is for Magit version 3.2.1 (with Debian patches).
  
  @quotation
  Copyright (C) 2015-2021 Jonas Bernoulli <jonas@@bernoul.li>
