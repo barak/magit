@@ -31,7 +31,7 @@ General Public License for more details.
 @finalout
 @titlepage
 @title Magit User Manual
-@subtitle for version 3.1.1
+@subtitle for version 3.2.0
 @author Jonas Bernoulli
 @page
 @vskip 0pt plus 1filll
@@ -53,7 +53,7 @@ directly from within Emacs.  While many fine Git clients exist, only
 Magit and Git itself deserve to be called porcelains.
 
 @noindent
-This manual is for Magit version 3.1.1.
+This manual is for Magit version 3.2.0.
 
 @quotation
 Copyright (C) 2015-2021 Jonas Bernoulli <jonas@@bernoul.li>
@@ -2595,18 +2595,64 @@ This command runs @code{git gui} in the current repository.
 @node Git Executable
 @subsection Git Executable
 
-Except on MS Windows, Magit defaults to running Git without specifying
-the path to the git executable.  Instead the first executable found by
-Emacs on @code{exec-path} is used (whose value in turn is set based on the
-value of the environment variable @code{$PATH} when Emacs was started).
+When Magit calls Git, then it may do so using the absolute path to the
+@code{git} executable, or using just its name.
 
-This has the advantage that it continues to work even when using Tramp
-to connect to a remote machine on which the executable is found in a
-different place.  The downside is that if you have multiple versions
-of Git installed, then you might end up using another version than the
-one you think you are using.
+When running @code{git} locally and the @code{system-type} is @code{windows-nt} (any
+Windows version) or @code{darwin} (macOS) then @code{magit-git-executable} is set
+to an absolute path when Magit is loaded.
+
+On Windows it is necessary to use an absolute path because Git comes
+with several wrapper scripts for the actual @code{git} binary, which are also
+placed on @code{$PATH}, and using one of these wrappers instead of the binary
+would degrade performance horribly.  For some macOS users using just
+the name of the executable also performs horribly, so we avoid doing
+that on that platform as well.  On other platforms, using just the
+name seems to work just fine.
+
+Using an absolute path when running @code{git} on a remote machine over
+Tramp, would be problematic to use an absolute path that is suitable
+on the local machine, so a separate option is used to control the name
+or path that is used on remote machines.
+
+@defopt magit-git-executable
+
+The @code{git} executable used by Magit on the local host.  This should be
+either the absolute path to the executable, or the string "git" to
+let Emacs find the executable itself, using the standard mechanism
+for doing such things.
+@end defopt
+
+@defopt magit-remote-git-executable
+
+The @code{git} executable used by Magit on remote machines over Tramp.
+Normally this should be just the string "git".
+@end defopt
+
+If Emacs is unable to find the correct executable, then you can
+work around that by explicitly setting the value of one of these two
+options.  Doing that should be considered a kludge; it is better to
+make sure that the order in @code{exec-path} or @code{tramp-remote-path} is correct.
+
+Note that @code{exec-path} is set based on the value of the @code{PATH} environment
+variable that is in effect when Emacs is started.  If you set @code{PATH} in
+your shell's init files, then that only has an effect on Emacs if you
+start it from that shell (because the environment of a process is only
+passed to its child processes, not to arbitrary other processes).  If
+that is not how you start Emacs, then the @code{exec-path-from-shell} package
+can help; though honestly I consider that a kludge too.
+
+The command @code{magit-debug-git-executable} can be useful to find out where
+Emacs is searching for @code{git}.
 
 @table @asis
+@kindex M-x magit-debug-git-executable
+@cindex magit-debug-git-executable
+@item @kbd{M-x magit-debug-git-executable} @tie{}@tie{}@tie{}@tie{}(@code{magit-debug-git-executable})
+
+This command displays a buffer with information about
+@code{magit-git-executable} and  @code{magit-remote-git-executable}.
+
 @kindex M-x magit-version
 @cindex magit-version
 @item @kbd{M-x magit-version} @tie{}@tie{}@tie{}@tie{}(@code{magit-version})
@@ -2614,37 +2660,6 @@ one you think you are using.
 This command shows the currently used versions of Magit, Git, and
 Emacs in the echo area.  Non-interactively this just returns the
 Magit version.
-@end table
-
-When the @code{system-type} is @code{windows-nt}, then @code{magit-git-executable} is set
-to an absolute path when Magit is first loaded.  This is necessary
-because Git on that platform comes with several wrapper scripts for
-the actual git binary, which are also placed on @code{$PATH}, and using one
-of these wrappers instead of the binary would degrade performance
-horribly.
-
-If Magit doesn't find the correct executable then you @strong{can} work
-around that by setting @code{magit-git-executable} to an absolute path.
-But note that doing so is a kludge.  It is better to make sure the
-order in the environment variable @code{$PATH} is correct, and that Emacs
-is started with that environment in effect.  The command
-@code{magit-debug-git-executable} can be useful to find out where Emacs is
-searching for git.  If you have to connect from Windows to a
-non-Windows machine, then you must change the value to "git".
-
-@defopt magit-git-executable
-
-The git executable used by Magit, either the full path to the
-executable or the string "git" to let Emacs find the executable
-itself, using the standard mechanism for doing such things.
-@end defopt
-
-@table @asis
-@kindex M-x magit-debug-git-executable
-@cindex magit-debug-git-executable
-@item @kbd{M-x magit-debug-git-executable} @tie{}@tie{}@tie{}@tie{}(@code{magit-debug-git-executable})
-
-Display a buffer with information about @code{magit-git-executable}.
 @end table
 
 @node Global Git Arguments
@@ -3240,6 +3255,12 @@ the repository identification (usually its basename), and with
 @code{default-directory} bound to the toplevel of its working tree.  It
 has to return a string to be inserted or nil.  PROPS is an alist
 that supports the keys @code{:right-align} and @code{:pad-right}.
+
+You may wish to display a range of numeric columns using just one
+character per column and without any padding between columns, in
+which case you should use an appropriate HEADER, set WIDTH to 1,
+and set @code{:pad-right} to 0.  @code{+} is substituted for numbers higher
+than 9.
 @end defopt
 
 The following functions can be added to the above option:
@@ -6732,7 +6753,7 @@ If you use a finite set of non-ephemeral branches across all your
 repositories, then you might use something like:
 
 @lisp
-(("origin/master" "master" "next" "maint"))
+(("origin/master" . ("master" "next" "maint")))
 @end lisp
 
 Or if the names of all your ephemeral branches contain a slash,
@@ -6748,7 +6769,21 @@ Of course you can also fine-tune:
 (("origin/maint" . "\\`hotfix/")
  ("origin/master" . "\\`feature/"))
 @end lisp
+
+UPSTREAM can be a local branch:
+
+@lisp
+(("master" . ("master" "next" "maint")))
+@end lisp
 @end defopt
+
+Because the main branch is no longer almost always named "master"
+you should also account for other common names:
+
+@lisp
+(("main"  . ("main" "master" "next" "maint"))
+ ("master" . ("main" "master" "next" "maint")))
+@end lisp
 
 @cindex magit-branch-orphan
 @deffn Command magit-branch-orphan
@@ -10323,14 +10358,6 @@ faster @code{vfork} will be used.  (The creation of child processes still
 takes about twice as long on Darwin compared to Linux.)  See @footnote{@uref{https://lists.gnu.org/archive/html/bug-gnu-emacs/2017-04/msg00201.html}}
 for more information.
 
-On Catalina, and potentially other macOS releases, there may be a
-performance problem where any action takes 20 times longer on Darwin
-than on Linux.  This can be worked around by setting
-@code{magit-git-executable} to the absolute path of the @code{git} executable,
-instead of relying on resolving the @code{$PATH}.  You should not do that if
-you want to use Magit on remote machines using Tramp and if @code{git} is not
-installed in the same location on those machines.
-
 @node Default Bindings
 @subsection Default Bindings
 
@@ -10352,7 +10379,7 @@ following bindings may be added to the global keymap.
 @tab @code{magit-file-dispatch}
 @end multitable
 
-These bindings may be added when @code{after-init-hook} is called.
+These bindings may be added when @code{after-init-hook} is run.
 Each binding is added if and only if at that time no other key
 is bound to the same command and no other command is bound to
 the same key.  In other words we try to avoid adding bindings
@@ -10366,8 +10393,14 @@ is loaded or autoloaded) and to increase the likelihood that
 all the potentially conflicting user bindings have already
 been added.
 
-Setting this variable after the hook has already been called
-has no effect.
+To set this variable use either @code{setq} or the Custom interface.
+Do not use the function @code{customize-set-variable} because doing
+that would cause Magit to be loaded immediately when that form
+is evaluated (this differs from @code{custom-set-variables}, which
+doesn't load the libraries that define the customized variables).
+
+Setting this variable to nil has no effect if that is done after
+the key bindings have already been added.
 
 We recommend that you bind @code{C-c g} instead of @code{C-c M-g} to
 @code{magit-file-dispatch}.  The former is a much better binding
@@ -10498,6 +10531,22 @@ If the value of option @code{magit-git-debug} is non-nil and git exits with
 a non-zero exit status, then warn about that in the echo area and
 add a section containing git's standard error in the current
 repository's process buffer.
+@end defun
+
+@defun magit-process-git destination &rest args
+
+Calls Git synchronously in a separate process, returning its exit
+code.  DESTINATION specifies how to handle the output, like for
+@code{call-process}, except that file handlers are supported.  Enables
+Cygwin's "noglob" option during the call and ensures unix eol
+conversion.
+@end defun
+
+@defun magit-process-file process &optional infile buffer display &rest args
+
+Processes files synchronously in a separate process.  Identical to
+@code{process-file} but temporarily enables Cygwin's "noglob" option during
+the call and ensures unix eol conversion.
 @end defun
 
 If an error occurs when using one of the above functions, then that
