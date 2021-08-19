@@ -1,5 +1,8 @@
-magit (3.0.0-1) UNRELEASED; urgency=medium
+magit (3.2.1-1) UNRELEASED; urgency=medium
 
+  * Team upload
+
+  [ Rémi Vanicat ]
   * New upstream version
   * Adapt watch file
   * Adapt patches
@@ -7,8 +10,19 @@ magit (3.0.0-1) UNRELEASED; urgency=medium
     - 0005-Update-version-and-require-of-git-commit.patch: most is
       integrated upstream, the rest in:
       0004-Signal-in-the-documentation-there-are-Debian-patches.patch
+  * Add an elpa-magit-section package.
+    It has been separated upstream.
 
- -- Rémi Vanicat <vanicat@debian.org>  Tue, 25 May 2021 12:52:58 +0200
+  [ Matteo F. Vescovi ]
+  * New upstream version 3.2.1
+    - debian/patches/: #0004 refreshed against v3.2.1
+  * debian/control:
+    - debhelper bump 12 -> 13
+    - RRR set
+    - S-V bump 4.1.4 -> 4.5.1 (no changes needed)
+  * debian/watch: version bump 3 -> 4
+
+ -- Matteo F. Vescovi <mfv@debian.org>  Thu, 19 Aug 2021 22:39:12 +0200
 
 magit (2.99.0.git0957.ge8c7bd03-1) unstable; urgency=medium
 
