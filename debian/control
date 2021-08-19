@@ -6,6 +6,7 @@ Uploaders: Timo Juhani Lindfors <timo.lindfors@iki.fi>, Rémi Vanicat <vanicat@d
 Build-Depends: debhelper-compat (= 13), dh-elpa (>= 1.7),
                git, elpa-dash, elpa-with-editor, elpa-transient, elpa-ghub,
                texinfo, install-info
+Rules-Requires-Root: no
 Standards-Version: 4.1.4
 Homepage: https://magit.vc/
 Vcs-Browser: https://salsa.debian.org/emacsen-team/magit
