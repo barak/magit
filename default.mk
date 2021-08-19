@@ -107,19 +107,19 @@ VERSION ?= $(shell \
   git describe --tags --abbrev=0 --always | cut -c2-)
 
 DASH_VERSION          = 2.18.1
-GIT_COMMIT_VERSION    = $(VERSION)
+GIT_COMMIT_VERSION    = 3.1.0
 LIBGIT_VERSION        = 0
 MAGIT_LIBGIT_VERSION  = 0
-MAGIT_SECTION_VERSION = $(VERSION)
-TRANSIENT_VERSION     = 0.3.3
+MAGIT_SECTION_VERSION = 3.1.0
+TRANSIENT_VERSION     = 0.3.6
 WITH_EDITOR_VERSION   = 3.0.4
 
 DASH_MELPA_SNAPSHOT          = 20210330
-GIT_COMMIT_MELPA_SNAPSHOT    = 20210524
+GIT_COMMIT_MELPA_SNAPSHOT    = 20210701
 LIBGIT_MELPA_SNAPSHOT        = 0
 MAGIT_LIBGIT_MELPA_SNAPSHOT  = 0
-MAGIT_SECTION_MELPA_SNAPSHOT = 20210524
-TRANSIENT_MELPA_SNAPSHOT     = 20210524
+MAGIT_SECTION_MELPA_SNAPSHOT = 20210701
+TRANSIENT_MELPA_SNAPSHOT     = 20210701
 WITH_EDITOR_MELPA_SNAPSHOT   = 20210524
 
 EMACS_VERSION = 25.1
@@ -175,6 +175,10 @@ ifeq "$(WITH_EDITOR_DIR)" ""
   WITH_EDITOR_DIR = $(TOP)../with-editor
 endif
 
+MAGIT_SECTION_DIR ?= $(shell \
+  find -L $(ELPA_DIR) -maxdepth 1 -regex '.*/magit-section-[.0-9]*' 2> /dev/null | \
+  sort | tail -n 1)
+
 SYSTYPE := $(shell $(EMACSBIN) -Q --batch --eval "(princ system-type)")
 ifeq ($(SYSTYPE), windows-nt)
   CYGPATH := $(shell cygpath --version 2>/dev/null)
@@ -192,11 +196,17 @@ ifdef CYGPATH
   LOAD_PATH += -L $(shell cygpath --mixed $(LIBGIT_DIR))
   LOAD_PATH += -L $(shell cygpath --mixed $(TRANSIENT_DIR))
   LOAD_PATH += -L $(shell cygpath --mixed $(WITH_EDITOR_DIR))
+  ifneq "$(MAGIT_SECTION_DIR)" ""
+    LOAD_PATH += -L $(shell cygpath --mixed $(MAGIT_SECTION_DIR))
+  endif
 else
   LOAD_PATH += -L $(DASH_DIR)
   LOAD_PATH += -L $(LIBGIT_DIR)
   LOAD_PATH += -L $(TRANSIENT_DIR)
   LOAD_PATH += -L $(WITH_EDITOR_DIR)
+  ifneq "$(MAGIT_SECTION_DIR)" ""
+    LOAD_PATH += -L $(MAGIT_SECTION_DIR)
+  endif
 endif
 
 endif # ifndef LOAD_PATH

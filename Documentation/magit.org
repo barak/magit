@@ -8,7 +8,7 @@
 #+TEXINFO_DIR_CATEGORY: Emacs
 #+TEXINFO_DIR_TITLE: Magit: (magit).
 #+TEXINFO_DIR_DESC: Using Git from Emacs with Magit.
-#+SUBTITLE: for version 3.0.0
+#+SUBTITLE: for version 3.1.0
 
 #+TEXINFO_DEFFN: t
 #+OPTIONS: H:4 num:3 toc:2
@@ -25,7 +25,7 @@ directly from within Emacs.  While many fine Git clients exist, only
 Magit and Git itself deserve to be called porcelains.
 
 #+TEXINFO: @noindent
-This manual is for Magit version 3.0.0.
+This manual is for Magit version 3.1.0.
 
 #+BEGIN_QUOTE
 Copyright (C) 2015-2021 Jonas Bernoulli <jonas@bernoul.li>
@@ -2616,6 +2616,17 @@ the status buffer.
   first parent, but a numeric prefix can be used to specify another
   parent.
 
+- Key: j, magit-log-move-to-revision
+
+  Read a revision and move to it in current log buffer.
+
+  If the chosen reference or revision isn't being displayed in
+  the current log buffer, then inform the user about that and do
+  nothing else.
+
+  If invoked outside any log buffer, then display the log buffer
+  of the current repository first; creating it if necessary.
+
 - Key: SPC, magit-diff-show-or-scroll-up
 
   Update the commit or diff buffer for the thing at point.
@@ -4398,7 +4409,7 @@ Also see [[man:git-commit]]
   always require confirmation because making an error while using
   those is harder to recover from.
 
-- User Option magit-post-commit-hook
+- User Option: magit-post-commit-hook
 
   Hook run after creating a commit without the user editing a message.
 
@@ -7492,7 +7503,7 @@ numbers of tags.  It would therefore be a good idea to disable
 
 **** Log Performance
 :PROPERTIES:
-:NONODE: t
+:UNNUMBERED: notoc
 :END:
 
 When showing logs, Magit limits the number of commits initially shown
@@ -7522,7 +7533,7 @@ Consider leaving it at that.
 
 **** Diff Performance
 :PROPERTIES:
-:NONODE: t
+:UNNUMBERED: notoc
 :END:
 
 If diffs are slow, then consider turning off some optional diff
@@ -7549,7 +7560,7 @@ the diff (~d~) and the diff refresh (~D~) transient popups.
 
 **** Refs Buffer Performance
 :PROPERTIES:
-:NONODE: t
+:UNNUMBERED: notoc
 :END:
 
 When refreshing the "references buffer" is slow, then that's usually
@@ -7569,7 +7580,7 @@ exist using ~f-pa~.
 
 **** Committing Performance
 :PROPERTIES:
-:NONODE: t
+:UNNUMBERED: notoc
 :END:
 
 When you initiate a commit, then Magit by default automatically shows
@@ -7849,15 +7860,6 @@ the refresh because that also automatically moves to the next change.
   filesystem, this function actually runs git asynchronously.  But
   then it waits for the process to return, so the function itself is
   synchronous.
-
-- Function: magit-run-git-with-logfile file &rest args
-
-  Calls git synchronously with ARGS.  The process's output is saved in
-  FILE.  This is rarely useful and so this function might be removed
-  in the future.
-
-  This function actually runs git asynchronously.  But then it waits
-  for the process to return, so the function itself is synchronous.
 
 - Function: magit-git &rest args
 
@@ -8716,6 +8718,35 @@ use ~global-reveal-mode~.  It makes sure that text around point is
 always visible.  If that is too drastic for your taste, then you may
 instead use ~magit-diff-visit-file-hook~ to reveal the text, possibly
 using ~reveal-post-command~ or for Org buffers ~org-reveal~.
+
+*** I am unable to stage when using Tramp from MS Windows
+
+Magit may be unable to stage (or otherwise apply) individual hunks
+when you are connected to remote machine using Tramp and the local
+machine uses MS Windows.
+
+There appears to be a problem with ~process-send-eof~ in this scenario,
+as mentioned at the end of ~tramp-tests.el~.  I have contacted the Tramp
+maintainer about this.  For now this unfortunately means that it just
+doesn't work and we cannot do anything about it.  If you have more
+information, then please comment on
+https://github.com/magit/magit/issues/3624.
+
+*** I am no longer able to save popup defaults
+
+Magit used to use Magit-Popup to implement the transient popup menus.
+Now it used Transient instead, which is Magit-Popup's successor.
+
+In the older Magit-Popup menus, it was possible to save user settings
+(e.g. setting the gpg signing key for commits) by using ~C-c C-c~ in the
+popup buffer.  This would dismiss the popup, but save the settings as
+the defaults for future popups.
+
+When switching to Transient menus, this functionality is now available
+via ~C-x C-s~ instead; the ~C-x~ prefix has other options as well when
+using Transient, which will be displayed when it is typed.  See
+https://magit.vc/manual/transient/Saving-Values.html#Saving-Values for
+more details.
 
 * Debugging Tools
 

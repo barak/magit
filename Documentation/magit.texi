@@ -31,7 +31,7 @@ General Public License for more details.
 @finalout
 @titlepage
 @title Magit User Manual
-@subtitle for version 3.0.0
+@subtitle for version 3.1.0
 @author Jonas Bernoulli
 @page
 @vskip 0pt plus 1filll
@@ -53,7 +53,7 @@ directly from within Emacs.  While many fine Git clients exist, only
 Magit and Git itself deserve to be called porcelains.
 
 @noindent
-This manual is for Magit version 3.0.0.
+This manual is for Magit version 3.1.0.
 
 @quotation
 Copyright (C) 2015-2021 Jonas Bernoulli <jonas@@bernoul.li>
@@ -345,6 +345,8 @@ FAQ - Issues and Errors
 * My Git hooks work on the command-line but not inside Magit::
 * @code{git-commit-mode} isn't used when committing from the command-line::
 * Point ends up inside invisible text when jumping to a file-visiting buffer::
+* I am unable to stage when using Tramp from MS Windows::
+* I am no longer able to save popup defaults::
 
 
 @end detailmenu
@@ -3513,6 +3515,19 @@ Move to a parent of the current commit.  By default, this is the
 first parent, but a numeric prefix can be used to specify another
 parent.
 
+@kindex j
+@cindex magit-log-move-to-revision
+@item @kbd{j} @tie{}@tie{}@tie{}@tie{}(@code{magit-log-move-to-revision})
+
+Read a revision and move to it in current log buffer.
+
+If the chosen reference or revision isn't being displayed in
+the current log buffer, then inform the user about that and do
+nothing else.
+
+If invoked outside any log buffer, then display the log buffer
+of the current repository first; creating it if necessary.
+
 @kindex SPC
 @cindex magit-diff-show-or-scroll-up
 @item @kbd{SPC} @tie{}@tie{}@tie{}@tie{}(@code{magit-diff-show-or-scroll-up})
@@ -6001,9 +6016,7 @@ always require confirmation because making an error while using
 those is harder to recover from.
 @end defopt
 
-@itemize
-@item
-User Option magit-post-commit-hook
+@defopt magit-post-commit-hook
 
 Hook run after creating a commit without the user editing a message.
 
@@ -6013,7 +6026,7 @@ named @code{magit-commit-*} that do @strong{not} require that the user edits
 the commit message in a buffer.
 
 Also see @code{git-commit-post-finish-hook}.
-@end itemize
+@end defopt
 
 @node Editing Commit Messages
 @subsection Editing Commit Messages
@@ -10176,7 +10189,8 @@ numbers of tags.  It would therefore be a good idea to disable
 * MacOS Performance::
 @end menu
 
-@unnumberedsubsubsec Log Performance
+@anchor{Log Performance}
+@subsubheading Log Performance
 
 When showing logs, Magit limits the number of commits initially shown
 in the hope that this avoids unnecessary work.  When using @code{--graph} is
@@ -10203,7 +10217,8 @@ and this is quite noticeable when showing a log with many branches and
 merges.  For that reason @code{--color} is not enabled by default anymore.
 Consider leaving it at that.
 
-@unnumberedsubsubsec Diff Performance
+@anchor{Diff Performance}
+@subsubheading Diff Performance
 
 If diffs are slow, then consider turning off some optional diff
 features by setting all or some of the following variables to @code{nil}:
@@ -10226,7 +10241,8 @@ is not available by default, see @ref{Enabling and Disabling Suffixes,,,transien
 setting, see @ref{Saving Values,,,transient,}.  You should do this in both
 the diff (@code{d}) and the diff refresh (@code{D}) transient popups.
 
-@unnumberedsubsubsec Refs Buffer Performance
+@anchor{Refs Buffer Performance}
+@subsubheading Refs Buffer Performance
 
 When refreshing the "references buffer" is slow, then that's usually
 because several hundred refs are being displayed.  The best way to
@@ -10243,7 +10259,8 @@ Then you should also make sure that the listed remote branches
 actually all exist.  You can do so by pruning branches which no longer
 exist using @code{f-pa}.
 
-@unnumberedsubsubsec Committing Performance
+@anchor{Committing Performance}
+@subsubheading Committing Performance
 
 When you initiate a commit, then Magit by default automatically shows
 a diff of the changes you are about to commit.  For large commits this
@@ -10556,16 +10573,6 @@ If the current buffer's @code{default-directory} is on a remote
 filesystem, this function actually runs git asynchronously.  But
 then it waits for the process to return, so the function itself is
 synchronous.
-@end defun
-
-@defun magit-run-git-with-logfile file &rest args
-
-Calls git synchronously with ARGS@.  The process's output is saved in
-FILE@.  This is rarely useful and so this function might be removed
-in the future.
-
-This function actually runs git asynchronously.  But then it waits
-for the process to return, so the function itself is synchronous.
 @end defun
 
 @defun magit-git &rest args
@@ -11336,6 +11343,8 @@ the value of @code{vc-handled-backends}.
 * My Git hooks work on the command-line but not inside Magit::
 * @code{git-commit-mode} isn't used when committing from the command-line::
 * Point ends up inside invisible text when jumping to a file-visiting buffer::
+* I am unable to stage when using Tramp from MS Windows::
+* I am no longer able to save popup defaults::
 @end menu
 
 @node Magit is slow
@@ -11533,6 +11542,37 @@ use @code{global-reveal-mode}.  It makes sure that text around point is
 always visible.  If that is too drastic for your taste, then you may
 instead use @code{magit-diff-visit-file-hook} to reveal the text, possibly
 using @code{reveal-post-command} or for Org buffers @code{org-reveal}.
+
+@node I am unable to stage when using Tramp from MS Windows
+@appendixsubsec I am unable to stage when using Tramp from MS Windows
+
+Magit may be unable to stage (or otherwise apply) individual hunks
+when you are connected to remote machine using Tramp and the local
+machine uses MS Windows.
+
+There appears to be a problem with @code{process-send-eof} in this scenario,
+as mentioned at the end of @code{tramp-tests.el}.  I have contacted the Tramp
+maintainer about this.  For now this unfortunately means that it just
+doesn't work and we cannot do anything about it.  If you have more
+information, then please comment on
+@uref{https://github.com/magit/magit/issues/3624}.
+
+@node I am no longer able to save popup defaults
+@appendixsubsec I am no longer able to save popup defaults
+
+Magit used to use Magit-Popup to implement the transient popup menus.
+Now it used Transient instead, which is Magit-Popup's successor.
+
+In the older Magit-Popup menus, it was possible to save user settings
+(e.g. setting the gpg signing key for commits) by using @code{C-c C-c} in the
+popup buffer.  This would dismiss the popup, but save the settings as
+the defaults for future popups.
+
+When switching to Transient menus, this functionality is now available
+via @code{C-x C-s} instead; the @code{C-x} prefix has other options as well when
+using Transient, which will be displayed when it is typed.  See
+@uref{https://magit.vc/manual/transient/Saving-Values.html#Saving-Values} for
+more details.
 
 @node Debugging Tools
 @chapter Debugging Tools
