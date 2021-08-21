@@ -1,7 +1,5 @@
 magit (3.2.1-1) UNRELEASED; urgency=medium
 
-  * Team upload
-
   [ Rémi Vanicat ]
   * New upstream version
   * Adapt watch file
@@ -19,10 +17,10 @@ magit (3.2.1-1) UNRELEASED; urgency=medium
   * debian/control:
     - debhelper bump 12 -> 13
     - RRR set
-    - S-V bump 4.1.4 -> 4.5.1 (no changes needed)
+    - S-V bump 4.1.4 -> 4.6.0 (no changes needed)
   * debian/watch: version bump 3 -> 4
 
- -- Matteo F. Vescovi <mfv@debian.org>  Thu, 19 Aug 2021 22:39:12 +0200
+ -- Rémi Vanicat <vanicat@debian.org>  Sat, 21 Aug 2021 14:47:04 +0200
 
 magit (2.99.0.git0957.ge8c7bd03-1) unstable; urgency=medium
 
