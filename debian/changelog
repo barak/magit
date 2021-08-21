@@ -1,4 +1,4 @@
-magit (3.2.1-1) UNRELEASED; urgency=medium
+magit (3.2.1-1) unstable; urgency=medium
 
   [ Rémi Vanicat ]
   * New upstream version
@@ -20,7 +20,7 @@ magit (3.2.1-1) UNRELEASED; urgency=medium
     - S-V bump 4.1.4 -> 4.6.0 (no changes needed)
   * debian/watch: version bump 3 -> 4
 
- -- Rémi Vanicat <vanicat@debian.org>  Sat, 21 Aug 2021 14:47:04 +0200
+ -- Rémi Vanicat <vanicat@debian.org>  Sat, 21 Aug 2021 14:48:14 +0200
 
 magit (2.99.0.git0957.ge8c7bd03-1) unstable; urgency=medium
 
