@@ -1,3 +1,10 @@
+magit (3.2.1-2) unstable; urgency=medium
+
+  * Team upload.
+  * Source-only upload for testing migration.
+
+ -- Sean Whitton <spwhitton@spwhitton.name>  Thu, 26 Aug 2021 14:07:37 -0700
+
 magit (3.2.1-1) unstable; urgency=medium
 
   [ Rémi Vanicat ]
