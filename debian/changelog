@@ -2,16 +2,17 @@ magit (3.3.0-2) unstable; urgency=medium
 
   [ Aymeric Agon-Rambosson ]
   * Add myself, Aymeric Agon-Rambosson, to Uploaders.
-  * Add repair-magit-get-and-submodule-tests.patch (Closes: #1020153).
+  * Add repair-magit-get-and-submodule-tests.patch.
   * Add repair-git-unable-to-detect-address.patch (Autopkgtest).
   * Add Bug-Submit field to d/upstream/metadata.
 
   [ Sean Whitton ]
-  * override_dh_elpa_test: Export EMACS_INHIBIT_AUTOMATIC_NATIVE_COMPILATION=t.
-    This addresses #1020153, but there remain other test failures.
+  * Team upload.
+  * override_dh_elpa_test: Export EMACS_INHIBIT_AUTOMATIC_NATIVE_COMPILATION=t
+    (Closes: #1020153).
     - Add build-dep on emacs-nox|emacs >= 1:28.2+1-9.
 
- -- Aymeric Agon-Rambosson <aymeric.agon@yandex.com>  Sat, 24 Dec 2022 17:07:31 +0100
+ -- Sean Whitton <spwhitton@spwhitton.name>  Sat, 24 Dec 2022 12:23:59 -0700
 
 magit (3.3.0-1) unstable; urgency=medium
 
