@@ -2,7 +2,11 @@ Source: magit
 Section: vcs
 Priority: optional
 Maintainer: Debian Emacsen team <debian-emacsen@lists.debian.org>
-Uploaders: Timo Juhani Lindfors <timo.lindfors@iki.fi>, Rémi Vanicat <vanicat@debian.org>, Barak A. Pearlmutter <bap@debian.org>
+Uploaders:
+ Timo Juhani Lindfors <timo.lindfors@iki.fi>,
+ Rémi Vanicat <vanicat@debian.org>,
+ Barak A. Pearlmutter <bap@debian.org>,
+ Aymeric Agon-Rambosson <aymeric.agon@yandex.com>
 Build-Depends: debhelper-compat (= 13), dh-elpa (>= 1.7),
                git, elpa-dash, elpa-with-editor, elpa-transient, elpa-ghub,
                texinfo, install-info, emacs-nox (>= 1:28.2+1-9) | emacs (>= 1:28.2+1-9)
