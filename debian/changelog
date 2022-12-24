@@ -1,4 +1,4 @@
-magit (3.3.0-2) UNRELEASED; urgency=medium
+magit (3.3.0-2) unstable; urgency=medium
 
   [ Aymeric Agon-Rambosson ]
   * Add myself, Aymeric Agon-Rambosson, to Uploaders.
@@ -11,7 +11,7 @@ magit (3.3.0-2) UNRELEASED; urgency=medium
     This addresses #1020153, but there remain other test failures.
     - Add build-dep on emacs-nox|emacs >= 1:28.2+1-9.
 
- -- Aymeric Agon-Rambosson <aymeric.agon@yandex.com>  Sat, 24 Dec 2022 16:44:54 +0100
+ -- Aymeric Agon-Rambosson <aymeric.agon@yandex.com>  Sat, 24 Dec 2022 17:07:31 +0100
 
 magit (3.3.0-1) unstable; urgency=medium
 
