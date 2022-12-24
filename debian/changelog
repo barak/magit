@@ -3,6 +3,7 @@ magit (3.3.0-2) UNRELEASED; urgency=medium
   [ Aymeric Agon-Rambosson ]
   * Add myself, Aymeric Agon-Rambosson, to Uploaders.
   * Add repair-magit-get-and-submodule-tests.patch (Closes: #1020153).
+  * Add repair-git-unable-to-detect-address.patch (Autopkgtest).
 
   [ Sean Whitton ]
   * override_dh_elpa_test: Export EMACS_INHIBIT_AUTOMATIC_NATIVE_COMPILATION=t.
