@@ -1,6 +1,11 @@
 magit (3.3.0-3) UNRELEASED; urgency=medium
 
+  [ Aymeric Agon-Rambosson ]
   * Repair watch file.
+
+  [ Xiyue Deng ]
+  * Reformat Build-Depends to list one per line in alphabetic order to
+    make further changes easier to track.
 
  -- Aymeric Agon-Rambosson <aymeric.agon@yandex.com>  Wed, 28 Dec 2022 22:57:53 +0100
 

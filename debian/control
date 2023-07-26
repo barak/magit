@@ -7,9 +7,17 @@ Uploaders:
  Rémi Vanicat <vanicat@debian.org>,
  Barak A. Pearlmutter <bap@debian.org>,
  Aymeric Agon-Rambosson <aymeric.agon@yandex.com>
-Build-Depends: debhelper-compat (= 13), dh-elpa (>= 1.7),
-               git, elpa-dash, elpa-with-editor, elpa-transient, elpa-ghub,
-               texinfo, install-info, emacs-nox (>= 1:28.2+1-9) | emacs (>= 1:28.2+1-9)
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-elpa (>= 1.7),
+ elpa-dash,
+ elpa-ghub,
+ elpa-transient,
+ elpa-with-editor,
+ emacs-nox (>= 1:28.2+1-9) | emacs (>= 1:28.2+1-9),
+ git,
+ install-info,
+ texinfo
 Rules-Requires-Root: no
 Standards-Version: 4.6.0
 Homepage: https://magit.vc/
