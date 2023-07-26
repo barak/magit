@@ -9,6 +9,7 @@ magit (3.3.0-3) UNRELEASED; urgency=medium
   * Fix `make test` failure.  Closes: #1042289.
     - Add elpa-compat to Build-Depends.
     - Cherrypick upstream patch partially to detect compat in LOAD_PATH.
+  * Update Standards-Version to 4.6.2.  No change needed.
 
  -- Aymeric Agon-Rambosson <aymeric.agon@yandex.com>  Wed, 28 Dec 2022 22:57:53 +0100
 

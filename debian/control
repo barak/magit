@@ -20,7 +20,7 @@ Build-Depends:
  install-info,
  texinfo
 Rules-Requires-Root: no
-Standards-Version: 4.6.0
+Standards-Version: 4.6.2
 Homepage: https://magit.vc/
 Vcs-Browser: https://salsa.debian.org/emacsen-team/magit
 Vcs-Git: https://salsa.debian.org/emacsen-team/magit.git
