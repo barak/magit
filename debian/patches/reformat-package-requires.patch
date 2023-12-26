@@ -1,0 +1,59 @@
+Author: Aymeric Agon-Rambosson <aymeric.agon@yandex.com>
+Date: Tue, 26 Dec 2023 18:20:01 +0100
+Subject: Replace multiline Package-Requires with monoline
+Forwarded: not applicable
+
+dh-elpa is not capable yet of parsing multiline Package-Requires correctly. Work
+is being done to add this feature, but we make do with this patch in the
+meantime.
+
+--- a/lisp/magit.el
++++ b/lisp/magit.el
+@@ -18,15 +18,7 @@
+ ;; Keywords: git tools vc
+ 
+ ;; Package-Version: 3.3.0.50-git
+-;; Package-Requires: (
+-;;     (emacs "25.1")
+-;;     (compat "29.1.4.4")
+-;;     (dash "2.19.1")
+-;;     (git-commit "3.3.0")
+-;;     (magit-section "3.3.0")
+-;;     (seq "2.24")
+-;;     (transient "0.5.0")
+-;;     (with-editor "3.3.2"))
++;; Package-Requires: ((emacs "25.1") (compat "29.1.4.4") (dash "2.19.1") (git-commit "3.3.0") (magit-section "3.3.0") (seq "2.24") (transient "0.5.0") (with-editor "3.3.2"))
+ 
+ ;; SPDX-License-Identifier: GPL-3.0-or-later
+ 
+--- a/lisp/git-commit.el
++++ b/lisp/git-commit.el
+@@ -12,12 +12,7 @@
+ ;; Keywords: git tools vc
+ 
+ ;; Package-Version: 3.3.0.50-git
+-;; Package-Requires: (
+-;;     (emacs "25.1")
+-;;     (compat "29.1.4.4")
+-;;     (seq "2.24")
+-;;     (transient "0.5.0")
+-;;     (with-editor "3.3.2"))
++;; Package-Requires: ((emacs "25.1") (compat "29.1.4.4") (seq "2.24") (transient "0.5.0") (with-editor "3.3.2"))
+ 
+ ;; SPDX-License-Identifier: GPL-3.0-or-later
+ 
+--- a/lisp/magit-section.el
++++ b/lisp/magit-section.el
+@@ -9,11 +9,7 @@
+ ;; Keywords: tools
+ 
+ ;; Package-Version: 3.3.0.50-git
+-;; Package-Requires: (
+-;;     (emacs "25.1")
+-;;     (compat "29.1.4.4")
+-;;     (dash "2.19.1")
+-;;     (seq "2.24"))
++;; Package-Requires: ((emacs "25.1") (compat "29.1.4.4") (dash "2.19.1") (seq "2.24"))
+ 
+ ;; SPDX-License-Identifier: GPL-3.0-or-later
+ 
