@@ -3,13 +3,6 @@ include /usr/share/dpkg/pkg-info.mk
 
 export DEB_VERSION_UPSTREAM
 
-# This is needed for running correctly the test in auto-builder
-export GIT_AUTHOR_NAME = "Magit testeur"
-export GIT_COMMITTER_NAME = "Magit committer"
-export GIT_AUTHOR_EMAIL = "magit-testeur@example.org"
-export GIT_COMMITTER_EMAIL = "magit-testeur@example.org"
-export LC_ALL = C.UTF-8
-
 %:
 	dh $@ --with elpa
 
