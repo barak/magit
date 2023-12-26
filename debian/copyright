@@ -2,7 +2,7 @@ Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Source: https://github.com/magit/magit
 
 Files: *
-Copyright: 2008-2015 The Magit Project Contributors
+Copyright: 2008-2023 The Magit Project Contributors
 License: GPL-3+
 
 Files: debian/*

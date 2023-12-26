@@ -11,6 +11,7 @@ magit (3.3.0+git20231219.1.c7ab6931-1) UNRELEASED; urgency=medium
     - Add minimal version to elpa-transient Build-Depends.
     - Keep only necessary Build-Depends.
   * Remove obsolete d/*.prerm files.
+  * d/copyright: Update copyright years.
 
  -- Aymeric Agon-Rambosson <aymeric.agon@yandex.com>  Mon, 25 Dec 2023 00:54:36 +0100
 
