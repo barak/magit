@@ -6,6 +6,7 @@ magit (3.3.0+git20231219.1.c7ab6931-1) UNRELEASED; urgency=medium
     - Drop repair-magit-get-and-submodule-tests.patch (applied upstream)
     - Drop fix-magit-test-unable-to-find-compat-through-with-editor.patch
       (applied upstream)
+    - Refreshed other patches
 
  -- Aymeric Agon-Rambosson <aymeric.agon@yandex.com>  Mon, 25 Dec 2023 00:54:36 +0100
 

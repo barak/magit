@@ -3,13 +3,13 @@ Date: Sat, 24 Dec 2022 16:44:54 +0100
 Subject: Repair "git unable to detect address" error.
 Forwarded: not-needed
 
---- a/t/magit-tests.el
-+++ b/t/magit-tests.el
-@@ -28,6 +28,7 @@
+--- a/test/magit-tests.el
++++ b/test/magit-tests.el
+@@ -40,6 +40,7 @@
+            (process-environment process-environment)
             (magit-git-global-arguments
-             (nconc
-              (list "-c" "protocol.file.allow=always")
-+             (list "-c" "user.email=\"a.u.thor@example.com\"")
+             (nconc (list "-c" "protocol.file.allow=always")
++                   (list "-c" "user.email=\"a.u.thor@example.com\"")
                     magit-git-global-arguments)))
         (push "GIT_AUTHOR_NAME=A U Thor" process-environment)
         (push "GIT_AUTHOR_EMAIL=a.u.thor@example.com" process-environment)
