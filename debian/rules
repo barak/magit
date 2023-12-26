@@ -4,7 +4,7 @@
 	dh $@ --with elpa
 
 override_dh_auto_build:
-	make info
+	make info html pdf
 	@echo do not run make
 
 override_dh_auto_install:

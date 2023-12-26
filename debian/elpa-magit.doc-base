@@ -1,0 +1,19 @@
+Document: magit-documentation
+Title: Magit documentation
+Author: Jonas Bernoulli
+Section: Editors
+
+Format: HTML
+Index: /usr/share/doc/elpa-magit/magit.html
+Files: /usr/share/doc/elpa-magit/magit.html
+
+Format: PDF
+Files: /usr/share/doc/elpa-magit/magit.pdf.gz
+
+Format: Info
+Index: /usr/share/info/magit.info.gz
+Files: /usr/share/info/magit.info.gz
+
+Format: Text
+Files: /usr/share/doc/elpa-magit/magit.org.gz
+

@@ -15,7 +15,8 @@ Build-Depends:
  elpa-with-editor,
  elpa-transient (>= 0.5.0),
  git,
- texinfo
+ texinfo,
+ texlive-base,
 Rules-Requires-Root: no
 Standards-Version: 4.6.2
 Homepage: https://magit.vc/

@@ -1,0 +1,19 @@
+Document: magit-section-documentation
+Title: Magit-Section documentation
+Author: Jonas Bernoulli
+Section: Editors
+
+Format: HTML
+Index: /usr/share/doc/elpa-magit-section/magit-section.html
+Files: /usr/share/doc/elpa-magit-section/magit-section.html
+
+Format: PDF
+Files: /usr/share/doc/elpa-magit-section/magit-section.pdf.gz
+
+Format: Info
+Index: /usr/share/info/magit-section.info.gz
+Files: /usr/share/info/magit-section.info.gz
+
+Format: Text
+Files: /usr/share/doc/elpa-magit-section/magit-section.org.gz
+
