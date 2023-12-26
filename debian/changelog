@@ -1,4 +1,4 @@
-magit (3.3.0+git20231219.1.c7ab6931-1) UNRELEASED; urgency=medium
+magit (3.3.0+git20231219.1.c7ab6931-1) unstable; urgency=medium
 
   * New upstream snapshot.
   * d/patches:
@@ -24,7 +24,7 @@ magit (3.3.0+git20231219.1.c7ab6931-1) UNRELEASED; urgency=medium
     monoline.
   * Improve documentation packaging (more formats, added doc-base).
 
- -- Aymeric Agon-Rambosson <aymeric.agon@yandex.com>  Mon, 25 Dec 2023 00:54:36 +0100
+ -- Aymeric Agon-Rambosson <aymeric.agon@yandex.com>  Tue, 26 Dec 2023 18:56:47 +0100
 
 magit (3.3.0-3) unstable; urgency=medium
 
