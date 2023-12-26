@@ -22,6 +22,3 @@ override_dh_auto_install:
 
 override_dh_elpa_test:
 	EMACS_INHIBIT_AUTOMATIC_NATIVE_COMPILATION=t make test
-
-override_dh_clean:
-	dh_clean
