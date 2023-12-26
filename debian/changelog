@@ -19,6 +19,7 @@ magit (3.3.0+git20231219.1.c7ab6931-1) UNRELEASED; urgency=medium
     - Remove GIT_*, LC_ALL environment variables (not needed anymore).
     - Remove DEB_VERSION_UPSTREAM environment variable (not needed
       anymore).
+  * Update d/*.elpa files in line with upstream changes.
 
  -- Aymeric Agon-Rambosson <aymeric.agon@yandex.com>  Mon, 25 Dec 2023 00:54:36 +0100
 
