@@ -2,4 +2,3 @@
 0001-add-config.mk
 0004-Signal-in-the-documentation-there-are-Debian-patches.patch
 repair-git-unable-to-detect-address.patch
-fix-magit-test-unable-to-find-compat-through-with-editor.patch
