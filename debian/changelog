@@ -1,6 +1,8 @@
 magit (3.3.0+git20231219.1.c7ab6931-1) UNRELEASED; urgency=medium
 
   * New upstream snapshot.
+  * d/patches:
+    - Drop 0004-tramp-test-overide.patch (not applicable anymore)
 
  -- Aymeric Agon-Rambosson <aymeric.agon@yandex.com>  Mon, 25 Dec 2023 00:54:36 +0100
 
