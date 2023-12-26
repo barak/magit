@@ -7,6 +7,8 @@ magit (3.3.0+git20231219.1.c7ab6931-1) UNRELEASED; urgency=medium
     - Drop fix-magit-test-unable-to-find-compat-through-with-editor.patch
       (applied upstream)
     - Refreshed other patches
+  * d/control:
+    - Add minimal version to elpa-transient Build-Depends.
 
  -- Aymeric Agon-Rambosson <aymeric.agon@yandex.com>  Mon, 25 Dec 2023 00:54:36 +0100
 

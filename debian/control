@@ -13,9 +13,9 @@ Build-Depends:
  elpa-compat,
  elpa-dash,
  elpa-ghub,
- elpa-transient,
  elpa-with-editor,
  emacs-nox (>= 1:28.2+1-9) | emacs (>= 1:28.2+1-9),
+ elpa-transient (>= 0.5.0),
  git,
  install-info,
  texinfo
