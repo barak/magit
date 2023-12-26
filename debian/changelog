@@ -14,6 +14,8 @@ magit (3.3.0+git20231219.1.c7ab6931-1) UNRELEASED; urgency=medium
   * d/copyright: Update copyright years.
   * d/rules:
     - Remove unneeded dh_clean override.
+    - Remove EMACS_INHIBIT_AUTOMATIC_NATIVE_COMPILATION environment
+      variable (tests run fine without it).
 
  -- Aymeric Agon-Rambosson <aymeric.agon@yandex.com>  Mon, 25 Dec 2023 00:54:36 +0100
 

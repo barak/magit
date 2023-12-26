@@ -21,4 +21,4 @@ override_dh_auto_install:
 	@echo do not run make install
 
 override_dh_elpa_test:
-	EMACS_INHIBIT_AUTOMATIC_NATIVE_COMPILATION=t make test
+	make test
