@@ -1,6 +1,6 @@
 ;;; magit-diff.el --- Inspect Git diffs  -*- lexical-binding:t -*-
 
-;; Copyright (C) 2008-2023 The Magit Project Contributors
+;; Copyright (C) 2008-2024 The Magit Project Contributors
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
@@ -2170,7 +2170,9 @@ keymap is the parent of their keymaps."
       (setq magit-git-global-arguments
             (append magit-diff--reset-non-color-moved
                     magit-git-global-arguments)))
-    (magit--git-wash #'magit-diff-wash-diffs keep-error cmd args)))
+    (magit--git-wash #'magit-diff-wash-diffs
+        (if (member "--no-index" args) 'wash-anyway keep-error)
+      cmd args)))
 
 (defun magit-diff--maybe-add-stat-arguments (args)
   (if (member "--stat" args)
@@ -2480,12 +2482,13 @@ section or a child thereof."
                            (and untracked "untracked")
                            " content"))
               ")")
-            (let ((default-directory
-                   (file-name-as-directory
-                    (expand-file-name module (magit-toplevel)))))
-              (magit-git-wash (apply-partially #'magit-log-wash-log 'module)
-                "log" "--oneline" "--left-right" range)
-              (delete-char -1)))))
+            (magit-insert-section-body
+              (let ((default-directory
+                     (file-name-as-directory
+                      (expand-file-name module (magit-toplevel)))))
+                (magit-git-wash (apply-partially #'magit-log-wash-log 'module)
+                  "log" "--oneline" "--left-right" range)
+                (delete-char -1))))))
        ((and (looking-at "^Submodule \\([^ ]+\\) \\([^ ]+\\) (\\([^)]+\\))$")
              (equal (match-string 1) module))
         (magit-bind-match-strings (_module _range msg) nil

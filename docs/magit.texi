@@ -8,7 +8,7 @@
 
 @copying
 @quotation
-Copyright (C) 2015-2023 Jonas Bernoulli <jonas@@bernoul.li>
+Copyright (C) 2015-2024 Jonas Bernoulli <jonas@@bernoul.li>
 
 You can redistribute this document and/or modify it under the terms
 of the GNU General Public License as published by the Free Software
@@ -1410,10 +1410,22 @@ but all you need to get started are the next two.
 @findex magit-section-toggle
 Toggle the visibility of the body of the current section.
 
-@item @kbd{C-<tab>} (@code{magit-section-cycle})
+@item @kbd{C-c @key{TAB}} (@code{magit-section-cycle})
+@itemx @kbd{C-<tab>} (@code{magit-section-cycle})
+@kindex C-c TAB
 @kindex C-<tab>
 @findex magit-section-cycle
 Cycle the visibility of current section and its children.
+
+If this command is invoked using @code{C-<tab>} and that is globally bound
+to @code{tab-next}, then this command pivots to behave like that command,
+and you must instead use @code{C-c TAB} to cycle section visibility.
+
+If you would like to keep using @code{C-<tab>} to cycle section visibility
+but also want to use @code{tab-bar-mode}, then you have to prevent that mode
+from using this key and instead bind another key to @code{tab-next}.  Because
+@code{tab-bar-mode} does not use a mode map but instead manipulates the
+global map, this involves advising @code{tab-bar--define-keys}.
 
 @item @kbd{M-<tab>} (@code{magit-section-cycle-diffs})
 @kindex M-<tab>
@@ -1936,12 +1948,12 @@ operation loses all information collected so far.
 
 @item
 @code{abort-cherry-pick} Aborting a cherry-pick throws away all
-conflict resolutions which has already been carried out by the
+conflict resolutions which have already been carried out by the
 user.
 
 @item
 @code{abort-revert} Aborting a revert throws away all conflict
-resolutions which has already been carried out by the user.
+resolutions which have already been carried out by the user.
 
 @item
 @code{abort-rebase} Aborting a rebase throws away all already modified
@@ -3082,10 +3094,6 @@ respective commits.
 
 @node Status Options
 @subsection Status Options
-
-@defopt magit-status-refresh-hook
-Hook run after a status buffer has been refreshed.
-@end defopt
 
 @defopt magit-status-margin
 This option specifies whether the margin is initially shown in
@@ -9978,10 +9986,6 @@ error-prone, but also more costly.  Keeping it simple and just
 re-creating everything from scratch is an old design decision and
 departing from that will require major refactoring.
 
-I plan to do that in time for the next major release.  I also intend
-to create logs and diffs asynchronously, which should also help a lot
-but also requires major refactoring.
-
 Meanwhile you can tell Magit to only automatically refresh the current
 Magit buffer, but not the status buffer.  If you do that, then the
 status buffer is only refreshed automatically if it is the
@@ -9992,14 +9996,16 @@ current buffer.
 @end lisp
 
 You should also check whether any third-party packages have added
-anything to @code{magit-refresh-buffer-hook}, @code{magit-status-refresh-hook},
-@code{magit-pre-refresh-hook}, and @code{magit-post-refresh-hook}.  If so, then
-check whether those additions impact performance significantly.
+anything to @code{magit-refresh-buffer-hook}, @code{magit-pre-refresh-hook}, and
+@code{magit-post-refresh-hook}.  If so, then check whether those additions
+impact performance significantly.
 
 Magit can be told to refresh buffers verbosely using @code{M-x
 magit-toggle-verbose-refresh}.  Enabling this helps figuring out which
-sections are bottlenecks.  The additional output can be found in the
-@code{*Messages*} buffer.
+sections are bottlenecks. Each line printed to the @code{*Messages*} buffer
+contains a section name, the number of seconds it took to show this
+section, and from 0 to 2 exclamation marks: the more exclamation marks
+the slower the section is.
 
 Magit also reverts buffers for visited files located inside the
 current repository when the visited file changes on disk.  That is
