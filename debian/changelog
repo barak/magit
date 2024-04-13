@@ -2,6 +2,9 @@ magit (3.3.0+git20240412.1.da14749d-1) UNRELEASED; urgency=medium
 
   * New upstream snapshot (Closes: #1068875).
   * Refresh patches.
+  * d/control: Add explicit versioned dependency on elpa-transient for
+    elpa-magit and elpa-git-commit. This is temporary, pending changes to
+    dh-elpa. (Closes: #1068903).
 
  -- Aymeric Agon-Rambosson <aymeric.agon@yandex.com>  Sun, 14 Apr 2024 00:31:27 +0200
 

@@ -28,7 +28,7 @@ Architecture: all
 Provides: magit
 Replaces: magit (<< 2.2.2-3)
 Breaks: magit (<< 2.2.2-3)
-Depends: ${misc:Depends}, git, ${elpa:Depends}
+Depends: ${misc:Depends}, git, ${elpa:Depends}, elpa-transient (>= 0.5.3),
 Enhances: emacs, git
 Description: Emacs interface for Git
  With Magit, you can inspect and modify your Git repositories with
@@ -39,7 +39,7 @@ Description: Emacs interface for Git
 
 Package: elpa-git-commit
 Architecture: all
-Depends: ${misc:Depends}, ${elpa:Depends}
+Depends: ${misc:Depends}, ${elpa:Depends}, elpa-transient (>= 0.5.0),
 Enhances: emacs, git
 Description: Major mode for editing git commit message
  A mode for editing COMMIT_MSG file from git in Emacs.
