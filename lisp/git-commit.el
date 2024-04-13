@@ -1,6 +1,6 @@
 ;;; git-commit.el --- Edit Git commit messages  -*- lexical-binding:t; coding:utf-8 -*-
 
-;; Copyright (C) 2008-2023 The Magit Project Contributors
+;; Copyright (C) 2008-2024 The Magit Project Contributors
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;;     Sebastian Wiesner <lunaryorn@gmail.com>
@@ -142,6 +142,11 @@
 (defvar font-lock-end)
 (defvar recentf-exclude)
 
+(define-obsolete-variable-alias
+  'git-commit-known-pseudo-headers
+  'git-commit-trailers
+  "git-commit 4.0.0")
+
 ;;; Options
 ;;;; Variables
 
@@ -170,13 +175,22 @@ full loading."
   :type 'boolean
   :global t
   :init-value t
-  :initialize (lambda (symbol exp)
-                (custom-initialize-default symbol exp)
-                (when global-git-commit-mode
-                  (add-hook 'find-file-hook #'git-commit-setup-check-buffer)))
-  (if global-git-commit-mode
-      (add-hook  'find-file-hook #'git-commit-setup-check-buffer)
-    (remove-hook 'find-file-hook #'git-commit-setup-check-buffer)))
+  :initialize
+  (lambda (symbol exp)
+    (custom-initialize-default symbol exp)
+    (when global-git-commit-mode
+      (add-hook 'find-file-hook #'git-commit-setup-check-buffer)
+      (remove-hook 'after-change-major-mode-hook
+                   #'git-commit-setup-font-lock-in-buffer)))
+  (cond
+   (global-git-commit-mode
+    (add-hook 'find-file-hook #'git-commit-setup-check-buffer)
+    (add-hook 'after-change-major-mode-hook
+              #'git-commit-setup-font-lock-in-buffer))
+   (t
+    (remove-hook 'find-file-hook #'git-commit-setup-check-buffer)
+    (remove-hook 'after-change-major-mode-hook
+                 #'git-commit-setup-font-lock-in-buffer))))
 
 (defcustom git-commit-major-mode #'text-mode
   "Major mode used to edit Git commit messages.
@@ -318,6 +332,26 @@ Magit isn't available, then setting this to a non-nil value has
 no effect."
   :group 'git-commit
   :safe 'booleanp
+  :type 'boolean)
+
+(defcustom git-commit-cd-to-toplevel nil
+  "Whether to set `default-directory' to the worktree in message buffer.
+
+Editing a commit message is done by visiting a file located in the git
+directory, usually \"COMMIT_EDITMSG\".  As is done when visiting any
+file, the local value of `default-directory' is set to the directory
+that contains the file.
+
+If this option is non-nil, then the local `default-directory' is changed
+to the working tree from which the commit command was invoked.  You may
+wish to do that, to make it easier to open a file that is located in the
+working tree, directly from the commit message buffer.
+
+If the git variable `safe.bareRepository' is set to \"explicit\", then
+you have to enable this, to be able to commit at all.  See issue #5100.
+
+This option only has an effect if the commit was initiated from Magit."
+  :group 'git-commit
   :type 'boolean)
 
 ;;;; Faces
@@ -472,8 +506,6 @@ the redundant bindings, then set this to nil, before loading
              (string-match-p git-commit-filename-regexp buffer-file-name))
     (git-commit-setup-font-lock)))
 
-(add-hook 'after-change-major-mode-hook #'git-commit-setup-font-lock-in-buffer)
-
 (defun git-commit-setup-check-buffer ()
   (when (and buffer-file-name
              (string-match-p git-commit-filename-regexp buffer-file-name))
@@ -534,27 +566,36 @@ Used as the local value of `header-line-format', in buffer using
   (setq git-commit-usage-message nil) ; show a shorter message")
 
 (defun git-commit-setup ()
-  (when (fboundp 'magit-toplevel)
-    ;; `magit-toplevel' is autoloaded and defined in magit-git.el,
-    ;; That library declares this functions without loading
-    ;; magit-process.el, which defines it.
-    (require 'magit-process nil t))
-  ;; Pretend that git-commit-mode is a major-mode,
-  ;; so that directory-local settings can be used.
-  (let ((default-directory
-         (or (and (not (file-exists-p ".dir-locals.el"))
-                  ;; When $GIT_DIR/.dir-locals.el doesn't exist,
-                  ;; fallback to $GIT_WORK_TREE/.dir-locals.el,
-                  ;; because the maintainer can use the latter
-                  ;; to enforce conventions, while s/he has no
-                  ;; control over the former.
-                  (fboundp 'magit-toplevel)  ; silence byte-compiler
-                  (magit-toplevel))
-             default-directory)))
-    (let ((buffer-file-name nil)         ; trick hack-dir-local-variables
-          (major-mode 'git-commit-mode)) ; trick dir-locals-collect-variables
-      (hack-dir-local-variables)
-      (hack-local-variables-apply)))
+  (let ((gitdir default-directory)
+        (cd nil))
+    (when (and (fboundp 'magit-toplevel)
+               (boundp 'magit--separated-gitdirs))
+      ;; `magit-toplevel' is autoloaded and defined in magit-git.el.  That
+      ;; library declares this function without loading magit-process.el,
+      ;; which defines it.
+      (require 'magit-process nil t)
+      (when git-commit-cd-to-toplevel
+        (setq cd (or (car (rassoc default-directory magit--separated-gitdirs))
+                     (magit-toplevel)))))
+    ;; Pretend that git-commit-mode is a major-mode,
+    ;; so that directory-local settings can be used.
+    (let ((default-directory
+           (or (and (not (file-exists-p
+                          (expand-file-name ".dir-locals.el" gitdir)))
+                    ;; When $GIT_DIR/.dir-locals.el doesn't exist,
+                    ;; fallback to $GIT_WORK_TREE/.dir-locals.el,
+                    ;; because the maintainer can use the latter
+                    ;; to enforce conventions, while s/he has no
+                    ;; control over the former.
+                    (fboundp 'magit-toplevel)
+                    (or cd (magit-toplevel)))
+               gitdir)))
+      (let ((buffer-file-name nil)         ; trick hack-dir-local-variables
+            (major-mode 'git-commit-mode)) ; trick dir-locals-collect-variables
+        (hack-dir-local-variables)
+        (hack-local-variables-apply)))
+    (when cd
+      (setq default-directory cd)))
   (when git-commit-major-mode
     (let ((auto-mode-alist
            ;; `set-auto-mode--apply-alist' removes the remote part from
@@ -670,16 +711,21 @@ turning on `orglink-mode'."
 
 (defun git-commit-turn-on-flyspell ()
   "Unconditionally turn on Flyspell mode.
-Also prevent comments from being checked and
-finally check current non-comment text."
+Also check text that is already in the buffer, while avoiding to check
+most text that Git will strip from the final message, such as the last
+comment and anything below the cut line (\"--- >8 ---\")."
   (require 'flyspell)
   (turn-on-flyspell)
   (setq flyspell-generic-check-word-predicate
         #'git-commit-flyspell-verify)
-  (let ((end)
+  (let ((end nil)
+        ;; The "cut line" is defined in "git/wt-status.c".  It appears
+        ;; in the commit message when `commit.verbose' is set to true.
+        (cut-line-regex (format "^%s -\\{8,\\} >8 -\\{8,\\}$" comment-start))
         (comment-start-regex (format "^\\(%s\\|$\\)" comment-start)))
     (save-excursion
-      (goto-char (point-max))
+      (goto-char (or (re-search-forward cut-line-regex nil t)
+                     (point-max)))
       (while (and (not (bobp)) (looking-at comment-start-regex))
         (forward-line -1))
       (unless (looking-at comment-start-regex)
@@ -1230,10 +1276,6 @@ Elisp doc-strings, including this one.  Unlike in doc-strings,
 (define-obsolete-function-alias
   'git-commit-insert-header
   'git-commit--insert-ident-trailer
-  "git-commit 4.0.0")
-(define-obsolete-variable-alias
-  'git-commit-known-pseudo-headers
-  'git-commit-trailer
   "git-commit 4.0.0")
 (define-obsolete-face-alias
  'git-commit-pseudo-header
