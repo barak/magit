@@ -1,3 +1,12 @@
+magit (3.3.0+git20240412.1.da14749d-2) unstable; urgency=medium
+
+  * Team upload.
+  * d/patches: define committer info for git-commit in tests
+    (Closes: #1073473)
+  * d/rules: set `LC_ALL=C.UTF-8` for `magit-status:file-sections` test
+
+ -- Jeremy Sowden <azazel@debian.org>  Tue, 25 Jun 2024 12:42:53 +0100
+
 magit (3.3.0+git20240412.1.da14749d-1) unstable; urgency=medium
 
   * New upstream snapshot (Closes: #1068875).
