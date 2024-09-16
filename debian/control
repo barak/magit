@@ -18,7 +18,7 @@ Build-Depends:
  texinfo,
  texlive-base,
 Rules-Requires-Root: no
-Standards-Version: 4.6.2
+Standards-Version: 4.7.0
 Homepage: https://magit.vc/
 Vcs-Browser: https://salsa.debian.org/emacsen-team/magit
 Vcs-Git: https://salsa.debian.org/emacsen-team/magit.git

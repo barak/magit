@@ -1,3 +1,11 @@
+magit (4.1.0-1) unstable; urgency=medium
+
+  * New upstream release
+  * Forward port quilt patches
+  * Bump standards version
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Mon, 16 Sep 2024 16:32:33 +0100
+
 magit (3.3.0+git20240412.1.da14749d-2) unstable; urgency=medium
 
   * Team upload.
