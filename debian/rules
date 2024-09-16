@@ -4,11 +4,11 @@
 	dh $@ --with elpa
 
 override_dh_auto_build:
-	make info html pdf
+	$(MAKE) info html pdf
 	@echo do not run make
 
 override_dh_auto_install:
 	@echo do not run make install
 
 override_dh_elpa_test:
-	make test LC_ALL=C.UTF-8
+	$(MAKE) test LC_ALL=C.UTF-8
