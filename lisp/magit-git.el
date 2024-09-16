@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2008-2024 The Magit Project Contributors
 
-;; Author: Jonas Bernoulli <jonas@bernoul.li>
-;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+;; Author: Jonas Bernoulli <emacs.magit@jonas.bernoulli.dev>
+;; Maintainer: Jonas Bernoulli <emacs.magit@jonas.bernoulli.dev>
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -64,41 +64,6 @@
 (eval-when-compile
   (cl-pushnew 'orig-rev eieio--known-slot-names)
   (cl-pushnew 'number eieio--known-slot-names))
-
-;;; Git implementations
-
-(defvar magit-inhibit-libgit t
-  "Whether to inhibit the use of libgit.
-Use of libgit is inhibited by default because support for libgit
-in magit is only a stub for now.  There is no benefit in using
-it.")
-
-(defvar magit--libgit-available-p 'unknown
-  "Whether libgit is available.
-Use the function by the same name instead of this variable.")
-
-(defun magit--libgit-available-p ()
-  (if (eq magit--libgit-available-p 'unknown)
-      (setq magit--libgit-available-p
-            (and module-file-suffix
-                 (let ((libgit (locate-library "libgit")))
-                   (and libgit
-                        (or (locate-library "libegit2")
-                            (let ((load-path
-                                   (cons (expand-file-name
-                                          (convert-standard-filename "build")
-                                          (file-name-directory libgit))
-                                         load-path)))
-                              (locate-library "libegit2")))))))
-    magit--libgit-available-p))
-
-(defun magit-gitimpl ()
-  "Return the Git implementation used in this repository."
-  (if (and (not magit-inhibit-libgit)
-           (not (file-remote-p default-directory))
-           (magit--libgit-available-p))
-      'libgit
-    'git))
 
 ;;; Options
 
@@ -671,9 +636,9 @@ using `magit-debug-git-executable'.")
                          (push (cons host version)
                                magit--host-git-version-cache)
                          version))))
-               (t (error "Unexpected \"%s --version\" output: %S"
-                         (magit-git-executable)
-                         output)))))))))
+               ((error "Unexpected \"%s --version\" output: %S"
+                       (magit-git-executable)
+                       output)))))))))
 
 (defun magit-git-version-assert (&optional minimal who)
   "Assert that the used Git version is greater than or equal to MINIMAL.
@@ -772,7 +737,7 @@ See info node `(magit)Debugging Tools' for more information."
         (arg (and (or (null (car keys))
                       (string-prefix-p "--" (car keys)))
                   (pop keys)))
-        (key (mapconcat #'identity keys ".")))
+        (key (string-join keys ".")))
     (if (and magit--refresh-cache (not arg))
         (magit-config-get-from-cached-list key)
       (magit-git-items "config" arg "-z" "--get-all" key))))
@@ -783,7 +748,7 @@ Also see `magit-git-config-p'."
   (let ((arg (and (or (null (car keys))
                       (string-prefix-p "--" (car keys)))
                   (pop keys)))
-        (key (mapconcat #'identity keys ".")))
+        (key (string-join keys ".")))
     (equal (if magit--refresh-cache
                (car (last (magit-config-get-from-cached-list key)))
              (magit-git-str "config" arg "--bool" key))
@@ -794,7 +759,7 @@ Also see `magit-git-config-p'."
   (let ((arg (and (or (null (car keys))
                       (string-prefix-p "--" (car keys)))
                   (pop keys)))
-        (key (mapconcat #'identity keys ".")))
+        (key (string-join keys ".")))
     (if value
         (magit-git-success "config" arg key value)
       (magit-git-success "config" arg "--unset" key))
@@ -808,7 +773,7 @@ Also see `magit-git-config-p'."
   (let ((arg (and (or (null (car keys))
                       (string-prefix-p "--" (car keys)))
                   (pop keys)))
-        (var (mapconcat #'identity keys ".")))
+        (var (string-join keys ".")))
     (when (magit-get var)
       (magit-call-git "config" arg "--unset-all" var))
     (dolist (v values)
@@ -821,7 +786,7 @@ Also see `magit-git-config-p'."
     (let ((dir (file-name-as-directory
                 (expand-file-name (or file default-directory))))
           (previous nil))
-      (while (not (magit-file-accessible-directory-p dir))
+      (while (not (file-accessible-directory-p dir))
         (setq dir (file-name-directory (directory-file-name dir)))
         (when (equal dir previous)
           (throw 'unsafe-default-dir nil))
@@ -972,7 +937,8 @@ returning the truename."
 (define-error 'magit-outside-git-repo "Not inside Git repository")
 (define-error 'magit-corrupt-git-config "Corrupt Git configuration")
 (define-error 'magit-git-executable-not-found
-  "Git executable cannot be found (see https://magit.vc/goto/e6a78ed2)")
+              (concat "Git executable cannot be found "
+                      "(see https://magit.vc/goto/e6a78ed2)"))
 
 (defun magit--assert-usable-git ()
   (if (not (compat-call executable-find (magit-git-executable) t))
@@ -1004,7 +970,7 @@ is non-nil, in which case return nil."
        (let ((gitdir (magit-gitdir)))
          (cond (gitdir (file-in-directory-p default-directory gitdir))
                (noerror nil)
-               (t (signal 'magit-outside-git-repo default-directory))))))
+               ((signal 'magit-outside-git-repo default-directory))))))
 
 (defun magit-inside-worktree-p (&optional noerror)
   "Return t if `default-directory' is below the working directory.
@@ -1088,10 +1054,16 @@ tracked file."
 (defun magit-tracked-files ()
   (magit-list-files "--cached"))
 
-(defun magit-untracked-files (&optional all files)
-  (magit-list-files "--other"
-                    (and (not all) "--exclude-standard")
-                    "--" files))
+(defun magit-untracked-files (&optional all files compact)
+  (if compact
+      (--mapcat (and (eq (aref it 0) ??)
+                     (list (substring it 3)))
+                (magit-git-items "status" "-z" "--porcelain"
+                                 (magit-ignore-submodules-p t)
+                                 "--" files))
+    (magit-list-files "--other"
+                      (and (not all) "--exclude-standard")
+                      "--" files)))
 
 (defun magit-modified-files (&optional nomodules files)
   (magit-git-items "diff-index" "-z" "--name-only"
@@ -1304,7 +1276,7 @@ are considered."
 
 (defun magit-module-worktree-p (module)
   (magit-with-toplevel
-    (file-exists-p (expand-file-name (expand-file-name ".git" module)))))
+    (file-exists-p (expand-file-name ".git" module))))
 
 (defun magit-module-no-worktree-p (module)
   (not (magit-module-worktree-p module)))
@@ -1365,7 +1337,7 @@ string \"true\", otherwise return nil."
 If REV is nil or has the form \":/TEXT\", return REV itself."
   (cond ((not rev) nil)
         ((string-match-p "^:/" rev) rev)
-        (t (concat rev "^{commit}"))))
+        ((concat rev "^{commit}"))))
 
 (defun magit-rev-equal (a b)
   "Return t if there are no differences between the commits A and B."
@@ -1457,7 +1429,7 @@ Git."
            (if (magit-ref-ambiguous-p (match-string 1 name))
                name
              (match-string 1 name)))
-          (t (magit-ref-maybe-qualify name)))))
+          ((magit-ref-maybe-qualify name)))))
 
 (defun magit-name-branch (rev &optional lax)
   (or (magit-name-local-branch rev)
@@ -1476,7 +1448,9 @@ Git."
 
 (defun magit-name-tag (rev &optional lax)
   (and-let* ((name (magit-rev-name rev "refs/tags/*")))
-    (progn ; work around debbugs#31840
+    ;; The progn is necessary to work around debbugs#31840.  This, and all
+    ;; the other instances, can be removed once we require at least Emacs 27.
+    (progn
       (when (string-suffix-p "^0" name)
         (setq name (substring name 0 -2)))
       (and (or lax (not (string-match-p "[~^]" name)))
@@ -1627,7 +1601,7 @@ to, or to some other symbolic-ref that points to the same ref."
     ([branch remote] (magit-section-parent-value it))))
 
 (defun magit-module-at-point (&optional predicate)
-  (when (magit-section-match 'magit-module-section)
+  (when (magit-section-match 'module)
     (let ((module (oref (magit-current-section) value)))
       (and (or (not predicate)
                (funcall predicate module))
@@ -2309,7 +2283,7 @@ If `first-parent' is set, traverse only first parents."
 
 (defun magit-format-rev-summary (rev)
   (and-let* ((str (magit-rev-format "%h %s" rev)))
-    (progn ; work around debbugs#31840
+    (progn
       (magit--put-face 0 (string-match " " str) 'magit-hash str)
       str)))
 
@@ -2423,15 +2397,14 @@ and this option only controls what face is used.")
                  0 (length target) 'magit-branch-upstream nil target)
                 (setq upstream target)
                 (setq combined (delete target combined))))))
-        (mapconcat #'identity
-                   (flatten-tree `(,state
-                                   ,head
-                                   ,upstream
-                                   ,@(nreverse tags)
-                                   ,@(nreverse combined)
-                                   ,@(nreverse remotes)
-                                   ,@other))
-                   " ")))))
+        (string-join (flatten-tree `(,state
+                                     ,head
+                                     ,upstream
+                                     ,@(nreverse tags)
+                                     ,@(nreverse combined)
+                                     ,@(nreverse remotes)
+                                     ,@other))
+                     " ")))))
 
 (defun magit-object-type (object)
   (magit-git-string "cat-file" "-t" object))
@@ -2448,8 +2421,6 @@ and this option only controls what face is used.")
         (point-min) (point-max) buffer-file-name t nil nil t)
        ,@body)))
 
-(defvar magit-tramp-process-environment nil)
-
 (defmacro magit-with-temp-index (tree arg &rest body)
   (declare (indent 2) (debug (form form body)))
   (let ((file (cl-gensym "file")))
@@ -2463,13 +2434,8 @@ and this option only controls what face is used.")
                (unless (magit-git-success "read-tree" ,arg tree
                                           (concat "--index-output=" ,file))
                  (error "Cannot read tree %s" tree)))
-             (if (file-remote-p default-directory)
-                 (let ((magit-tramp-process-environment
-                        (cons (concat "GIT_INDEX_FILE=" ,file)
-                              magit-tramp-process-environment)))
-                   ,@body)
-               (with-environment-variables (("GIT_INDEX_FILE" ,file))
-                 ,@body)))
+             (with-environment-variables (("GIT_INDEX_FILE" ,file))
+               ,@body))
          (ignore-errors
            (delete-file (concat (file-remote-p default-directory) ,file)))))))
 
@@ -2658,7 +2624,7 @@ and this option only controls what face is used.")
   (magit-read-range
    prompt
    (or (and-let* ((revs (magit-region-values '(commit branch) t)))
-         (progn ; work around debbugs#31840
+         (progn
            (deactivate-mark)
            (concat (car (last revs)) ".." (car revs))))
        (magit-branch-or-commit-at-point)
@@ -2679,7 +2645,7 @@ and this option only controls what face is used.")
                  prompt
                  (cl-union (and local-branch
                                 (if remote
-                                    (concat remote "/" local-branch)
+                                    (list local-branch)
                                   (--map (concat it "/" local-branch)
                                          (magit-list-remotes))))
                            (magit-list-remote-branch-names remote t)
@@ -2886,13 +2852,13 @@ out.  Only existing branches can be selected."
             (if predicate
                 (user-error "No modules satisfying %s available" predicate)
               (user-error "No modules available"))))
-      (setq modules (magit-region-values 'magit-module-section))
+      (setq modules (magit-region-values 'module))
       (when modules
         (when predicate
           (setq modules (seq-filter predicate modules)))
         (unless modules
           (user-error "No modules satisfying %s selected" predicate))))
-    (if (length> modules 1)
+    (if (or (length> modules 1) current-prefix-arg)
         (magit-confirm t nil (format "%s %%d modules" verb) nil modules)
       (list (magit-read-module-path (format "%s module" verb) predicate)))))
 

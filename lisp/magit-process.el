@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2008-2024 The Magit Project Contributors
 
-;; Author: Jonas Bernoulli <jonas@bernoul.li>
-;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+;; Author: Jonas Bernoulli <emacs.magit@jonas.bernoulli.dev>
+;; Maintainer: Jonas Bernoulli <emacs.magit@jonas.bernoulli.dev>
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -309,8 +309,9 @@ Used when `magit-process-display-mode-line-error' is non-nil."
 
 (define-derived-mode magit-process-mode magit-mode "Magit Process"
   "Mode for looking at Git process output."
+  :interactive nil
   :group 'magit-process
-  (hack-dir-local-variables-non-file-buffer)
+  (magit-hack-dir-local-variables)
   (setq magit--imenu-item-types 'process))
 
 (defun magit-process-buffer (&optional nodisplay)
@@ -389,11 +390,11 @@ as well as the current repository's status buffer are refreshed.
 Process output goes into a new section in the buffer returned by
 `magit-process-buffer'."
   (let ((magit--refresh-cache (list (cons 0 0))))
-    (magit-call-git args)
-    (when (member (car args) '("init" "clone"))
-      ;; Creating a new repository invalidates the cache.
-      (setq magit--refresh-cache nil))
-    (magit-refresh)))
+    (prog1 (magit-call-git args)
+      (when (member (car args) '("init" "clone"))
+        ;; Creating a new repository invalidates the cache.
+        (setq magit--refresh-cache nil))
+      (magit-refresh))))
 
 (defvar magit-pre-call-git-hook nil)
 
@@ -448,11 +449,9 @@ conversion."
     (apply #'process-file process infile buffer display args)))
 
 (defun magit-process-environment ()
-  ;; The various w32 hacks are only applicable when running on the
-  ;; local machine.  As of Emacs 25.1, a local binding of
-  ;; process-environment different from the top-level value affects
-  ;; the environment used in
-  ;; tramp-sh-handle-{start-file-process,process-file}.
+  ;; The various w32 hacks are only applicable when running on the local
+  ;; machine.  A local binding of process-environment different from the
+  ;; top-level value affects the environment used by Tramp.
   (let ((local (not (file-remote-p default-directory))))
     (append magit-git-environment
             (and local
@@ -517,7 +516,7 @@ and still alive), as well as the respective Magit status buffer.
 
 See `magit-start-process' for more information."
   (message "Running %s %s" (magit-git-executable)
-           (let ((m (mapconcat #'identity (flatten-tree args) " ")))
+           (let ((m (string-join (flatten-tree args) " ")))
              (remove-list-of-text-properties 0 (length m) '(face) m)
              m))
   (magit-start-git nil args))
@@ -652,23 +651,31 @@ Magit status buffer."
 (defun magit-parse-git-async (&rest args)
   (setq args (magit-process-git-arguments args))
   (let ((command-buf (current-buffer))
-        (process-buf (generate-new-buffer " *temp*"))
+        (stdout-buf (generate-new-buffer " *git-stdout*"))
+        (stderr-buf (generate-new-buffer " *git-stderr*"))
         (toplevel (magit-toplevel)))
-    (with-current-buffer process-buf
+    (with-current-buffer stdout-buf
       (setq default-directory toplevel)
       (let ((process
-             (let ((process-connection-type nil)
-                   (process-environment (magit-process-environment))
-                   (default-process-coding-system
-                    (magit--process-coding-system)))
-               (apply #'start-file-process "git" process-buf
-                      (magit-git-executable) args))))
+             (let ((process-environment (magit-process-environment)))
+               (make-process :name "git"
+                             :buffer stdout-buf
+                             :stderr stderr-buf
+                             :command (cons (magit-git-executable) args)
+                             :coding (magit--process-coding-system)
+                             :file-handler t))))
         (process-put process 'command-buf command-buf)
+        (process-put process 'stderr-buf stderr-buf)
         (process-put process 'parsed (point))
         (setq magit-this-process process)
         process))))
 
 ;;; Process Internals
+
+(defclass magit-process-section (magit-section)
+  ((process :initform nil)))
+
+(setf (alist-get 'process magit--section-type-alist) 'magit-process-section)
 
 (defun magit-process-setup (program args)
   (magit-process-set-mode-line program args)
@@ -713,7 +720,7 @@ Magit status buffer."
        " "
        (propertize (magit--ellipsis)
                    'font-lock-face 'magit-section-heading
-                   'help-echo (mapconcat #'identity (seq-take args global) " "))
+                   'help-echo (string-join (seq-take args global) " "))
        " "
        (propertize (mapconcat #'shell-quote-argument (seq-drop args global) " ")
                    'font-lock-face 'magit-section-heading))))
@@ -1011,32 +1018,9 @@ as argument."
 
 (add-hook 'magit-credential-hook #'magit-maybe-start-credential-cache-daemon)
 
-(defun tramp-sh-handle-start-file-process--magit-tramp-process-environment
-    (fn name buffer program &rest args)
-  (if magit-tramp-process-environment
-      (apply fn name buffer
-             (car magit-tramp-process-environment)
-             (append (cdr magit-tramp-process-environment)
-                     (cons program args)))
-    (apply fn name buffer program args)))
-
-(advice-add 'tramp-sh-handle-start-file-process :around
-            #'tramp-sh-handle-start-file-process--magit-tramp-process-environment)
-
-(defun tramp-sh-handle-process-file--magit-tramp-process-environment
-    (fn program &optional infile destination display &rest args)
-  (if magit-tramp-process-environment
-      (apply fn "env" infile destination display
-             (append magit-tramp-process-environment
-                     (cons program args)))
-    (apply fn program infile destination display args)))
-
-(advice-add 'tramp-sh-handle-process-file :around
-            #'tramp-sh-handle-process-file--magit-tramp-process-environment)
-
 (defvar-keymap magit-mode-line-process-map
   :doc "Keymap for `mode-line-process'."
-  "<mode-line> <mouse-1>" ''magit-process-buffer)
+  "<mode-line> <mouse-1>" 'magit-process-buffer)
 
 (defun magit-process-set-mode-line (program args)
   "Display the git command (sans arguments) in the mode line."
@@ -1284,7 +1268,7 @@ Limited by `magit-process-error-tooltip-max-lines'."
       (let ((inhibit-message t))
         (when heading
           (setq lines (cons heading lines)))
-        (message (mapconcat #'identity lines "\n"))))))
+        (message (string-join lines "\n"))))))
 
 ;;; _
 (provide 'magit-process)

@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2008-2024 The Magit Project Contributors
 
-;; Author: Jonas Bernoulli <jonas@bernoul.li>
-;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+;; Author: Jonas Bernoulli <emacs.magit@jonas.bernoulli.dev>
+;; Maintainer: Jonas Bernoulli <emacs.magit@jonas.bernoulli.dev>
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -348,7 +348,7 @@ When the region is active offer to drop all contained stashes."
 (defun magit-stash-clear (ref)
   "Remove all stashes saved in REF's reflog by deleting REF."
   (interactive (let ((ref (or (magit-section-value-if 'stashes) "refs/stash")))
-                 (magit-confirm t (format "Drop all stashes in %s" ref))
+                 (magit-confirm t (list "Drop all stashes in %s" ref))
                  (list ref)))
   (magit-run-git "update-ref" "-d" ref))
 
@@ -467,7 +467,7 @@ Then apply STASH, dropping it if it applies cleanly."
   "<1>" (magit-menu-item "Visit %v"  #'magit-stash-show))
 
 (magit-define-section-jumper magit-jump-to-stashes
-  "Stashes" stashes "refs/stash")
+  "Stashes" stashes "refs/stash" magit-insert-stashes)
 
 (cl-defun magit-insert-stashes (&optional (ref   "refs/stash")
                                           (heading "Stashes:"))
@@ -511,8 +511,9 @@ instead of \"Stashes:\"."
 
 (define-derived-mode magit-stashes-mode magit-reflog-mode "Magit Stashes"
   "Mode for looking at lists of stashes."
+  :interactive nil
   :group 'magit-log
-  (hack-dir-local-variables-non-file-buffer))
+  (magit-hack-dir-local-variables))
 
 (defun magit-stashes-setup-buffer ()
   (magit-setup-buffer #'magit-stashes-mode nil
@@ -520,9 +521,10 @@ instead of \"Stashes:\"."
 
 (defun magit-stashes-refresh-buffer ()
   (magit-insert-section (stashesbuf)
-    (magit-insert-heading (if (equal magit-buffer-refname "refs/stash")
-                              "Stashes:"
-                            (format "Stashes [%s]:" magit-buffer-refname)))
+    (magit-insert-heading t
+      (if (equal magit-buffer-refname "refs/stash")
+          "Stashes"
+        (format "Stashes [%s]" magit-buffer-refname)))
     (magit-git-wash (apply-partially #'magit-log-wash-log 'stash)
       "reflog" "--format=%gd%x00%aN%x00%at%x00%gs" magit-buffer-refname)))
 
@@ -571,8 +573,9 @@ If there is no stash buffer in the same frame, then do nothing."
 
 (define-derived-mode magit-stash-mode magit-diff-mode "Magit Stash"
   "Mode for looking at individual stashes."
+  :interactive nil
   :group 'magit-diff
-  (hack-dir-local-variables-non-file-buffer)
+  (magit-hack-dir-local-variables)
   (setq magit--imenu-group-types '(commit)))
 
 (defun magit-stash-setup-buffer (stash args files)
@@ -607,13 +610,11 @@ If there is no stash buffer in the same frame, then do nothing."
   "Insert section showing notes for a stash.
 This shows the notes for stash@{N} but not for the other commits
 that make up the stash."
-  (magit-insert-section section (note)
-    (magit-insert-heading "Notes")
+  (magit-insert-section (note)
+    (magit-insert-heading t "Notes")
     (magit-git-insert "notes" "show" magit-buffer-revision)
-    (if (= (point)
-           (oref section content))
-        (magit-cancel-section)
-      (insert "\n"))))
+    (magit-cancel-section 'if-empty)
+    (insert "\n")))
 
 (defun magit-insert-stash-index ()
   "Insert section showing staged changes of the stash."

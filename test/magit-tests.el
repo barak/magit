@@ -1,6 +1,6 @@
 ;;; magit-tests.el --- Tests for Magit  -*- lexical-binding:t; coding:utf-8 -*-
 
-;; Copyright (C) 2008-2023 The Magit Project Contributors
+;; Copyright (C) 2008-2024 The Magit Project Contributors
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -37,12 +37,11 @@
   (declare (indent 0) (debug t))
   (let ((dir (make-symbol "dir")))
     `(let ((,dir (file-name-as-directory (make-temp-file "magit-" t)))
-           (process-environment process-environment)
            (magit-git-global-arguments
             (nconc (list "-c" "protocol.file.allow=always")
+                   (list "-c" "user.name=\"A U Thor\"")
+                   (list "-c" "user.email=\"a.u.thor@example.com\"")
                    magit-git-global-arguments)))
-       (push "GIT_AUTHOR_NAME=A U Thor" process-environment)
-       (push "GIT_AUTHOR_EMAIL=a.u.thor@example.com" process-environment)
        (condition-case err
            (cl-letf (((symbol-function #'message) (lambda (&rest _))))
              (let ((default-directory (file-truename ,dir)))
@@ -68,7 +67,7 @@
                  (push (buffer-substring-no-properties (point) to) chunks))
                (goto-char to)
                (< (point) (point-max))))
-      (let ((result (mapconcat #'identity (nreverse chunks) nil)))
+      (let ((result (string-join (nreverse chunks))))
         (unless raw
           (setq result (string-trim result)))
         result))))
@@ -160,6 +159,16 @@
                  (expand-file-name "repo/")))
   (should (equal (magit-toplevel   "wrap/subsubdir-link")
                  (expand-file-name "repo/"))))
+
+(ert-deftest magit-in-bare-repo ()
+  "Test `magit-bare-repo-p' in a bare repository."
+  (magit-with-bare-test-repository
+    (should (magit-bare-repo-p))))
+
+(ert-deftest magit-in-non-bare-repo ()
+  "Test `magit-bare-repo-p' in a non-bare repository."
+  (magit-with-test-repository
+    (should-not (magit-bare-repo-p))))
 
 (defun magit-test-magit-get ()
   (should (equal (magit-get-all "a.b") '("val1" "val2")))
@@ -435,18 +444,6 @@ Recent commits\n[[:xdigit:]]\\{7,\\} master dummy\\'"
                "\\`Head:[[:space:]]+master dummy\n\nRecent commits\\'"
                (magit-test-visible-text))))))
 
-;;; libgit
-
-(ert-deftest magit-in-bare-repo ()
-  "Test `magit-bare-repo-p' in a bare repository."
-  (magit-with-bare-test-repository
-    (should (magit-bare-repo-p))))
-
-(ert-deftest magit-in-non-bare-repo ()
-  "Test `magit-bare-repo-p' in a non-bare repository."
-  (magit-with-test-repository
-    (should-not (magit-bare-repo-p))))
-
 ;;; Utils
 
 (ert-deftest magit-utils:add-face-text-property ()
@@ -494,9 +491,6 @@ Recent commits\n[[:xdigit:]]\\{7,\\} master dummy\\'"
     (cl-letf (((symbol-function 'char-displayable-p) (lambda (_) nil)))
       (should (equal (magit--ellipsis 'foo) (magit--ellipsis))))))
 
-;;; magit-tests.el ends soon
+;;; _
 (provide 'magit-tests)
-;; Local Variables:
-;; indent-tabs-mode: nil
-;; End:
 ;;; magit-tests.el ends here

@@ -22,7 +22,8 @@ help:
 	$(info make [all]            - compile elisp and documentation)
 	$(info make lisp             - compile elisp)
 	$(info make redo             - re-compile elisp)
-	$(info make docs             - generate info manuals)
+	$(info make docs             - generate all manual formats)
+	$(info make texi             - generate texi manuals)
 	$(info make info             - generate info manuals)
 	$(info make html             - generate html manual files)
 	$(info make html-dir         - generate html manual directories)
@@ -58,7 +59,6 @@ help:
 	$(info Release Management)
 	$(info ==================)
 	$(info )
-	$(info make texi             - regenerate texi from org)
 	$(info make authors          - regenerate AUTHORS.md)
 	$(info make publish          - publish snapshot manuals)
 	$(info make release          - publish release manuals)
@@ -78,7 +78,7 @@ lisp:
 	@$(MAKE) -C test lisp
 
 docs:
-	@$(MAKE) -C docs all
+	@$(MAKE) -C docs docs
 
 info:
 	@$(MAKE) -C docs info
@@ -192,7 +192,7 @@ define set_package_requires_nongnu
     (insert-file-contents file)
     (re-search-forward "^;; Package-Version: ")
     (delete-region (point) (line-end-position))
-    (insert (concat version "$(DEV_SUFFIX)"))
+    (insert version)
     (re-search-forward "^;; Package-Requires: (\n")
     (let ((beg (point)))
       (forward-line)
@@ -221,13 +221,6 @@ define set_package_requires_nongnu
   (transient ,transient-version)
   (with-editor ,with-editor-version)))
 
-(--update-package "lisp/magit-libgit.el" "$(MAGIT_LIBGIT_VERSION)"
-`((emacs "$(LIBGIT_EMACS_VERSION)") ;`
-  (compat ,compat-version)
-  (libgit ,libgit-version)
-  (seq ,seq-version)
-  (magit ,magit-version)))
-
 (--update-package "lisp/magit-section.el" "$(MAGIT_SECTION_VERSION)"
 `((emacs ,emacs-version) ;`
   (compat ,compat-version)
@@ -240,7 +233,7 @@ define set_package_requires_melpa
 
 (with-temp-file "lisp/git-commit-pkg.el"
   (insert (format
-"(define-package \"git-commit\" \"$(GIT_COMMIT_VERSION)$(DEV_SUFFIX)\"
+"(define-package \"git-commit\" \"$(GIT_COMMIT_VERSION)\"
   \"Edit Git commit messages.\"
   '((emacs       %S)
     (compat      %S)
@@ -255,7 +248,7 @@ define set_package_requires_melpa
 
 (with-temp-file "lisp/magit-pkg.el"
   (insert (format
-"(define-package \"magit\" \"$(MAGIT_VERSION)$(DEV_SUFFIX)\"
+"(define-package \"magit\" \"$(MAGIT_VERSION)\"
   \"A Git porcelain inside Emacs.\"
   '((emacs         %S)
     (compat        %S)
@@ -276,24 +269,9 @@ define set_package_requires_melpa
     transient-version
     with-editor-version)))
 
-(with-temp-file "lisp/magit-libgit-pkg.el"
-  (insert (format
-"(define-package \"magit-libgit\" \"$(MAGIT_LIBGIT_VERSION)$(DEV_SUFFIX)\"
-  \"(POC) Teach Magit to use Libgit2.\"
-  '((emacs  %S)
-    (compat %S)
-    (libgit %S)
-    (magit  %S))
-  :homepage \"https://magit.vc\"
-  :keywords '(\"git\" \"tools\" \"vc\"))
-"   emacs-version
-    compat-version
-    libgit-version
-    magit-version)))
-
 (with-temp-file "lisp/magit-section-pkg.el"
   (insert (format
-"(define-package \"magit-section\" \"$(MAGIT_SECTION_VERSION)$(DEV_SUFFIX)\"
+"(define-package \"magit-section\" \"$(MAGIT_SECTION_VERSION)\"
   \"Sections for read-only buffers.\"
   '((emacs  %S)
     (compat %S)
@@ -311,9 +289,7 @@ define set_package_versions
 (compat-version "$(COMPAT_VERSION)")
 (dash-version "$(DASH_VERSION)")
 (git-commit-version "$(GIT_COMMIT_VERSION)")
-(libgit-version "$(LIBGIT_VERSION)")
 (magit-version "$(MAGIT_VERSION)")
-(magit-libgit-version "$(MAGIT_LIBGIT_VERSION)")
 (magit-section-version "$(MAGIT_SECTION_VERSION)")
 (seq-version "$(SEQ_VERSION)")
 (transient-version "$(TRANSIENT_VERSION)")
@@ -326,11 +302,9 @@ define set_package_snapshots
 (compat-version "$(COMPAT_SNAPSHOT)")
 (dash-version "$(DASH_MELPA_SNAPSHOT)")
 (git-commit-version "$(GIT_COMMIT_MELPA_SNAPSHOT)")
-(libgit-version "$(LIBGIT_MELPA_SNAPSHOT)")
 (magit-version "$(MAGIT_MELPA_SNAPSHOT)")
-(magit-libgit-version "$(MAGIT_LIBGIT_MELPA_SNAPSHOT)")
 (magit-section-version "$(MAGIT_SECTION_MELPA_SNAPSHOT)")
-(seq-version "$(SEQ_MELPA_SNAPSHOT)")
+(seq-version "$(SEQ_SNAPSHOT)")
 (transient-version "$(TRANSIENT_MELPA_SNAPSHOT)")
 (with-editor-version "$(WITH_EDITOR_MELPA_SNAPSHOT)")
 endef
@@ -344,7 +318,6 @@ _bump-versions:
         $$set_package_requires_melpa)"
 
 bump-snapshots:
-	@$(eval DEV_SUFFIX := $(DEV_VERSION_SUFFIX))
 	@$(BATCH) --eval "(let (\
         $$set_package_versions)\
         $$set_package_requires_nongnu)"

@@ -2,16 +2,16 @@
 
 ;; Copyright (C) 2008-2024 The Magit Project Contributors
 
-;; Author: Jonas Bernoulli <jonas@bernoul.li>
-;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+;; Author: Jonas Bernoulli <emacs.magit@jonas.bernoulli.dev>
+;; Maintainer: Jonas Bernoulli <emacs.magit@jonas.bernoulli.dev>
 
 ;; Homepage: https://github.com/magit/magit
 ;; Keywords: tools
 
-;; Package-Version: 3.3.0.50-git
+;; Package-Version: 4.0.0
 ;; Package-Requires: (
-;;     (emacs "25.1")
-;;     (compat "29.1.4.4")
+;;     (emacs "26.1")
+;;     (compat "30.0.0.0")
 ;;     (dash "2.19.1")
 ;;     (seq "2.24"))
 
@@ -51,7 +51,7 @@
 ;; For older Emacs releases we depend on an updated `seq' release from GNU
 ;; ELPA, for `seq-keep'.  Unfortunately something else may require `seq'
 ;; before `package' had a chance to put this version on the `load-path'.
-(when (and (featurep' seq)
+(when (and (featurep 'seq)
            (not (fboundp 'seq-keep)))
   (unload-feature 'seq 'force))
 (require 'seq)
@@ -378,18 +378,17 @@ no effect.  This also has no effect for Emacs >= 28, where
 (defvar magit--section-type-alist nil)
 
 (defclass magit-section ()
-  ((keymap   :initform nil)
-   (type     :initform nil :initarg :type)
-   (value    :initform nil :initarg :value)
-   (start    :initform nil :initarg :start)
+  ((type     :initform nil :initarg :type)
+   (keymap   :initform nil)
+   (value    :initform nil)
+   (start    :initform nil)
    (content  :initform nil)
    (end      :initform nil)
-   (hidden   :initform nil)
-   (washer   :initform nil)
-   (process  :initform nil)
-   (heading-highlight-face :initform nil)
+   (hidden)
+   (washer   :initform nil :initarg :washer)
    (inserter :initform (symbol-value 'magit--current-section-hook))
-   (parent   :initform nil :initarg :parent)
+   (heading-highlight-face :initform nil :initarg :heading-highlight-face)
+   (parent   :initform nil)
    (children :initform nil)))
 
 ;;; Mode
@@ -448,6 +447,7 @@ if any."
   "Parent major mode from which major modes with Magit-like sections inherit.
 
 Magit-Section is documented in info node `(magit-section)'."
+  :interactive nil
   :group 'magit-section
   (buffer-disable-undo)
   (setq truncate-lines t)
@@ -460,7 +460,6 @@ Magit-Section is documented in info node `(magit-section)'."
   (setq show-trailing-whitespace nil)
   (setq-local symbol-overlay-inhibit-map t)
   (setq list-buffers-directory (abbreviate-file-name default-directory))
-  ;; (hack-dir-local-variables-non-file-buffer)
   (make-local-variable 'text-property-default-nonsticky)
   (push (cons 'keymap t) text-property-default-nonsticky)
   (add-hook 'pre-command-hook #'magit-section-pre-command-hook nil t)
@@ -561,9 +560,9 @@ purpose.")
 (cl-defmethod magit-section-ident-value ((section magit-section))
   "Return the value unless it is an object.
 
-Different object incarnations representing the same value then to
-not be equal, so call this generic function on the object itself
-to determine a constant value."
+Different object incarnations representing the same value tend to not be
+equal, so call this generic function on the object itself to determine a
+constant value."
   (let ((value (oref section value)))
     (if (eieio-object-p value)
         (magit-section-ident-value value)
@@ -597,9 +596,8 @@ instead of in the one whose root `magit-root-section' is."
 
 (defun magit-section-lineage (section &optional raw)
   "Return the lineage of SECTION.
-If optional RAW is non-nil, return a list of section object
-beginning with SECTION, otherwise return a list of section
-types."
+If optional RAW is non-nil, return a list of section objects, beginning
+with SECTION, otherwise return a list of section types."
   (cons (if raw section (oref section type))
         (and-let* ((parent (oref section parent)))
           (magit-section-lineage parent raw))))
@@ -775,12 +773,11 @@ Slight trimmed down."
                   (magit--menu-bar-keymap keymap))))
   menu)
 
-(advice-add 'context-menu-region :around
-            (lambda (fn menu click)
-              "Disable in `magit-section-mode' buffers."
-              (if (derived-mode-p 'magit-section-mode)
-                  menu
-                (funcall fn menu click))))
+(define-advice context-menu-region (:around (fn menu click) magit-section-mode)
+  "Disable in `magit-section-mode' buffers."
+  (if (derived-mode-p 'magit-section-mode)
+      menu
+    (funcall fn menu click)))
 
 ;;; Commands
 ;;;; Movement
@@ -883,14 +880,24 @@ If there is no previous sibling section, then move to the parent."
   (unless (pos-visible-in-window-p (oref section end))
     (set-window-start (selected-window) (oref section start))))
 
-(defmacro magit-define-section-jumper (name heading type &optional value)
+(defmacro magit-define-section-jumper
+    (name heading type &optional value inserter &rest properties)
   "Define an interactive function to go some section.
 Together TYPE and VALUE identify the section.
 HEADING is the displayed heading of the section."
   (declare (indent defun))
-  `(defun ,name (&optional expand)
+  `(transient-define-suffix ,name (&optional expand)
      ,(format "Jump to the section \"%s\".
 With a prefix argument also expand it." heading)
+     ,@properties
+     ,@(and (not (plist-member properties :description))
+            (list :description heading))
+     ,@(and inserter
+            `(:if (lambda () (memq ',inserter
+                              (bound-and-true-p magit-status-sections-hook)))))
+     :inapt-if-not (lambda () (magit-get-section
+                          (cons (cons ',type ,value)
+                                (magit-section-ident magit-root-section))))
      (interactive "P")
      (if-let ((section (magit-get-section
                         (cons (cons ',type ,value)
@@ -922,6 +929,7 @@ With a prefix argument also expand it." heading)
     (oset section washer nil)
     (let ((inhibit-read-only t)
           (magit-insert-section--parent section)
+          (magit-insert-section--current section)
           (content (oref section content)))
       (save-excursion
         (if (and content (< content (oref section end)))
@@ -957,7 +965,7 @@ With a prefix argument also expand it." heading)
          (user-error "Cannot hide root section"))
         ((oref section hidden)
          (magit-section-show section))
-        (t (magit-section-hide section))))
+        ((magit-section-hide section))))
 
 (defun magit-section-toggle-children (section)
   "Toggle visibility of bodies of children of the current section."
@@ -1375,120 +1383,126 @@ a section by washing Git's output and Git didn't actually output
 anything this time around.
 
 \(fn [NAME] (CLASS &optional VALUE HIDE) &rest BODY)"
-  (declare (indent defun)
+  (declare (indent 1)
            (debug ([&optional symbolp]
-                   (&or [("eval" form) &optional form form]
-                        [symbolp &optional form form])
+                   (&or [("eval" form) &optional form form &rest form]
+                        [symbolp &optional form form &rest form])
                    body)))
-  (let ((tp (cl-gensym "type"))
-        (s* (and (symbolp (car args))
-                 (pop args)))
-        (s  (cl-gensym "section")))
-    `(let* ((,tp ,(let ((type (nth 0 (car args))))
-                    (if (eq (car-safe type) 'eval)
-                        (cadr type)
-                      `',type)))
-            (,s (funcall (if (class-p ,tp)
-                             ,tp
-                           (or (cdr (assq ,tp magit--section-type-alist))
-                               'magit-section))
-                         :type
-                         (or (and (class-p ,tp)
-                                  (car (rassq ,tp magit--section-type-alist)))
-                             ,tp)
-                         :value ,(nth 1 (car args))
-                         :start (if magit-section-inhibit-markers
-                                    (point)
-                                  (point-marker))
-                         :parent magit-insert-section--parent)))
-       (oset ,s hidden
-             (if-let ((value (run-hook-with-args-until-success
-                              'magit-section-set-visibility-hook ,s)))
-                 (eq value 'hide)
-               (if-let ((incarnation
-                         (and (not magit-section-preserve-visibility)
-                              magit-insert-section--oldroot
-                              (magit-get-section
-                               (magit-section-ident ,s)
-                               magit-insert-section--oldroot))))
-                   (oref incarnation hidden)
-                 (if-let ((value (magit-section-match-assoc
-                                  ,s magit-section-initial-visibility-alist)))
-                     (progn (when (functionp value)
-                              (setq value (funcall value ,s)))
-                            (eq value 'hide))
-                   ,(nth 2 (car args))))))
-       (let ((magit-insert-section--current ,s)
-             (magit-insert-section--parent  ,s)
-             (magit-insert-section--oldroot
-              (or magit-insert-section--oldroot
-                  (and (not magit-insert-section--parent)
-                       (prog1 magit-root-section
-                         (setq magit-root-section ,s))))))
-         (catch 'cancel-section
-           ,@(if s*
-                 `((let ((,s* ,s))
-                     ,@(cdr args)))
-               (cdr args))
-           ;; `magit-insert-section-hook' should *not* be run with
-           ;; `magit-run-section-hook' because it's a hook that runs
-           ;; on section insertion, not a section inserting hook.
-           (run-hooks 'magit-insert-section-hook)
-           (magit-insert-child-count ,s)
-           (unless magit-section-inhibit-markers
-             (set-marker-insertion-type (oref ,s start) t))
-           (let* ((end (oset ,s end
-                             (if magit-section-inhibit-markers
-                                 (point)
-                               (point-marker))))
-                  (class-map (oref ,s keymap))
-                  (magit-map (intern (format "magit-%s-section-map"
-                                             (oref ,s type))))
-                  (forge-map (intern (format "forge-%s-section-map"
-                                             (oref ,s type))))
-                  (map (and class-map (symbol-value class-map))))
-             (unless map
-               (setq map (or (and (boundp magit-map) (symbol-value magit-map))
-                             (and (boundp forge-map) (symbol-value forge-map))))
-               (oset ,s keymap map))
-             (save-excursion
-               (goto-char (oref ,s start))
-               (while (< (point) end)
-                 (let ((next (or (next-single-property-change
-                                  (point) 'magit-section)
-                                 end)))
-                   (unless (magit-section-at)
-                     (put-text-property (point) next 'magit-section ,s)
-                     (when map
-                       (put-text-property (point) next 'keymap map)))
-                   (magit-section-maybe-add-heading-map ,s)
-                   (goto-char next)))))
-           (cond
-            ((eq ,s magit-root-section)
-             (when (eq magit-section-inhibit-markers 'delay)
-               (setq magit-section-inhibit-markers nil)
-               (magit-map-sections
-                (lambda (section)
-                  (oset section start (copy-marker (oref section start) t))
-                  (oset section end   (copy-marker (oref section end) t)))))
-             (let ((magit-section-cache-visibility nil))
-               (magit-section-show ,s)))
-            (magit-section-insert-in-reverse
-             (push ,s (oref (oref ,s parent) children)))
-            ((let ((parent (oref ,s parent)))
-               (oset parent children
-                     (nconc (oref parent children)
-                            (list ,s)))))))
-         (when magit-section-insert-in-reverse
-           (setq magit-section-insert-in-reverse nil)
-           (oset ,s children (nreverse (oref ,s children))))
-         ,s))))
+  (pcase-let* ((bind (and (symbolp (car args))
+                          (pop args)))
+               (`((,class ,value ,hide . ,args) . ,body) args)
+               (obj (cl-gensym "section")))
+    `(let* ((,obj (magit-insert-section--create
+                   ,(if (eq (car-safe class) 'eval) (cadr class) `',class)
+                   ,value ,hide ,@args))
+            (magit-insert-section--current ,obj)
+            (magit-insert-section--oldroot
+             (or magit-insert-section--oldroot
+                 (and (not magit-insert-section--parent)
+                      (prog1 magit-root-section
+                        (setq magit-root-section ,obj)))))
+            (magit-insert-section--parent ,obj))
+       (catch 'cancel-section
+         ,@(if bind `((let ((,bind ,obj)) ,@body)) body)
+         (magit-insert-section--finish ,obj))
+       ,obj)))
 
-(defun magit-cancel-section ()
+(defun magit-insert-section--create (class value hide &rest args)
+  (let (type)
+    (if (class-p class)
+        (setq type (or (car (rassq class magit--section-type-alist))
+                       class))
+      (setq type class)
+      (setq class (or (cdr (assq class magit--section-type-alist))
+                      'magit-section)))
+    (let ((obj (apply class :type type args)))
+      (oset obj value value)
+      (oset obj parent magit-insert-section--parent)
+      (oset obj start (if magit-section-inhibit-markers (point) (point-marker)))
+      (unless (slot-boundp obj 'hidden)
+        (oset obj hidden
+              (let (set old)
+                (cond
+                 ((setq set (run-hook-with-args-until-success
+                             'magit-section-set-visibility-hook obj))
+                  (eq set 'hide))
+                 ((setq old (and (not magit-section-preserve-visibility)
+                                 magit-insert-section--oldroot
+                                 (magit-get-section
+                                  (magit-section-ident obj)
+                                  magit-insert-section--oldroot)))
+                  (oref old hidden))
+                 ((setq set (magit-section-match-assoc
+                             obj magit-section-initial-visibility-alist))
+                  (eq (if (functionp set) (funcall set obj) set) 'hide))
+                 (hide)))))
+      (unless (oref obj keymap)
+        (let ((type (oref obj type)))
+          (oset obj keymap
+                (or (let ((sym (intern (format "magit-%s-section-map" type))))
+                      (and (boundp sym) sym))
+                    (let ((sym (intern (format "forge-%s-section-map" type))))
+                      (and (boundp sym) sym))))))
+      obj)))
+
+(defun magit-insert-section--finish (obj)
+  (run-hooks 'magit-insert-section-hook)
+  (let ((beg (oref obj start))
+        (end (oset obj end
+                   (if magit-section-inhibit-markers
+                       (point)
+                     (point-marker))))
+        (props `( magit-section ,obj
+                  ,@(and-let* ((map (symbol-value (oref obj keymap))))
+                      (list 'keymap map)))))
+    (unless magit-section-inhibit-markers
+      (set-marker-insertion-type beg t))
+    (cond ((eq obj magit-root-section))
+          ((oref obj children)
+           (magit-insert-child-count obj)
+           (magit-section-maybe-add-heading-map obj)
+           (save-excursion
+             (goto-char beg)
+             (while (< (point) end)
+               (let ((next (or (next-single-property-change
+                                (point) 'magit-section)
+                               end)))
+                 (unless (magit-section-at)
+                   (add-text-properties (point) next props))
+                 (goto-char next)))))
+          ((add-text-properties beg end props)))
+    (cond ((eq obj magit-root-section)
+           (when (eq magit-section-inhibit-markers 'delay)
+             (setq magit-section-inhibit-markers nil)
+             (magit-map-sections
+              (lambda (section)
+                (oset section start (copy-marker (oref section start) t))
+                (oset section end   (copy-marker (oref section end)   t)))))
+           (let ((magit-section-cache-visibility nil))
+             (magit-section-show obj)))
+          (magit-section-insert-in-reverse
+           (push obj (oref (oref obj parent) children)))
+          ((let ((parent (oref obj parent)))
+             (oset parent children
+                   (nconc (oref parent children)
+                          (list obj))))))
+    (when magit-section-insert-in-reverse
+      (oset obj children (nreverse (oref obj children))))))
+
+(defun magit-cancel-section (&optional if-empty)
   "Cancel inserting the section that is currently being inserted.
-Remove all traces of that section."
-  (when magit-insert-section--current
-    (if (not (oref magit-insert-section--current parent))
+
+Canceling returns from the inner most use of `magit-insert-section' and
+removes all text that was inserted by that.
+
+If optional IF-EMPTY is non-nil, then only cancel the section, if it is
+empty.  If a section is split into a heading and a body (i.e., when its
+`content' slot is non-nil), then only check if the body is empty."
+  (when (and magit-insert-section--current
+             (or (not if-empty)
+                 (= (point) (or (oref magit-insert-section--current content)
+                                (oref magit-insert-section--current start)))))
+    (if (eq magit-insert-section--current magit-root-section)
         (insert "(empty)\n")
       (delete-region (oref magit-insert-section--current start)
                      (point))
@@ -1521,16 +1535,31 @@ its body cannot be collapsed.  If a section does have a heading,
 then its height must be exactly one line, including a trailing
 newline character.  This isn't enforced, you are responsible for
 getting it right.  The only exception is that this function does
-insert a newline character if necessary."
+insert a newline character if necessary
+
+If provided, optional CHILD-COUNT must evaluate to an integer or
+boolean.  If t, then the count is determined once the children have been
+inserted, using `magit-insert-child-count' (which see).  For historic
+reasons, if the heading ends with \":\", the count is substituted for
+that, at this time as well.  If `magit-section-show-child-count' is nil,
+no counts are inserted
+
+\n(fn [CHILD-COUNT] &rest STRINGS)"
   (declare (indent defun))
   (when args
-    (let ((heading (apply #'concat args)))
+    (let ((count (and (or (integerp (car args))
+                          (booleanp (car args)))
+                      (pop args)))
+          (heading (apply #'concat args)))
       (insert (if (or (text-property-not-all 0 (length heading)
                                              'font-lock-face nil heading)
                       (text-property-not-all 0 (length heading)
                                              'face nil heading))
                   heading
-                (propertize heading 'font-lock-face 'magit-section-heading)))))
+                (propertize heading 'font-lock-face 'magit-section-heading)))
+      (when (and count magit-section-show-child-count)
+        (insert (propertize (format " (%s)" count)
+                            'font-lock-face 'magit-section-child-count)))))
   (unless (bolp)
     (insert ?\n))
   (when (fboundp 'magit-maybe-make-margin-overlay)
@@ -1547,19 +1576,19 @@ is explicitly expanded."
   (let ((f (cl-gensym))
         (s (cl-gensym))
         (l (cl-gensym)))
-    `(let ((,f (lambda () ,@body))
-           (,s magit-insert-section--current))
-       (if (oref ,s hidden)
-           (oset ,s washer
-                 (lambda ()
-                   (let ((,l (magit-section-lineage ,s t)))
-                     (dolist (s ,l)
-                       (set-marker-insertion-type (oref s end) t))
-                     (funcall ,f)
-                     (dolist (s ,l)
-                       (set-marker-insertion-type (oref s end) nil))
-                     (magit-section-maybe-remove-heading-map ,s)
-                     (magit-section-maybe-remove-visibility-indicator ,s))))
+    `(let ((,f (lambda () ,@body)))
+       (if (oref magit-insert-section--current hidden)
+           (oset magit-insert-section--current washer
+                 (let ((,s magit-insert-section--current))
+                   (lambda ()
+                     (let ((,l (magit-section-lineage ,s t)))
+                       (dolist (s ,l)
+                         (set-marker-insertion-type (oref s end) t))
+                       (funcall ,f)
+                       (dolist (s ,l)
+                         (set-marker-insertion-type (oref s end) nil))
+                       (magit-section-maybe-remove-heading-map ,s)
+                       (magit-section-maybe-remove-visibility-indicator ,s)))))
          (funcall ,f)))))
 
 (defun magit-insert-headers (hook)
@@ -1617,19 +1646,26 @@ with \" (N)\", where N is the number of child sections.
 
 This function is called by `magit-insert-section' after that has
 evaluated its BODY.  Admittedly that's a bit of a hack."
-  ;; This has to be fast, not pretty!
   (let (content count)
-    (when (and magit-section-show-child-count
-               (setq count (length (oref section children)))
-               (> count 0)
-               (setq content (oref section content))
-               (eq (char-before (1- content)) ?:))
+    (cond
+     ((not (and magit-section-show-child-count
+                (setq content (oref section content))
+                (setq count (length (oref section children)))
+                (> count 0))))
+     ((eq (char-before (- content 1)) ?:)
       (save-excursion
         (goto-char (- content 2))
-        (insert (concat (magit--propertize-face " " 'magit-section-heading)
-                        (magit--propertize-face (format "(%s)" count)
-                                                'magit-section-child-count)))
-        (delete-char 1)))))
+        (insert (magit--propertize-face (format " (%s)" count)
+                                        'magit-section-child-count))
+        (delete-char 1)))
+     ((and (eq (char-before (- content 4)) ?\s)
+           (eq (char-before (- content 3)) ?\()
+           (eq (char-before (- content 2)) ?t )
+           (eq (char-before (- content 1)) ?\)))
+      (save-excursion
+        (goto-char (- content 3))
+        (delete-char 1)
+        (insert (format "%s" count)))))))
 
 ;;; Highlight
 
@@ -1758,10 +1794,10 @@ invisible."
   (kill-local-variable 'redisplay-unhighlight-region-function)
   (when magit-show-long-lines-warning
     (setq magit-show-long-lines-warning nil)
-    (display-warning 'magit "\
+    (display-warning 'magit (format "\
 Emacs has enabled redisplay shortcuts
 in this buffer because there are lines whose length go beyond
-`long-line-treshold' \(%s characters).  As a result, section
+`long-line-threshold' \(%s characters).  As a result, section
 highlighting and the special appearance of the region has been
 disabled.  Some existing highlighting might remain in effect.
 
@@ -1771,7 +1807,7 @@ and recreate the buffer.
 
 This message won't be shown for this session again.  To disable
 it for all future sessions, set `magit-show-long-lines-warning'
-to nil." :warning)))
+to nil." (bound-and-true-p long-line-threshold)) :warning)))
 
 (cl-defgeneric magit-section-get-relative-position (section))
 
@@ -1977,7 +2013,7 @@ When `magit-section-preserve-visibility' is nil, do nothing."
   (or (eq search-invisible t)
       (not (isearch-range-invisible beg end))))
 
-(defun isearch-clean-overlays@magit-mode (fn)
+(define-advice isearch-clean-overlays (:around (fn) magit-mode)
   (if (derived-mode-p 'magit-mode)
       (let ((pos (point)))
         (dolist (section magit-section--opened-sections)
@@ -1985,9 +2021,6 @@ When `magit-section-preserve-visibility' is nil, do nothing."
             (magit-section-hide section)))
         (setq magit-section--opened-sections nil))
     (funcall fn)))
-
-(advice-add 'isearch-clean-overlays :around
-            #'isearch-clean-overlays@magit-mode)
 
 ;;; Utilities
 
@@ -2117,6 +2150,7 @@ If optional SECTION is nil, use the current section."
 FUNCTION has to move point forward or return nil."
   (while (and (not (eobp)) (funcall function))))
 
+;;;###autoload
 (defun magit-add-section-hook (hook function &optional at append local)
   "Add to the value of section hook HOOK the function FUNCTION.
 
@@ -2364,6 +2398,7 @@ and the buffer-local values of the variables referenced in its
         bookmark)
     (user-error "Bookmarking is not implemented for %s buffers" major-mode)))
 
+;;;###autoload
 (defun magit--handle-bookmark (bookmark)
   "Open a bookmark created by `magit--make-bookmark'.
 
@@ -2373,6 +2408,7 @@ the appropriate buffer without displaying it.
 Then call the `magit-*-setup-buffer' function of the the major-mode
 with the variables' values as arguments, which were recorded by
 `magit--make-bookmark'."
+  (require (quote magit-bookmark) nil t)
   (let ((buffer (magit-bookmark-get-buffer-create
                  bookmark
                  (bookmark-prop-get bookmark 'mode))))
@@ -2407,7 +2443,7 @@ with the variables' values as arguments, which were recorded by
 
 ;;; Bitmaps
 
-(when (fboundp 'define-fringe-bitmap)
+(when (fboundp 'define-fringe-bitmap) ;for Emacs 26
   (define-fringe-bitmap 'magit-fringe-bitmap+
     [#b00000000
      #b00011000
@@ -2417,6 +2453,7 @@ with the variables' values as arguments, which were recorded by
      #b00011000
      #b00011000
      #b00000000])
+
   (define-fringe-bitmap 'magit-fringe-bitmap-
     [#b00000000
      #b00000000
@@ -2436,6 +2473,7 @@ with the variables' values as arguments, which were recorded by
      #b00110000
      #b01100000
      #b00000000])
+
   (define-fringe-bitmap 'magit-fringe-bitmapv
     [#b00000000
      #b10000010
@@ -2455,6 +2493,7 @@ with the variables' values as arguments, which were recorded by
      #b00111000
      #b01110000
      #b11100000])
+
   (define-fringe-bitmap 'magit-fringe-bitmap-boldv
     [#b10000001
      #b11000011

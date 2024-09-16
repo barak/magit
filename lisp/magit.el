@@ -3,8 +3,8 @@
 ;; Copyright (C) 2008-2024 The Magit Project Contributors
 
 ;; Author: Marius Vollmer <marius.vollmer@gmail.com>
-;;     Jonas Bernoulli <jonas@bernoul.li>
-;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+;;     Jonas Bernoulli <emacs.magit@jonas.bernoulli.dev>
+;; Maintainer: Jonas Bernoulli <emacs.magit@jonas.bernoulli.dev>
 ;;     Kyle Meyer <kyle@kyleam.com>
 ;; Former-Maintainers:
 ;;     Nicolas Dudebout <nicolas.dudebout@gatech.edu>
@@ -17,16 +17,16 @@
 ;; Homepage: https://github.com/magit/magit
 ;; Keywords: git tools vc
 
-;; Package-Version: 3.3.0.50-git
+;; Package-Version: 4.0.0
 ;; Package-Requires: (
-;;     (emacs "25.1")
-;;     (compat "29.1.4.4")
+;;     (emacs "26.1")
+;;     (compat "30.0.0.0")
 ;;     (dash "2.19.1")
-;;     (git-commit "3.3.0")
-;;     (magit-section "3.3.0")
+;;     (git-commit "4.0.0")
+;;     (magit-section "4.0.0")
 ;;     (seq "2.24")
-;;     (transient "0.5.3")
-;;     (with-editor "3.3.2"))
+;;     (transient "0.7.4")
+;;     (with-editor "3.4.1"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -598,7 +598,7 @@ the output in the kill ring.
                          '("magit.el" "magit.el.gz")))
       (let ((load-suffixes (reverse load-suffixes))) ; prefer .el than .elc
         (setq toplib (locate-library "magit"))))
-    (setq toplib (and toplib (magit--straight-chase-links toplib)))
+    (setq toplib (and toplib (magit--chase-links toplib)))
     (push toplib debug)
     (when toplib
       (let* ((topdir (file-name-directory toplib))
@@ -606,7 +606,7 @@ the output in the kill ring.
                       ".git" (file-name-directory
                               (directory-file-name topdir))))
              (static (locate-library "magit-version.el" nil (list topdir)))
-             (static (and static (magit--straight-chase-links static))))
+             (static (and static (magit--chase-links static))))
         (or (progn
               (push 'repo debug)
               (when (and (file-exists-p gitdir)

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2008-2024 The Magit Project Contributors
 
 ;; Author: Phil Jackson <phil@shellarchive.co.uk>
-;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+;; Maintainer: Jonas Bernoulli <emacs.magit@jonas.bernoulli.dev>
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -705,6 +705,7 @@ Rebase files are generated when you run \"git rebase -i\" or run
 `magit-interactive-rebase'.  They describe how Git should perform
 the rebase.  See the documentation for git-rebase (e.g., by
 running \"man git-rebase\" at the command line) for details."
+  :interactive nil
   :group 'git-rebase
   (setq comment-start (or (magit-get "core.commentChar") "#"))
   (setq git-rebase-comment-re (concat "^" (regexp-quote comment-start)))
@@ -718,8 +719,10 @@ running \"man git-rebase\" at the command line) for details."
   (when git-rebase-confirm-cancel
     (add-hook 'with-editor-cancel-query-functions
               #'git-rebase-cancel-confirm nil t))
-  (setq-local redisplay-highlight-region-function #'git-rebase-highlight-region)
-  (setq-local redisplay-unhighlight-region-function #'git-rebase-unhighlight-region)
+  (setq-local redisplay-highlight-region-function
+              #'git-rebase-highlight-region)
+  (setq-local redisplay-unhighlight-region-function
+              #'git-rebase-unhighlight-region)
   (add-hook 'with-editor-pre-cancel-hook  #'git-rebase-autostash-save  nil t)
   (add-hook 'with-editor-post-cancel-hook #'git-rebase-autostash-apply nil t)
   (setq imenu-prev-index-position-function

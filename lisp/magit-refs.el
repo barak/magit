@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2008-2024 The Magit Project Contributors
 
-;; Author: Jonas Bernoulli <jonas@bernoul.li>
-;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+;; Author: Jonas Bernoulli <emacs.magit@jonas.bernoulli.dev>
+;; Maintainer: Jonas Bernoulli <emacs.magit@jonas.bernoulli.dev>
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -294,8 +294,9 @@ Type \\[magit-cherry-pick] to apply the commit at point.
 Type \\[magit-reset] to reset `HEAD' to the commit at point.
 
 \\{magit-refs-mode-map}"
+  :interactive nil
   :group 'magit-refs
-  (hack-dir-local-variables-non-file-buffer)
+  (magit-hack-dir-local-variables)
   (setq magit--imenu-group-types '(local remote tags)))
 
 (defun magit-refs-setup-buffer (ref args)
@@ -309,7 +310,7 @@ Type \\[magit-reset] to reset `HEAD' to the commit at point.
     (setq magit-refs-show-commit-count nil))
   (magit-set-header-line-format
    (format "%s %s" magit-buffer-upstream
-           (mapconcat #'identity magit-buffer-arguments " ")))
+           (string-join magit-buffer-arguments " ")))
   (magit-insert-section (branchbuf)
     (magit-run-section-hook 'magit-refs-sections-hook))
   (add-hook 'kill-buffer-hook #'magit-preserve-section-visibility-cache))
@@ -357,7 +358,7 @@ Type \\[magit-reset] to reset `HEAD' to the commit at point.
            (and-let* ((buffer (magit-get-mode-buffer
                                'magit-refs-mode nil
                                (eq use-buffer-args 'selected))))
-             (progn ; work around debbugs#31840
+             (progn
                (setq args (buffer-local-value 'magit-buffer-arguments buffer))
                t))))
      (t
@@ -527,7 +528,7 @@ line is inserted at all."
     (magit-insert-section (branchdesc branch t)
       (magit-insert-heading branch ": " (car desc))
       (when (cdr desc)
-        (insert (mapconcat #'identity (cdr desc) "\n"))
+        (insert (string-join (cdr desc) "\n"))
         (insert "\n\n")))))
 
 (defun magit-insert-tags ()
@@ -535,7 +536,7 @@ line is inserted at all."
   (when-let ((tags (magit-git-lines "tag" "--list" "-n" magit-buffer-arguments)))
     (let ((_head (magit-rev-parse "HEAD")))
       (magit-insert-section (tags)
-        (magit-insert-heading "Tags:")
+        (magit-insert-heading (length tags) "Tags")
         (dolist (tag tags)
           (string-match "^\\([^ \t]+\\)[ \t]+\\([^ \t\n].*\\)?" tag)
           (let ((tag (match-string 1 tag))
@@ -616,13 +617,13 @@ line is inserted at all."
 (defun magit-insert-local-branches ()
   "Insert sections showing all local branches."
   (magit-insert-section (local nil)
-    (magit-insert-heading "Branches:")
+    (magit-insert-heading t "Branches")
     (dolist (line (magit-refs--format-local-branches))
       (pcase-let ((`(,branch . ,strings) line))
         (magit-insert-section
-          ((eval (if branch 'branch 'commit))
-           (or branch (magit-rev-parse "HEAD"))
-           t)
+            ((eval (if branch 'branch 'commit))
+             (or branch (magit-rev-parse "HEAD"))
+             t)
           (apply #'magit-insert-heading strings)
           (when (magit-buffer-margin-p)
             (magit-refs--format-margin branch))
@@ -639,7 +640,7 @@ line is inserted at all."
 %(upstream:short)%00%(upstream)%00%(upstream:track)%00"
                                   (if magit-refs-show-push-remote "\
 %(push:remotename)%00%(push)%00%(push:track)%00%(subject)"
-                                 "%00%00%00%(subject)"))
+                                    "%00%00%00%(subject)"))
                           "refs/heads"
                           magit-buffer-arguments))))
     (unless (magit-get-current-branch)

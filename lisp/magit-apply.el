@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2008-2024 The Magit Project Contributors
 
-;; Author: Jonas Bernoulli <jonas@bernoul.li>
-;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+;; Author: Jonas Bernoulli <emacs.magit@jonas.bernoulli.dev>
+;; Maintainer: Jonas Bernoulli <emacs.magit@jonas.bernoulli.dev>
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -48,11 +48,6 @@
 (declare-function magit-submodule-read-name-for-path "magit-submodule"
                   (path &optional prefer-short))
 (defvar borg-user-emacs-directory)
-
-(cl-eval-when (compile load)
-  (when (< emacs-major-version 26)
-    (defalias 'smerge-keep-upper 'smerge-keep-mine)
-    (defalias 'smerge-keep-lower 'smerge-keep-other)))
 
 ;;; Options
 
@@ -192,10 +187,8 @@ adjusted as \"@@ -10,6 +10,7 @@\" and \"@@ -18,6 +19,7 @@\"."
     (magit-apply-patch
      file args
      (concat (oref file header)
-             (mapconcat #'identity
-                        (magit-apply--adjust-hunk-new-starts
-                         (mapcar #'magit-apply--section-content hunks))
-                        "")))))
+             (string-join (magit-apply--adjust-hunk-new-starts
+                           (mapcar #'magit-apply--section-content hunks)))))))
 
 (defun magit-apply-hunk (hunk &rest args)
   (let ((file (oref hunk parent)))
@@ -555,9 +548,10 @@ of a side, then keep that side without prompting."
       (funcall apply section "--reverse" "--index"))))
 
 (defun magit-discard-hunks (sections)
-  (magit-confirm 'discard (format "Discard %s hunks from %s"
-                                  (length sections)
-                                  (magit-section-parent-value (car sections))))
+  (magit-confirm 'discard
+    (list "Discard %d hunks from %s"
+          (length sections)
+          (magit-section-parent-value (car sections))))
   (magit-discard-apply-n sections #'magit-apply-hunks))
 
 (defun magit-discard-apply-n (sections apply)
@@ -745,9 +739,9 @@ so causes the change to be applied to the index as well."
 
 (defun magit-reverse-hunks (sections args)
   (magit-confirm 'reverse
-    (format "Reverse %s hunks from %s"
-            (length sections)
-            (magit-section-parent-value (car sections))))
+    (list "Reverse %d hunks from %s"
+          (length sections)
+          (magit-section-parent-value (car sections))))
   (magit-reverse-apply sections #'magit-apply-hunks args))
 
 (defun magit-reverse-file (section args)
@@ -789,7 +783,7 @@ a separate commit.  A typical workflow would be:
 1. Visit the `HEAD' commit and navigate to the change that should
    not have been included in that commit.
 2. Type \"u\" (`magit-unstage') to reverse it in the index.
-   This assumes that `magit-unstage-committed-changes' is non-nil.
+   This assumes that `magit-unstage-committed' is non-nil.
 3. Type \"c e\" to extend `HEAD' with the staged changes,
    including those that were already staged before.
 4. Optionally stage the remaining changes using \"s\" or \"S\"
