@@ -11,37 +11,37 @@ Reviewed-by: Matteo F. Vescovi <mfv@debian.org>
  2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/docs/magit.org b/docs/magit.org
-index d94fbbd..fa9486f 100644
+index e75e6b0..d299d12 100644
 --- a/docs/magit.org
 +++ b/docs/magit.org
 @@ -7,7 +7,7 @@
  #+texinfo_dir_category: Emacs
  #+texinfo_dir_title: Magit: (magit).
  #+texinfo_dir_desc: Using Git from Emacs with Magit.
--#+subtitle: for version 3.3.0.50-git
-+#+subtitle: for version 3.3.0.50-git (with Debian patches)
+-#+subtitle: for version 4.1.0
++#+subtitle: for version 4.1.0 (with Debian patches)
  
  #+setupfile: .orgconfig
  
-@@ -20,7 +20,7 @@ directly from within Emacs.  While many fine Git clients exist, only
+@@ -24,7 +24,7 @@ directly from within Emacs.  While many fine Git clients exist, only
  Magit and Git itself deserve to be called porcelains.
  
  #+texinfo: @noindent
--This manual is for Magit version 3.3.0.50-git.
-+This manual is for Magit version 3.3.0.50-git (with Debian patches).
+-This manual is for Magit version 4.1.0.
++This manual is for Magit version 4.1.0 (with Debian patches).
  
  #+texinfo: @insertcopying
  :END:
 diff --git a/docs/magit.texi b/docs/magit.texi
-index 71c1745..e0ea289 100644
+index bf8a184..19c373a 100644
 --- a/docs/magit.texi
 +++ b/docs/magit.texi
 @@ -31,7 +31,7 @@ General Public License for more details.
  @finalout
  @titlepage
  @title Magit User Manual
--@subtitle for version 3.3.0.50-git
-+@subtitle for version 3.3.0.50-git (with Debian patches)
+-@subtitle for version 4.1.0
++@subtitle for version 4.1.0 (with Debian patches)
  @author Jonas Bernoulli
  @page
  @vskip 0pt plus 1filll
@@ -49,8 +49,8 @@ index 71c1745..e0ea289 100644
  Magit and Git itself deserve to be called porcelains.
  
  @noindent
--This manual is for Magit version 3.3.0.50-git.
-+This manual is for Magit version 3.3.0.50-git (with Debian patches).
+-This manual is for Magit version 4.1.0.
++This manual is for Magit version 4.1.0 (with Debian patches).
  
  @insertcopying
  @end ifnottex
