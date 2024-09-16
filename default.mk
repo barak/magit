@@ -43,14 +43,17 @@ GITSTATS_ARGS ?= -c style=https://magit.vc/assets/stats.css \
 ## Files #############################################################
 
 PKG       = magit
+PKGSTEXI  = magit magit-section
 PACKAGES  = magit magit-section git-commit
 
-TEXIPAGES = $(addsuffix .texi,$(filter-out git-commit,$(PACKAGES)))
-INFOPAGES = $(addsuffix .info,$(filter-out git-commit,$(PACKAGES)))
-HTMLFILES = $(addsuffix .html,$(filter-out git-commit,$(PACKAGES)))
-HTMLDIRS  = $(filter-out git-commit,$(PACKAGES))
-PDFFILES  = $(addsuffix .pdf,$(filter-out git-commit,$(PACKAGES)))
-EPUBFILES = $(addsuffix .epub,$(filter-out git-commit,$(PACKAGES)))
+ORGPAGES  = $(addsuffix .org,$(PKGSTEXI))
+TEXIPAGES = $(addsuffix .texi,$(PKGSTEXI))
+INFOPAGES = $(addsuffix .info,$(PKGSTEXI))
+HTMLFILES = $(addsuffix .html,$(PKGSTEXI))
+HTMLTOPS  = $(addsuffix /index.html,$(PKGSTEXI))
+HTMLDIRS  = $(PKGSTEXI)
+PDFFILES  = $(addsuffix .pdf,$(PKGSTEXI))
+EPUBFILES = $(addsuffix .epub,$(PKGSTEXI))
 
 ELS  = git-commit.el
 ELS += magit-section.el
@@ -107,24 +110,7 @@ ELGS = magit-autoloads.el magit-version.el
 VERSION ?= $(shell \
   test -e $(TOP).git && \
   git describe --tags --abbrev=0 --always | cut -c2-)
-
-COMPAT_VERSION        = 30.0.0.0
-DASH_VERSION          = 2.19.1
-GIT_COMMIT_VERSION    = $(VERSION)
-MAGIT_VERSION         = $(VERSION)
-MAGIT_SECTION_VERSION = $(VERSION)
-SEQ_VERSION           = 2.24
-TRANSIENT_VERSION     = 0.7.4
-WITH_EDITOR_VERSION   = 3.4.1
-
-COMPAT_SNAPSHOT              = $(COMPAT_VERSION)
-DASH_MELPA_SNAPSHOT          = 20240510
-GIT_COMMIT_MELPA_SNAPSHOT    = 20240808
-MAGIT_MELPA_SNAPSHOT         = 20240808
-MAGIT_SECTION_MELPA_SNAPSHOT = 20240808
-SEQ_SNAPSHOT                 = $(SEQ_VERSION)
-TRANSIENT_MELPA_SNAPSHOT     = 20240805
-WITH_EDITOR_MELPA_SNAPSHOT   = 20240806
+REVDESC := $(shell test -e $(TOP).git && git describe --tags)
 
 EMACS_VERSION = 26.1
 
@@ -242,8 +228,6 @@ DEPS += with-editor/lisp
 
 DOMAIN      ?= magit.vc
 CFRONT_DIST ?= E2LUHBKU1FBV02
-
-PUBLISH_TARGETS ?= html html-dir pdf
 
 DOCBOOK_XSL ?= /usr/share/xml/docbook/stylesheet/docbook-xsl/epub/docbook.xsl
 
