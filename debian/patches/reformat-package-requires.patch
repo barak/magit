@@ -1,59 +1,71 @@
-Author: Aymeric Agon-Rambosson <aymeric.agon@yandex.com>
+From: Aymeric Agon-Rambosson <aymeric.agon@yandex.com>
 Date: Tue, 26 Dec 2023 18:20:01 +0100
 Subject: Replace multiline Package-Requires with monoline
+
 Forwarded: not applicable
 
 dh-elpa is not capable yet of parsing multiline Package-Requires correctly. Work
 is being done to add this feature, but we make do with this patch in the
 meantime.
+---
+ lisp/git-commit.el    |  7 +------
+ lisp/magit-section.el |  6 +-----
+ lisp/magit.el         | 10 +---------
+ 3 files changed, 3 insertions(+), 20 deletions(-)
 
---- a/lisp/magit.el
-+++ b/lisp/magit.el
-@@ -18,15 +18,7 @@
- ;; Keywords: git tools vc
- 
- ;; Package-Version: 3.3.0.50-git
--;; Package-Requires: (
--;;     (emacs "25.1")
--;;     (compat "29.1.4.4")
--;;     (dash "2.19.1")
--;;     (git-commit "3.3.0")
--;;     (magit-section "3.3.0")
--;;     (seq "2.24")
--;;     (transient "0.5.3")
--;;     (with-editor "3.3.2"))
-+;; Package-Requires: ((emacs "25.1") (compat "29.1.4.4") (dash "2.19.1") (git-commit "3.3.0") (magit-section "3.3.0") (seq "2.24") (transient "0.5.3") (with-editor "3.3.2"))
- 
- ;; SPDX-License-Identifier: GPL-3.0-or-later
- 
+diff --git a/lisp/git-commit.el b/lisp/git-commit.el
+index baecd6c..876da6d 100644
 --- a/lisp/git-commit.el
 +++ b/lisp/git-commit.el
 @@ -12,12 +12,7 @@
  ;; Keywords: git tools vc
  
- ;; Package-Version: 3.3.0.50-git
+ ;; Package-Version: 4.0.0
 -;; Package-Requires: (
--;;     (emacs "25.1")
--;;     (compat "29.1.4.4")
+-;;     (emacs "26.1")
+-;;     (compat "30.0.0.0")
 -;;     (seq "2.24")
--;;     (transient "0.5.0")
--;;     (with-editor "3.3.2"))
-+;; Package-Requires: ((emacs "25.1") (compat "29.1.4.4") (seq "2.24") (transient "0.5.0") (with-editor "3.3.2"))
+-;;     (transient "0.7.4")
+-;;     (with-editor "3.4.1"))
++;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0") (seq "2.24") (transient "0.7.4") (with-editor "3.4.1"))
  
  ;; SPDX-License-Identifier: GPL-3.0-or-later
  
+diff --git a/lisp/magit-section.el b/lisp/magit-section.el
+index 52c44de..3f8291c 100644
 --- a/lisp/magit-section.el
 +++ b/lisp/magit-section.el
 @@ -9,11 +9,7 @@
  ;; Keywords: tools
  
- ;; Package-Version: 3.3.0.50-git
+ ;; Package-Version: 4.0.0
 -;; Package-Requires: (
--;;     (emacs "25.1")
--;;     (compat "29.1.4.4")
+-;;     (emacs "26.1")
+-;;     (compat "30.0.0.0")
 -;;     (dash "2.19.1")
 -;;     (seq "2.24"))
-+;; Package-Requires: ((emacs "25.1") (compat "29.1.4.4") (dash "2.19.1") (seq "2.24"))
++;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0") (dash "2.19.1") (seq "2.24"))
+ 
+ ;; SPDX-License-Identifier: GPL-3.0-or-later
+ 
+diff --git a/lisp/magit.el b/lisp/magit.el
+index 8a7696f..a169d91 100644
+--- a/lisp/magit.el
++++ b/lisp/magit.el
+@@ -18,15 +18,7 @@
+ ;; Keywords: git tools vc
+ 
+ ;; Package-Version: 4.0.0
+-;; Package-Requires: (
+-;;     (emacs "26.1")
+-;;     (compat "30.0.0.0")
+-;;     (dash "2.19.1")
+-;;     (git-commit "4.0.0")
+-;;     (magit-section "4.0.0")
+-;;     (seq "2.24")
+-;;     (transient "0.7.4")
+-;;     (with-editor "3.4.1"))
++;; Package-Requires: ((emacs "26.1") (compat "30.0.0.0") (dash "2.19.1") (git-commit "4.0.0") (magit-section "4.0.0") (seq "2.24") (transient "0.7.4") (with-editor "3.4.1"))
  
  ;; SPDX-License-Identifier: GPL-3.0-or-later
  

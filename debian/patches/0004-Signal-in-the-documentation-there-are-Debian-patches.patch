@@ -1,6 +1,7 @@
-From: Rémi Vanicat <vanicat@debian.org>
+From: =?utf-8?q?R=C3=A9mi_Vanicat?= <vanicat@debian.org>
 Date: Thu, 19 Aug 2021 22:29:23 +0200
 Subject: Signal in the documentation there are Debian patches.
+
 Forwarded: not applicable
 
 Reviewed-by: Matteo F. Vescovi <mfv@debian.org>
@@ -9,6 +10,8 @@ Reviewed-by: Matteo F. Vescovi <mfv@debian.org>
  docs/magit.texi | 4 ++--
  2 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/docs/magit.org b/docs/magit.org
+index d94fbbd..fa9486f 100644
 --- a/docs/magit.org
 +++ b/docs/magit.org
 @@ -7,7 +7,7 @@
@@ -20,7 +23,7 @@ Reviewed-by: Matteo F. Vescovi <mfv@debian.org>
  
  #+setupfile: .orgconfig
  
-@@ -20,7 +20,7 @@ directly from within Emacs.  While many
+@@ -20,7 +20,7 @@ directly from within Emacs.  While many fine Git clients exist, only
  Magit and Git itself deserve to be called porcelains.
  
  #+texinfo: @noindent
@@ -29,6 +32,8 @@ Reviewed-by: Matteo F. Vescovi <mfv@debian.org>
  
  #+texinfo: @insertcopying
  :END:
+diff --git a/docs/magit.texi b/docs/magit.texi
+index 71c1745..e0ea289 100644
 --- a/docs/magit.texi
 +++ b/docs/magit.texi
 @@ -31,7 +31,7 @@ General Public License for more details.
@@ -40,7 +45,7 @@ Reviewed-by: Matteo F. Vescovi <mfv@debian.org>
  @author Jonas Bernoulli
  @page
  @vskip 0pt plus 1filll
-@@ -53,7 +53,7 @@ directly from within Emacs.  While many
+@@ -53,7 +53,7 @@ directly from within Emacs.  While many fine Git clients exist, only
  Magit and Git itself deserve to be called porcelains.
  
  @noindent

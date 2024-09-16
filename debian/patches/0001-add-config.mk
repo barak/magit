@@ -1,4 +1,4 @@
-From: Rémi Vanicat <vanicat@debian.org>
+From: =?utf-8?q?R=C3=A9mi_Vanicat?= <vanicat@debian.org>
 Date: Sun, 11 Nov 2018 14:14:07 +0100
 Subject: Add a config.mk to make testing happy
 
