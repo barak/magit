@@ -10,6 +10,7 @@ magit (4.1.0-1) unstable; urgency=medium
     now need dh-elpa with minimal 2.1.2 version.
   * Remove explicit versioned dependencies on elpa-transient for binary
     packages (dh-elpa correctly adds them).
+  * Update explicit versioned build dependencies (needed for tests).
 
  -- Barak A. Pearlmutter <bap@debian.org>  Mon, 16 Sep 2024 16:32:33 +0100
 
