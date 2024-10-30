@@ -9,7 +9,7 @@ Uploaders:
  Aymeric Agon-Rambosson <aymeric.agon@yandex.com>
 Build-Depends:
  debhelper-compat (= 13),
- dh-elpa (>= 1.7),
+ dh-elpa (>= 2.1.2),
  elpa-compat,
  elpa-dash,
  elpa-with-editor,
