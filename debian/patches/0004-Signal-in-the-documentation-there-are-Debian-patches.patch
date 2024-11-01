@@ -11,15 +11,15 @@ Reviewed-by: Matteo F. Vescovi <mfv@debian.org>
  2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/docs/magit.org b/docs/magit.org
-index e75e6b0..d299d12 100644
+index 785a3ea..5f13308 100644
 --- a/docs/magit.org
 +++ b/docs/magit.org
 @@ -7,7 +7,7 @@
  #+texinfo_dir_category: Emacs
  #+texinfo_dir_title: Magit: (magit).
  #+texinfo_dir_desc: Using Git from Emacs with Magit.
--#+subtitle: for version 4.1.0
-+#+subtitle: for version 4.1.0 (with Debian patches)
+-#+subtitle: for version 4.1.1
++#+subtitle: for version 4.1.1 (with Debian patches)
  
  #+setupfile: .orgconfig
  
@@ -27,21 +27,21 @@ index e75e6b0..d299d12 100644
  Magit and Git itself deserve to be called porcelains.
  
  #+texinfo: @noindent
--This manual is for Magit version 4.1.0.
-+This manual is for Magit version 4.1.0 (with Debian patches).
+-This manual is for Magit version 4.1.1.
++This manual is for Magit version 4.1.1 (with Debian patches).
  
  #+texinfo: @insertcopying
  :END:
 diff --git a/docs/magit.texi b/docs/magit.texi
-index bf8a184..19c373a 100644
+index 3355810..3fcef04 100644
 --- a/docs/magit.texi
 +++ b/docs/magit.texi
 @@ -31,7 +31,7 @@ General Public License for more details.
  @finalout
  @titlepage
  @title Magit User Manual
--@subtitle for version 4.1.0
-+@subtitle for version 4.1.0 (with Debian patches)
+-@subtitle for version 4.1.1
++@subtitle for version 4.1.1 (with Debian patches)
  @author Jonas Bernoulli
  @page
  @vskip 0pt plus 1filll
@@ -49,8 +49,8 @@ index bf8a184..19c373a 100644
  Magit and Git itself deserve to be called porcelains.
  
  @noindent
--This manual is for Magit version 4.1.0.
-+This manual is for Magit version 4.1.0 (with Debian patches).
+-This manual is for Magit version 4.1.1.
++This manual is for Magit version 4.1.1 (with Debian patches).
  
  @insertcopying
  @end ifnottex

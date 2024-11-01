@@ -1,4 +1,4 @@
-magit (4.1.0-1) unstable; urgency=medium
+magit (4.1.1-1) unstable; urgency=medium
 
   [ Barak A. Pearlmutter ]
   * New upstream release
@@ -14,7 +14,7 @@ magit (4.1.0-1) unstable; urgency=medium
   * Reinstate DEB_VERSION_UPSTREAM environment variable (git-commit.el
     specifies no Version header).
 
- -- Barak A. Pearlmutter <bap@debian.org>  Mon, 16 Sep 2024 16:32:33 +0100
+ -- Barak A. Pearlmutter <bap@debian.org>  Fri, 01 Nov 2024 15:01:12 +0000
 
 magit (3.3.0+git20240412.1.da14749d-2) unstable; urgency=medium
 
