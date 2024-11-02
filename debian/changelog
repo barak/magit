@@ -1,3 +1,10 @@
+magit (4.1.2-1) unstable; urgency=medium
+
+  * New upstream release
+  * Forward port quilt patches
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Sat, 02 Nov 2024 23:00:17 +0000
+
 magit (4.1.1-1) unstable; urgency=medium
 
   [ Barak A. Pearlmutter ]
