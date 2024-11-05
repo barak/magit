@@ -1,3 +1,4 @@
+lisp/git-commit.el
 lisp/git-rebase.el
 lisp/magit.el
 lisp/magit-apply.el
