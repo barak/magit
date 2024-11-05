@@ -6,7 +6,8 @@ Uploaders:
  Timo Juhani Lindfors <timo.lindfors@iki.fi>,
  Rémi Vanicat <vanicat@debian.org>,
  Barak A. Pearlmutter <bap@debian.org>,
- Aymeric Agon-Rambosson <aymeric.agon@yandex.com>
+ Aymeric Agon-Rambosson <aymeric.agon@yandex.com>,
+ Xiyue Deng <manphiz@gmail.com>,
 Build-Depends:
  debhelper-compat (= 13),
  dh-elpa (>= 2.1.2),
