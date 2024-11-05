@@ -27,8 +27,12 @@ Vcs-Git: https://salsa.debian.org/emacsen-team/magit.git
 Package: elpa-magit
 Architecture: all
 Provides: magit
-Replaces: magit (<< 2.2.2-3)
-Breaks: magit (<< 2.2.2-3)
+Replaces:
+ magit (<< 2.2.2-3),
+ elpa-git-commit (<< 4.1.2-2~)
+Breaks:
+ magit (<< 2.2.2-3),
+ elpa-git-commit (<< 4.1.2-2~),
 Depends: ${misc:Depends}, git, ${elpa:Depends},
 Enhances: emacs, git
 Description: Emacs interface for Git
@@ -40,10 +44,15 @@ Description: Emacs interface for Git
 
 Package: elpa-git-commit
 Architecture: all
-Depends: ${misc:Depends}, ${elpa:Depends},
+Section: oldlibs
+Depends:
+ ${misc:Depends},
+ ${elpa:Depends},
+ elpa-magit (>= 4.1.2-2~)
 Enhances: emacs, git
-Description: Major mode for editing git commit message
- A mode for editing COMMIT_MSG file from git in Emacs.
+Description: Transitional package for git-commit
+ A mode for editing COMMIT_MSG file from git in Emacs.  This has
+ become part of elpa-magit since version 4.1.0.
 
 Package: elpa-magit-section
 Architecture: all
