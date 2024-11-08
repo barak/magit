@@ -15,7 +15,7 @@ Build-Depends:
  elpa-dash (>= 2.19.1),
  elpa-seq (>= 2.24),
  elpa-with-editor (>= 3.4.2),
- elpa-transient (>= 0.7.5),
+ elpa-transient (>= 0.7.8),
  git,
  texinfo,
  texlive-base,
