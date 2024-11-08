@@ -28,7 +28,9 @@ Testsuite: autopkgtest-pkg-elpa
 
 Package: elpa-magit
 Architecture: all
-Provides: magit
+Provides:
+ magit,
+ elpa-git-commit
 Replaces:
  magit (<< 2.2.2-3),
  elpa-git-commit (<< 4.1.2-2~)

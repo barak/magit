@@ -10,7 +10,9 @@ magit (4.1.2-2) unstable; urgency=medium
 
   [ Aymeric Agon-Rambosson ]
   * d/rules: Remove DEB_VERSION_UPSTREAM environment variable.
-  * d/control: Update Build-Depends versions.
+  * d/control:
+    - Update Build-Depends versions.
+    - elpa-magit: add Provides: elpa-git-commit.
 
  -- Xiyue Deng <manphiz@gmail.com>  Tue, 05 Nov 2024 09:44:45 -0800
 
