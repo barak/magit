@@ -1,5 +1,6 @@
 magit (4.1.2-2) unstable; urgency=medium
 
+  [ Xiyue Deng ]
   * Migrate elpa-git-commit into elpa-magit (Closes: #1086758)
     - git-commit has become part of magit since 4.1.0
     - Move install files from elpa-git-commit to elpa-magit
@@ -7,6 +8,8 @@ magit (4.1.2-2) unstable; urgency=medium
   * Add myself to uploaders
   * d/control: enable "Testsuite: autopkgtest-pkg-elpa"
 
+  [ Aymeric Agon-Rambosson ]
+  * d/rules: Remove DEB_VERSION_UPSTREAM environment variable.
  -- Xiyue Deng <manphiz@gmail.com>  Tue, 05 Nov 2024 09:44:45 -0800
 
 magit (4.1.2-1) unstable; urgency=medium
