@@ -1,3 +1,4 @@
 version=4
+opts="filenamemangle=s/(?:.*?)?v?(@ANY_VERSION@@ARCHIVE_EXT@)/@PACKAGE@-$1/" \
     https://github.com/magit/magit/tags \
-    (?:.*?/)?v?(\d[\d.]*)\.tar\.gz debian uupdate
+    (?:.*?/)?@ANY_VERSION@@ARCHIVE_EXT@ debian uupdate

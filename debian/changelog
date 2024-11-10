@@ -7,6 +7,7 @@ magit (4.1.2-2) unstable; urgency=medium
     - d/control: make elpa-git-commit a transitional package
   * Add myself to uploaders
   * d/control: enable "Testsuite: autopkgtest-pkg-elpa"
+  * d/watch: modernize using substitute strings to be more robust
 
   [ Aymeric Agon-Rambosson ]
   * d/rules: Remove DEB_VERSION_UPSTREAM environment variable.
