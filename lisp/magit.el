@@ -17,15 +17,15 @@
 ;; Homepage: https://github.com/magit/magit
 ;; Keywords: git tools vc
 
-;; Package-Version: 4.1.2
+;; Package-Version: 4.1.3
 ;; Package-Requires: (
 ;;     (emacs "26.1")
 ;;     (compat "30.0.0.0")
 ;;     (dash "2.19.1")
-;;     (magit-section "4.1.2")
+;;     (magit-section "4.1.3")
 ;;     (seq "2.24")
-;;     (transient "0.7.8")
-;;     (with-editor "3.4.2"))
+;;     (transient "0.8.0")
+;;     (with-editor "3.4.3"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -514,7 +514,7 @@ is run in the top-level directory of the current working tree."
 (defun magit-read-gpg-secret-key
     (prompt &optional initial-input history predicate default)
   (require 'epa)
-  (let* ((keys (cl-mapcan
+  (let* ((keys (mapcan
                 (lambda (cert)
                   (and (or (not predicate)
                            (funcall predicate cert))

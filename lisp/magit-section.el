@@ -8,7 +8,7 @@
 ;; Homepage: https://github.com/magit/magit
 ;; Keywords: tools
 
-;; Package-Version: 4.1.2
+;; Package-Version: 4.1.3
 ;; Package-Requires: (
 ;;     (emacs "26.1")
 ;;     (compat "30.0.0.0")
@@ -2303,7 +2303,7 @@ Configuration'."
        (or magit--imenu-group-types
            magit--imenu-item-types)
        (let ((index
-              (cl-mapcan
+              (mapcan
                (lambda (section)
                  (cond
                   (magit--imenu-group-types
@@ -2436,12 +2436,7 @@ with the variables' values as arguments, which were recorded by
   (format "%s%s"
           (substring (symbol-name major-mode) 0 -5)
           (if-let ((vars (get major-mode 'magit-bookmark-variables)))
-              (cl-mapcan (lambda (var)
-                           (let ((val (symbol-value var)))
-                             (if (and val (atom val))
-                                 (list val)
-                               val)))
-                         vars)
+              (mapcan (lambda (var) (ensure-list (symbol-value var))) vars)
             "")))
 
 ;;; Bitmaps
