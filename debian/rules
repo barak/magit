@@ -6,7 +6,7 @@
 override_dh_auto_build:
 	@echo "Targets info, html, and pdf all build texi, so serialize to avoid a race condition."
 	$(MAKE) texi
-	$(MAKE) -j1 info html pdf
+	$(MAKE) info html pdf
 
 override_dh_auto_install:
 	@echo do not run make install
