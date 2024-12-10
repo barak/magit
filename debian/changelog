@@ -1,3 +1,9 @@
+magit (4.1.3-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+
+ -- Xiyue Deng <manphiz@gmail.com>  Mon, 09 Dec 2024 17:17:01 -0800
+
 magit (4.1.2-2) unstable; urgency=medium
 
   [ Xiyue Deng ]
