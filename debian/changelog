@@ -1,8 +1,10 @@
 magit (4.1.3-1) UNRELEASED; urgency=medium
 
   * New upstream release
+  * Add d/gbp.conf matching the current practice
+  * Refresh patches for the new version
 
- -- Xiyue Deng <manphiz@gmail.com>  Mon, 09 Dec 2024 17:17:01 -0800
+ -- Xiyue Deng <manphiz@gmail.com>  Mon, 09 Dec 2024 18:54:17 -0800
 
 magit (4.1.2-2) unstable; urgency=medium
 
