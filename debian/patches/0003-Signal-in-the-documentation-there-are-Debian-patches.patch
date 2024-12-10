@@ -2,7 +2,7 @@ From: =?utf-8?q?R=C3=A9mi_Vanicat?= <vanicat@debian.org>
 Date: Thu, 19 Aug 2021 22:29:23 +0200
 Subject: Signal in the documentation there are Debian patches.
 
-Forwarded: not applicable
+Forwarded: not-needed
 
 Reviewed-by: Matteo F. Vescovi <mfv@debian.org>
 ---
@@ -11,15 +11,15 @@ Reviewed-by: Matteo F. Vescovi <mfv@debian.org>
  2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/docs/magit.org b/docs/magit.org
-index 30dc52f..0011cbf 100644
+index 4d32dd7..e8c436c 100644
 --- a/docs/magit.org
 +++ b/docs/magit.org
 @@ -7,7 +7,7 @@
  #+texinfo_dir_category: Emacs
  #+texinfo_dir_title: Magit: (magit).
  #+texinfo_dir_desc: Using Git from Emacs with Magit.
--#+subtitle: for version 4.1.2
-+#+subtitle: for version 4.1.2 (with Debian patches)
+-#+subtitle: for version 4.1.3
++#+subtitle: for version 4.1.3 (with Debian patches)
  
  #+setupfile: .orgconfig
  
@@ -27,21 +27,21 @@ index 30dc52f..0011cbf 100644
  Magit and Git itself deserve to be called porcelains.
  
  #+texinfo: @noindent
--This manual is for Magit version 4.1.2.
-+This manual is for Magit version 4.1.2 (with Debian patches).
+-This manual is for Magit version 4.1.3.
++This manual is for Magit version 4.1.3 (with Debian patches).
  
  #+texinfo: @insertcopying
  :END:
 diff --git a/docs/magit.texi b/docs/magit.texi
-index e125fd2..87712ce 100644
+index 240e262..ca5aef0 100644
 --- a/docs/magit.texi
 +++ b/docs/magit.texi
 @@ -31,7 +31,7 @@ General Public License for more details.
  @finalout
  @titlepage
  @title Magit User Manual
--@subtitle for version 4.1.2
-+@subtitle for version 4.1.2 (with Debian patches)
+-@subtitle for version 4.1.3
++@subtitle for version 4.1.3 (with Debian patches)
  @author Jonas Bernoulli
  @page
  @vskip 0pt plus 1filll
@@ -49,8 +49,8 @@ index e125fd2..87712ce 100644
  Magit and Git itself deserve to be called porcelains.
  
  @noindent
--This manual is for Magit version 4.1.2.
-+This manual is for Magit version 4.1.2 (with Debian patches).
+-This manual is for Magit version 4.1.3.
++This manual is for Magit version 4.1.3 (with Debian patches).
  
  @insertcopying
  @end ifnottex
